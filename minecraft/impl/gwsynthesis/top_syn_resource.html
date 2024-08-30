@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Hierarchy Module Resource</title>
+<style type="text/css">
+body { font-family: Verdana, Arial, sans-serif; font-size: 14px; }
+div#main_wrapper{ width: 100%; }
+h1 {text-align: center; }
+h1 {margin-top: 36px; }
+table, th, td { border: 1px solid #aaa; }
+table { border-collapse:collapse; margin-top: 10px; margin-bottom: 20px; width: 100%; }
+th, td { align = "center"; padding: 5px 2px 5px 5px; }
+th { color: #fff; font-weight: bold; background-color: #0084ff; }
+table td.label { width: 20%; white-space: nowrap; min-width: 20px; background-color: #dee8f4; }
+</style>
+</head>
+<body>
+<div id="main_wrapper">
+<div id="content">
+<h1>Hierarchy Module Resource</h1>
+<table>
+<tr>
+<th class="label">MODULE NAME</th>
+<th class="label">REG NUMBER</th>
+<th class="label">ALU NUMBER</th>
+<th class="label">LUT NUMBER</th>
+<th class="label">DSP NUMBER</th>
+<th class="label">BSRAM NUMBER</th>
+<th class="label">SSRAM NUMBER</th>
+<th class="label">ROM16 NUMBER</th>
+</tr>
+<tr>
+<td class="label">top (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/top.v)</td>
+<td align = "center">1789</td>
+<td align = "center">212</td>
+<td align = "center">2397</td>
+<td align = "center">-</td>
+<td align = "center">16</td>
+<td align = "center">117</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--mem_pll_m0
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/top.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--vga_timing_m0
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/top.v)</td>
+<td align = "center">28</td>
+<td align = "center">-</td>
+<td align = "center">64</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--ppl_clk
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/top.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--ppl
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/top.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">1</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--ppl_ctrl
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl.v)</td>
+<td align = "center">30</td>
+<td align = "center">-</td>
+<td align = "center">51</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--ppl_entry
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl.v)</td>
+<td align = "center">-</td>
+<td align = "center">136</td>
+<td align = "center">1089</td>
+<td align = "center">2</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--vp_scan
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_entry.v)</td>
+<td align = "center">40</td>
+<td align = "center">-</td>
+<td align = "center">66</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--vp_param
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_entry.v)</td>
+<td align = "center">-</td>
+<td align = "center">68</td>
+<td align = "center">1541</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--angle_relatives
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/viewport_params.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">1</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--ppl_proc
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl.v)</td>
+<td align = "center">363</td>
+<td align = "center">123</td>
+<td align = "center">9046</td>
+<td align = "center">6</td>
+<td align = "center">-</td>
+<td align = "center">35</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--map
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/top.v)</td>
+<td align = "center">6</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--map_ram
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/map.v)</td>
+<td align = "center">1</td>
+<td align = "center">-</td>
+<td align = "center">5</td>
+<td align = "center">-</td>
+<td align = "center">10</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--texture_rom
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/map.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">6</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--align
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/top.v)</td>
+<td align = "center">2</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--align_ctrl
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/align.v)</td>
+<td align = "center">19</td>
+<td align = "center">-</td>
+<td align = "center">35</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">1</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--sort
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/align.v)</td>
+<td align = "center">37</td>
+<td align = "center">4</td>
+<td align = "center">66</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--FIFO
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/align.v)</td>
+<td align = "center">72</td>
+<td align = "center">68</td>
+<td align = "center">14</td>
+<td align = "center">-</td>
+<td align = "center">2</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--U1_WrAddrCnt
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/FIFO.v)</td>
+<td align = "center">13</td>
+<td align = "center">-</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--U1_AddrCnt
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/FIFO.v)</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">19</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--U2_RdAddrCnt
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/FIFO.v)</td>
+<td align = "center">13</td>
+<td align = "center">-</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--U1_AddrCnt
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/FIFO.v)</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">19</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--WRAGray2Hex
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/FIFO.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">10</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--WWAGray2Hex
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/FIFO.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">10</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--gw_gao_inst_0
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/impl/gwsynthesis/RTL_GAO/gw_gao_top.v)</td>
+<td align = "center">408</td>
+<td align = "center">14</td>
+<td align = "center">453</td>
+<td align = "center">-</td>
+<td align = "center">5</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--u_tmds_rpll
+ (F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/top.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+</table>
+</div><!-- content -->
+</div><!-- main_wrapper -->
+</body>
+</html>

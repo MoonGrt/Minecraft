@@ -1,0 +1,35 @@
+Reading netlist file: "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\impl\gwsynthesis\top.vg"
+Parsing netlist file "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\impl\gwsynthesis\top.vg" completed
+Processing netlist completed
+Reading constraint file: "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\src\top.cst"
+Physical Constraint parsed completed
+Running placement......
+[10%] Placement Phase 0 completed
+[20%] Placement Phase 1 completed
+[30%] Placement Phase 2 completed
+WARN  (TA1132) :  'tck_pad_i' was determined to be a clock but was not created.
+WARN  (TA1132) :  'Pout_vs_dn[4]' was determined to be a clock but was not created.
+WARN  (TA1132) :  'u_clkdiv/CLKOUT.default_gen_clk' was determined to be a clock but was not created.
+WARN  (TA1132) :  'DDR3_Memory_Interface_Top_inst/gw3_top/i4/fclkdiv/CLKOUT.default_gen_clk' was determined to be a clock but was not created.
+WARN  (TA1117) : Can't calculate clocks' relationship between: "u_clkdiv/CLKOUT.default_gen_clk" and "mem_clk"
+[50%] Placement Phase 3 completed
+Running routing......
+[60%] Routing Phase 0 completed
+[70%] Routing Phase 1 completed
+[80%] Routing Phase 2 completed
+[90%] Routing Phase 3 completed
+Running timing analysis......
+NOTE  (TA1125) : More than 23 critical paths are ignored because having large logic level.
+[95%] Timing analysis completed
+Placement and routing completed
+Bitstream generation in progress......
+Bitstream generation completed
+Running power analysis......
+[100%] Power analysis completed
+Generate file "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\impl\pnr\top.power.html" completed
+Generate file "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\impl\pnr\top.pin.html" completed
+Generate file "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\impl\pnr\top.rpt.html" completed
+Generate file "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\impl\pnr\top.rpt.txt" completed
+Generate file "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\impl\pnr\top.tr.html" completed
+Fri Aug 30 20:34:02 2024
+

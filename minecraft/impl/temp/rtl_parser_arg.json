@@ -1,0 +1,117 @@
+{
+ "Device" : "GW2A-18C",
+ "Files" : [
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/FIFO.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/align.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/align_ctrl.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/ddr3_memory_interface/DDR3MI.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/dvi_tx/DVI_TX_Top.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_prom/texture_rom.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/TMDS_rPLL.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/mem_pll.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/ppl_clk.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/sys_pll.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_sdpb/map_ram.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/map.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/angle_relative.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/angle_to_coord.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_ctrl.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_entry.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_proc.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/projection.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/viewport_params.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/viewport_scanner.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/sort.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/testpattern.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/top.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/vga_timing.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/video_frame_buffer/Video_Frame_Buffer_Top.v",
+   "Type" : "verilog"
+  }
+ ],
+ "IncludePath" : [
+
+ ],
+ "LoopLimit" : 2000,
+ "ResultFile" : "F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/impl/temp/rtl_parser.result",
+ "Top" : "top",
+ "VerilogStd" : "verilog_2001",
+ "VhdlStd" : "vhdl_93"
+}

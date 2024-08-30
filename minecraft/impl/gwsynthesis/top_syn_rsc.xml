@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="top" Register="1789" Alu="212" Lut="2397" Bsram="16" Ssram="117" T_Register="2845(1789)" T_Alu="625(212)" T_Lut="14893(2397)" T_MULT36X36="7(0)" T_MULTALU36X18="5(0)" T_Bsram="39(16)" T_Ssram="157(117)">
+    <SubModule name="mem_pll_m0"/>
+    <SubModule name="vga_timing_m0" Register="28" Lut="64" T_Register="28(28)" T_Lut="64(64)"/>
+    <SubModule name="ppl_clk"/>
+    <SubModule name="ppl" Lut="1" T_Register="433(0)" T_Alu="327(0)" T_Lut="11795(1)" T_MULT36X36="7(0)" T_MULTALU36X18="5(0)" T_Ssram="35(0)">
+        <SubModule name="ppl_ctrl" Register="30" Lut="51" T_Register="30(30)" T_Lut="51(51)"/>
+        <SubModule name="ppl_entry" Alu="136" Lut="1089" MULT36X36="1" MULTALU36X18="1" T_Register="40(0)" T_Alu="204(136)" T_Lut="2697(1089)" T_MULT36X36="1(1)" T_MULTALU36X18="5(1)">
+            <SubModule name="vp_scan" Register="40" Lut="66" T_Register="40(40)" T_Lut="66(66)"/>
+            <SubModule name="vp_param" Alu="68" Lut="1541" MULTALU36X18="4" T_Alu="68(68)" T_Lut="1542(1541)" T_MULTALU36X18="4(4)">
+                <SubModule name="angle_relatives" Lut="1" T_Lut="1(1)"/>
+            </SubModule>
+        </SubModule>
+        <SubModule name="ppl_proc" Register="363" Alu="123" Lut="9046" MULT36X36="6" Ssram="35" T_Register="363(363)" T_Alu="123(123)" T_Lut="9046(9046)" T_MULT36X36="6(6)" T_Ssram="35(35)"/>
+    </SubModule>
+    <SubModule name="map" Register="6" T_Register="7(6)" T_Lut="5(0)" T_Bsram="16(0)">
+        <SubModule name="map_ram" Register="1" Lut="5" Bsram="10" T_Register="1(1)" T_Lut="5(5)" T_Bsram="10(10)"/>
+        <SubModule name="texture_rom" Bsram="6" T_Bsram="6(6)"/>
+    </SubModule>
+    <SubModule name="align" Register="2" T_Register="180(2)" T_Alu="72(0)" T_Lut="179(0)" T_Bsram="2(0)" T_Ssram="5(0)">
+        <SubModule name="align_ctrl" Register="19" Lut="35" Ssram="1" T_Register="19(19)" T_Lut="35(35)" T_Ssram="1(1)"/>
+        <SubModule name="sort" Register="37" Alu="4" Lut="66" Ssram="4" T_Register="37(37)" T_Alu="4(4)" T_Lut="66(66)" T_Ssram="4(4)"/>
+        <SubModule name="FIFO" Register="72" Alu="68" Lut="14" Bsram="2" T_Register="122(72)" T_Alu="68(68)" T_Lut="78(14)" T_Bsram="2(2)">
+            <SubModule name="U1_WrAddrCnt" Register="13" Lut="3" T_Register="25(13)" T_Lut="22(3)">
+                <SubModule name="U1_AddrCnt" Register="12" Lut="19" T_Register="12(12)" T_Lut="19(19)"/>
+            </SubModule>
+            <SubModule name="U2_RdAddrCnt" Register="13" Lut="3" T_Register="25(13)" T_Lut="22(3)">
+                <SubModule name="U1_AddrCnt" Register="12" Lut="19" T_Register="12(12)" T_Lut="19(19)"/>
+            </SubModule>
+            <SubModule name="WRAGray2Hex" Lut="10" T_Lut="10(10)"/>
+            <SubModule name="WWAGray2Hex" Lut="10" T_Lut="10(10)"/>
+        </SubModule>
+    </SubModule>
+    <SubModule name="gw_gao_inst_0" Register="408" Alu="14" Lut="453" Bsram="5" T_Register="408(408)" T_Alu="14(14)" T_Lut="453(453)" T_Bsram="5(5)"/>
+    <SubModule name="u_tmds_rpll"/>
+</Module>
