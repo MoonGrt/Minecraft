@@ -44,8 +44,8 @@ module ppl #(
 
     ppl_ctrl #(
         .H_DISP(H_DISP),
-        .V_DISP(V_DISP))
-    ppl_ctrl (
+        .V_DISP(V_DISP)
+    ) ppl_ctrl (
         .clk           (clk_ppl),
         .rst           (rst),
         .next_en       (next_en),
@@ -57,7 +57,10 @@ module ppl #(
         .vs          (vs)
     );
 
-    ppl_entry ppl_entry (
+    ppl_entry #(
+        .H_DISP(H_DISP),
+        .V_DISP(V_DISP)
+    ) ppl_entry (
         .clk      (clk_ppl),
         .rst      (rst),
         .p_pos_x  (p_pos_x),

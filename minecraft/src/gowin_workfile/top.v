@@ -6,9 +6,10 @@ module top (
     input rst_n
 );
 
-    parameter H_DISP = 200;
-    parameter V_DISP = 8;
-
+    // parameter H_DISP = 200;
+    // parameter V_DISP = 8;
+    parameter H_DISP = 1280;
+    parameter V_DISP = 720;
 
     reg  [17:0] p_pos_x = 'd170 << 8;
     reg  [17:0] p_pos_y = 'd170 << 8;

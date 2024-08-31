@@ -39,8 +39,10 @@ module ppl_entry #(
     wire signed [19:0] vp_u_x, vp_u_y, vp_u_z;
     wire signed [19:0] vp_v_x, vp_v_y, vp_v_z;
 
-    // Viewport
-    viewport_scanner vp_scan (
+    viewport_scanner #(
+        .H_DISP(H_DISP),
+        .V_DISP(V_DISP)
+    ) viewport_scanner (
         .clk          (clk),
         .rst          (rst),
         .enable       (next_en && ~scanner_stop),
@@ -48,7 +50,10 @@ module ppl_entry #(
         .fragment_uv_y(fragment_uv_y)
     );
 
-    viewport_params vp_param (
+    viewport_params #(
+        .H_DISP(H_DISP),
+        .V_DISP(V_DISP)
+    ) viewport_params (
         .rst        (rst),
         .p_angle_x  (p_angle_x),
         .p_angle_y  (p_angle_y),
@@ -62,11 +67,6 @@ module ppl_entry #(
         .vp_v_y     (vp_v_y),
         .vp_v_z     (vp_v_z)
     );
-
-    //    wire signed [19:0] vp_target_x, vp_target_y, vp_target_z;
-    //    assign vp_target_x = p_pos_x + ray_slope_x;
-    //    assign vp_target_y = p_pos_y + ray_slope_y;
-    //    assign vp_target_z = p_pos_z + ray_slope_z;
 
     wire signed [19:0] ray_offset_x = (vp_u_x * fragment_uv_x - vp_v_x * fragment_uv_y) * 2 / 225;
     wire signed [19:0] ray_offset_y = (vp_u_y * fragment_uv_x - vp_v_y * fragment_uv_y) * 2 / 225;

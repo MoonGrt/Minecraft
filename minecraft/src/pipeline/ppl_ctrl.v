@@ -16,7 +16,7 @@ module ppl_ctrl #(
 );
 
     // prepare FSM
-    localparam PREPARE_CYCLES = 4;  // may be the ppl count minus 1
+    localparam PREPARE_CYCLES = 5;  // may be the ppl count minus 1
     localparam BEFORE_PREPARE = 2'd0;
     localparam PREPARING = 2'd1;
     localparam RUNNING = 2'd2;
