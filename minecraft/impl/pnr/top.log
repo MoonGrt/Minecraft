@@ -11,6 +11,11 @@ WARN  (TA1132) :  'tck_pad_i' was determined to be a clock but was not created.
 WARN  (TA1132) :  'Pout_vs_dn[4]' was determined to be a clock but was not created.
 WARN  (TA1132) :  'u_clkdiv/CLKOUT.default_gen_clk' was determined to be a clock but was not created.
 WARN  (TA1132) :  'DDR3_Memory_Interface_Top_inst/gw3_top/i4/fclkdiv/CLKOUT.default_gen_clk' was determined to be a clock but was not created.
+WARN  (TA1117) : Can't calculate clocks' relationship between: "PPL_clk" and "u_clkdiv/CLKOUT.default_gen_clk"
+WARN  (TA1117) : Can't calculate clocks' relationship between: "u_clkdiv/CLKOUT.default_gen_clk" and "PPL_clk"
+WARN  (TA1117) : Can't calculate clocks' relationship between: "PPL_clk" and "DDR3_Memory_Interface_Top_inst/gw3_top/i4/fclkdiv/CLKOUT.default_gen_clk"
+WARN  (TA1117) : Can't calculate clocks' relationship between: "tck_pad_i" and "PPL_clk"
+WARN  (TA1117) : Can't calculate clocks' relationship between: "PPL_clk" and "tck_pad_i"
 WARN  (TA1117) : Can't calculate clocks' relationship between: "u_clkdiv/CLKOUT.default_gen_clk" and "mem_clk"
 [50%] Placement Phase 3 completed
 Running routing......
@@ -31,5 +36,5 @@ Generate file "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\impl\pnr\top.pi
 Generate file "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\impl\pnr\top.rpt.html" completed
 Generate file "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\impl\pnr\top.rpt.txt" completed
 Generate file "F:\Project\Sipeed\Tang_Primer\Minecraft\minecraft\impl\pnr\top.tr.html" completed
-Fri Aug 30 20:34:02 2024
+Fri Aug 30 23:27:26 2024
 

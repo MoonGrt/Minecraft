@@ -1,11 +1,11 @@
-F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl.v
+F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module ppl
 
 Top level modules:
 	ppl
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_lib/gw2a/prim_sim.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_lib/gw2a/prim_sim.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_lib/gw2a/prim_sim.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_lib/gw2a/prim_sim.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling UDP mux2
 -- Compiling module MUX2
@@ -301,91 +301,84 @@ Top level modules:
 	MIPI_IBUF
 	I3C_IOBUF
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/projection.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/projection.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/projection.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/projection.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module projection
 
 Top level modules:
 	projection
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_proc.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_proc.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module ppl_proc
-
-Top level modules:
-	ppl_proc
-
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/angle_to_coord.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/angle_to_coord.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/angle_to_coord.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/angle_to_coord.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module angle_to_coord
 
 Top level modules:
 	angle_to_coord
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_ctrl.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_ctrl.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_ctrl.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_ctrl.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module ppl_ctrl
 
 Top level modules:
 	ppl_ctrl
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/viewport_scanner.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/viewport_scanner.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/viewport_scanner.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/viewport_scanner.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module viewport_scanner
 
 Top level modules:
 	viewport_scanner
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/angle_relative.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/angle_relative.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/angle_relative.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/angle_relative.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module angle_relative
 
 Top level modules:
 	angle_relative
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/sort.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/sort.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module sort
-
-Top level modules:
-	sort
-
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_sdpb/map_ram.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_sdpb/map_ram.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module map_ram
-
-Top level modules:
-	map_ram
-
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/top.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/top.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/top.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/top.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module top
 
 Top level modules:
 	top
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/viewport_params.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/viewport_params.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/viewport_params.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/viewport_params.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module viewport_params
 
 Top level modules:
 	viewport_params
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/ppl_clk.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/ppl_clk.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/sort.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/sort.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module sort
+
+Top level modules:
+	sort
+
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_sdpb/map_ram.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_sdpb/map_ram.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module map_ram
+
+Top level modules:
+	map_ram
+
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/ppl_clk.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/ppl_clk.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module ppl_clk
 
 Top level modules:
 	ppl_clk
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_entry.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_entry.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_entry.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/pipeline/ppl_entry.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module ppl_entry
 
 Top level modules:
 	ppl_entry
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/FIFO.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/FIFO.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/FIFO.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/FIFO.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module FIFO
 -- Compiling module FifoAddrCnt
@@ -395,35 +388,35 @@ Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 Top level modules:
 	FIFO
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/TMDS_rPLL.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/TMDS_rPLL.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module TMDS_rPLL
-
-Top level modules:
-	TMDS_rPLL
-
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/tb_top.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/tb_top.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/tb_top.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/tb_top.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module tb_top
 
 Top level modules:
 	tb_top
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/map.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/map.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/TMDS_rPLL.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/TMDS_rPLL.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module TMDS_rPLL
+
+Top level modules:
+	TMDS_rPLL
+
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/map.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/map.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module map
 
 Top level modules:
 	map
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_prom/texture_rom.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_prom/texture_rom.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_prom/texture_rom.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_prom/texture_rom.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module texture_rom
 
 Top level modules:
 	texture_rom
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/align_ctrl.v {1 {vlog -work gowin_work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/align_ctrl.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/align_ctrl.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/align_ctrl.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module align_ctrl
 
