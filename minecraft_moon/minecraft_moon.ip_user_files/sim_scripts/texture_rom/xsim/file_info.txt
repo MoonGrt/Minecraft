@@ -1,2 +1,0 @@
-texture_rom.v,verilog,xil_defaultlib,../../../../minecraft_moon.srcs/sources_1/ip/texture_rom/sim/texture_rom.v,
-glbl.v,Verilog,xil_defaultlib,glbl.v
