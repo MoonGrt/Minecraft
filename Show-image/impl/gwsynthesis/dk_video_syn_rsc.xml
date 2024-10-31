@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Module name="video_top" Register="25" Lut="59">
- <SubModule name="video_display" Register="24">
-  <SubModule name="Gowin_pROM" Bsram="1"/>
- </SubModule>
- <SubModule name="video_driver" Register="31" Lut="88"/>
- <SubModule name="u_tmds_rpll"/>
- <SubModule name="DVI_TX_Top_inst" Register="73" Alu="68" Lut="217"/>
-</Module>
