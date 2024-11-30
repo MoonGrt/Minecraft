@@ -388,13 +388,6 @@ Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 Top level modules:
 	FIFO
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/tb_top.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/tb_top.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module tb_top
-
-Top level modules:
-	tb_top
-
 } {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/TMDS_rPLL.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_rpll/TMDS_rPLL.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module TMDS_rPLL
@@ -402,12 +395,12 @@ Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 Top level modules:
 	TMDS_rPLL
 
-} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/map.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/map.v
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/tb_top.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_workfile/tb_top.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module map
+-- Compiling module tb_top
 
 Top level modules:
-	map
+	tb_top
 
 } {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_prom/texture_rom.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_prom/texture_rom.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
@@ -415,6 +408,13 @@ Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 
 Top level modules:
 	texture_rom
+
+} {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/map.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/map.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module map
+
+Top level modules:
+	map
 
 } {} {}} F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/align_ctrl.v {1 {vlog -work work -vopt -stats=none F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/align_ctrl.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
