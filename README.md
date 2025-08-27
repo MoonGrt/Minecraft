@@ -12,7 +12,7 @@
 <br />
 <div align="center">
     <a href="https://github.com/MoonGrt/FPGA-Minecraft">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="Document/images/logo.png" alt="Logo" width="80" height="80">
     </a>
 <h3 align="center">FPGA-Minecraft</h3>
     <p align="center">
@@ -33,7 +33,7 @@
 
 <!-- CONTENTS -->
 <details open>
-  <summary>Contents</summary>
+  <summary>This FPGA project involves the development of a Minecraft game entirely in hardware. The game enables players to place and break blocks, move, and fly. </summary>
   <ol>
     <li><a href="#file-tree">File Tree</a></li>
     <li>
@@ -59,50 +59,23 @@
 └─ Project
   ├─ LICENSE
   ├─ README.md
-  ├─ /images/
-  ├─ /Matlab/
-  │ ├─ minecraft.m
+  ├─ /Algorithm/
   │ ├─ sight_line.m
-  │ ├─ test1.m
-  │ ├─ test2.m
   │ └─ /GUI/
   │   └─ sight_line.mlapp
-  ├─ /minecraft/
-  │ └─ /src/
-  │   ├─ align.v
-  │   ├─ align_ctrl.v
-  │   ├─ FIFO.v
-  │   ├─ map.v
-  │   ├─ sort.v
-  │   ├─ testpattern.v
-  │   ├─ top.v
-  │   ├─ vga_timing.v
-  │   ├─ /pipeline/
-  │   │ ├─ angle_relative.v
-  │   │ ├─ angle_to_coord.v
-  │   │ ├─ ppl.v
-  │   │ ├─ ppl_ctrl.v
-  │   │ ├─ ppl_entry.v
-  │   │ ├─ ppl_proc.v
-  │   │ ├─ projection.v
-  │   │ ├─ viewport_params.v
-  │   │ └─ viewport_scanner.v
-  │   ├─ /video_frame_buffer/
-  │   │ ├─ Video_Frame_Buffer_Top.ipc
-  │   │ ├─ Video_Frame_Buffer_Top.v
-  │   │ ├─ Video_Frame_Buffer_Top.vo
-  │   │ └─ Video_Frame_Buffer_Top_tmp.v
-  │   └─ /video_scaler/
-  │     ├─ algorithm.v
-  │     ├─ FIFO.v
-  │     ├─ fill_brank.v
-  │     ├─ image_cut.v
-  │     ├─ pixel_cnt.v
-  │     ├─ ramDualPort.v
-  │     ├─ ramFifo.v
-  │     └─ streamScaler.v
-  ├─ /minecraft_moon/
-  ├─ /Show-image/
+  ├─ /Document/
+  ├─ /Project/
+  │ ├─ /minecraft/
+  │ │ ├─ top.gprj
+  │ │ └─ top.gprj.user
+  │ └─ /minecraft_moon/
+  │   ├─ minecraft_moon.xpr
+  │   ├─ minecraft_moon1.zip
+  │   └─ /minecraft_moon.srcs/
+  │     ├─ /sim_1/
+  │     │ ├─ tb_sort.v
+  │     │ └─ tb_top.v
+  │     └─ /sources_1/
   └─ /Tool/
     ├─ CircleMapping.py
     ├─ coe_to_mi.py
@@ -117,6 +90,8 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
+
+This FPGA project involves the development of a Minecraft game entirely in hardware. The game enables players to place and break blocks, move, and fly. It utilizes a rendering pipeline to calculate the color of each pixel, ultimately displaying the generated frames on an HDMI screen. This hardware-based approach ensures efficient real-time rendering and interaction within the game environment.
 
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">[![Product Name Screen Shot][product-screenshot]](https://example.com) Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`</p></body></html>
 <p align="right">(<a href="#top">top</a>)</p>
