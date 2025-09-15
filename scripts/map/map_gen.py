@@ -60,14 +60,15 @@ for x in range(x_size):
             terrain[x][y][z] = 5
 
 # 打印地形数组
-f = open('map_test.coe', mode='w')
+f = open('output/map_test.coe', mode='w')
 print('memory_initialization_radix=2;\nmemory_initialization_vector=', file=f)
 for i in range(x_size):
     for j in range(y_size):
         for k in range(z_size):
             v = terrain[i, j, k]
-            print('{0:05b},'.format(v), file=f)
+            print('{0:04b},'.format(v), file=f)
 f.close()
+print("Map generation completed and saved to output/map_test.coe")
 
 
 
