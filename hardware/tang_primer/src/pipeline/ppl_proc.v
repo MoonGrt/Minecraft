@@ -131,8 +131,8 @@ module ppl_proc #(
     // wire signed [19:0] ray_slope_y_abs = (ray_slope_y_d1 < 0) ? -ray_slope_y_d1 : ray_slope_y_d1;
     // wire signed [19:0] ray_slope_z_abs = (ray_slope_z_d1 < 0) ? -ray_slope_z_d1 : ray_slope_z_d1;
     wire signed [19:0] ray_slope_x_abs = ray_slope_x_d1[19] ? -ray_slope_x_d1 : ray_slope_x_d1;
-    wire signed [19:0] ray_slope_y_abs = ray_slope_x_d1[19] ? -ray_slope_y_d1 : ray_slope_y_d1;
-    wire signed [19:0] ray_slope_z_abs = ray_slope_x_d1[19] ? -ray_slope_z_d1 : ray_slope_z_d1;
+    wire signed [19:0] ray_slope_y_abs = ray_slope_y_d1[19] ? -ray_slope_y_d1 : ray_slope_y_d1;
+    wire signed [19:0] ray_slope_z_abs = ray_slope_z_d1[19] ? -ray_slope_z_d1 : ray_slope_z_d1;
     // wire signed [19:0] ray_slope_x_abs = ray_slope_x_pn_d1 ? ray_slope_x_d1 : -ray_slope_x_d1;
     // wire signed [19:0] ray_slope_y_abs = ray_slope_y_pn_d1 ? ray_slope_y_d1 : -ray_slope_y_d1;
     // wire signed [19:0] ray_slope_z_abs = ray_slope_z_pn_d1 ? ray_slope_z_d1 : -ray_slope_z_d1;
@@ -248,9 +248,9 @@ module ppl_proc #(
             block_next_y_d3 <= 'b0;
             block_next_z_d3 <= 'b0;
         end else begin
-            block_next_x_d3 <= min_flag_d2[2] ? (ray_slope_y_d2[19] ? block_x_d2 - 'd1 : block_x_d2 + 'd1) : block_x_d2;
+            block_next_x_d3 <= min_flag_d2[2] ? (ray_slope_x_d2[19] ? block_x_d2 - 'd1 : block_x_d2 + 'd1) : block_x_d2;
             block_next_y_d3 <= min_flag_d2[1] ? (ray_slope_y_d2[19] ? block_y_d2 - 'd1 : block_y_d2 + 'd1) : block_y_d2;
-            block_next_z_d3 <= min_flag_d2[0] ? (ray_slope_y_d2[19] ? block_z_d2 - 'd1 : block_z_d2 + 'd1) : block_z_d2;
+            block_next_z_d3 <= min_flag_d2[0] ? (ray_slope_z_d2[19] ? block_z_d2 - 'd1 : block_z_d2 + 'd1) : block_z_d2;
         end
     end
 
