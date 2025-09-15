@@ -17,12 +17,11 @@ endif
 ifeq ($(DDR_TEST),yes)
     SRCS = $(wildcard src/ddr_test.S)
 else
-    INC += -I./libs -I./src -I./src/ov5640 -I./src/lcd
+    INC += -I./libs -I./src -I./src/lcd
     SRCS = $(wildcard libs/*.c) \
            $(wildcard libs/*.S) \
            $(wildcard src/*.c) \
            $(wildcard src/*.S) \
-           $(wildcard src/ov5640/*.c) \
 		   $(wildcard src/lcd/*.c)
 endif
 
@@ -135,6 +134,6 @@ clean:
 
 mem: $(OBJDIR)/$(PROJ_NAME).hex
 	@echo "\nGenerating .mem from .hex..."
-	@../../../scripts/InstExtractor.sh $< $(OBJDIR)/$(PROJ_NAME) 8192
+	@./InstExtractor.sh $< $(OBJDIR)/$(PROJ_NAME) 8192
 
 .SECONDARY: $(OBJS)
