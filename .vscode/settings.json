@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "lcd.h": "c",
-        "ov5640.h": "c",
-        "delay.h": "c",
-        "cyber.h": "c"
-    }
-}
