@@ -58,6 +58,7 @@ for x in range(x_size):
             terrain[x][y][z] = 1
 
 # 打印地形数组
+# 打印地形数组
 def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', bitwidth=4):
     """通用地图文件输出函数
     terrain: 三维地形数组
@@ -65,6 +66,9 @@ def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', b
     datatype: 'bin' / 'hex'
     bitwidth: 每个地块所需位宽 (默认为4位，支持16种方块)
     """
+    import math
+
+    # 选择文件名和头
     if filetype == 'coe':  # Xilinx COE 文件
         filename = f'output/map.{filetype}'
         if datatype == 'bin':
@@ -88,36 +92,59 @@ def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', b
         all_lines = []
         if header:
             print(header, file=f)
+
+        # === C语言模式，检测是否需要打包 ===
+        pack_two = (filetype == 'c' and bitwidth == 4)
         if filetype == 'c':
-            f.write(f"const uint{max(8, ((bitwidth+7)//8)*8)}_t MAP[{x_size}][{y_size}][{z_size}] = {{\n")
+            if pack_two:
+                c_z_size = math.ceil(z_size / 2)  # 打包后长度
+                f.write(f"const uint8_t MAP[{x_size}][{y_size}][{c_z_size}] = {{\n")
+            else:
+                c_bitwidth = max(8, ((bitwidth + 7) // 8) * 8)
+                f.write(f"const uint{c_bitwidth}_t MAP[{x_size}][{y_size}][{z_size}] = {{\n")
+
         for i in range(x_size):
             if filetype == 'c':
                 f.write("  {\n")
             for j in range(y_size):
                 if filetype == 'c':
                     f.write("    { ")
-                for k in range(z_size):
-                    v = int(terrain[i, j, k])
-                    if datatype == 'bin':
-                        val_str = format(v, f'0{bitwidth}b')
+                if pack_two:
+                    # 每两个4bit打包成一个uint8_t
+                    packed_bytes = []
+                    for k in range(0, z_size, 2):
+                        v1 = int(terrain[i, j, k])
+                        v2 = int(terrain[i, j, k+1]) if k+1 < z_size else 0
+                        byte_val = (v2 << 4) | v1
+                        if datatype == 'bin':
+                            packed_bytes.append(f"0b{byte_val:08b}")
+                        else:
+                            packed_bytes.append(f"0x{byte_val:02X}")
+                    f.write(", ".join(packed_bytes))
+                else:
+                    for k in range(z_size):
+                        v = int(terrain[i, j, k])
+                        if datatype == 'bin':
+                            val_str = format(v, f'0{bitwidth}b')
+                            if filetype == 'c':
+                                val_str = f"0b{val_str}"
+                        elif datatype == 'hex':
+                            hexwidth = (bitwidth + 3) // 4
+                            val_str = format(v, f'0{hexwidth}X')
+                            if filetype == 'c':
+                                val_str = f"0x{val_str}"
+                        else:
+                            raise ValueError(f"Unsupported datatype: {datatype}")
                         if filetype == 'c':
-                            val_str = f"0b{val_str}"
-                    elif datatype == 'hex':
-                        hexwidth = (bitwidth + 3) // 4  # 向上取整
-                        val_str = format(v, f'0{hexwidth}X')
-                        if filetype == 'c':
-                            val_str = f"0x{val_str}"
-                    else:
-                        raise ValueError(f"Unsupported datatype: {datatype}")
-                    if filetype == 'c':
-                        sep = ", " if k < z_size - 1 else ""
-                        f.write(val_str + sep)
-                    else:
-                        all_lines.append(val_str)
+                            sep = ", " if k < z_size - 1 else ""
+                            f.write(val_str + sep)
+                        else:
+                            all_lines.append(val_str)
                 if filetype == 'c':
                     f.write(" }" + ("," if j < y_size - 1 else "") + "\n")
             if filetype == 'c':
                 f.write("  }" + ("," if i < x_size - 1 else "") + "\n")
+
         # 写入文件
         if filetype == 'coe':
             for i, line in enumerate(all_lines):

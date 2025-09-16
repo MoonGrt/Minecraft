@@ -3,6 +3,7 @@
 
 #include "cyber.h"
 
+// ----------------- 方块 ID 到 颜色的映射（RGB565） -----------------
 const uint16_t TEXTURE[21][256] = {
   {
     0x52AA, 0x3186, 0x3186, 0x3186, 0x3186, 0x52AA, 0x94B2, 0x94B2, 0x0020, 0x94B2, 0x52AA, 0x3186, 0x3186, 0x3186, 0x3186, 0x52AA,
@@ -384,4 +385,83 @@ const uint16_t TEXTURE[21][256] = {
   }
 };
 
-#endif
+// ----------------- 纹理 ID 枚举（为方便使用手工分配） -----------------
+// 下面的常量顺序需与 TEXTURE 被初始化的顺序一致。
+// 根据你给的方块名字列出所有纹理名并为其分配索引 0..20（共 21 张）
+enum {
+  TEX_BEDROCK = 0,
+  TEX_STONE,
+  TEX_GRASS_TOP,
+  TEX_GRASS_SIDE,
+  TEX_DIRT,
+  TEX_COBBLE,
+  TEX_OAK_PLANKS,
+  TEX_OAK_LOG_TOP,
+  TEX_OAK_LOG_SIDE,
+  TEX_OAK_LEAVES,
+  TEX_SAND,
+  TEX_COAL_ORE,
+  TEX_COAL_BLOCK,
+  TEX_IRON_ORE,
+  TEX_IRON_BLOCK,
+  TEX_CRAFTING_TOP,
+  TEX_CRAFTING_FRONT,
+  TEX_CRAFTING_SIDE,
+  TEX_FURNACE_TOP,
+  TEX_FURNACE_FRONT,
+  TEX_FURNACE_SIDE,
+  // (共21个，TEX indices 0..20)
+};
+
+// ----------------- 方块 ID 枚举（按你给的 MIN 列表顺序） -----------------
+enum {
+  BLK_BEDROCK = 1,
+  BLK_STONE,
+  BLK_GRASS,
+  BLK_DIRT,
+  BLK_COBBLE,
+  BLK_OAK_PLANKS,
+  BLK_OAK_LOG,
+  BLK_OAK_LEAVES,
+  BLK_SAND,
+  BLK_COAL_ORE,
+  BLK_COAL_BLOCK,
+  BLK_IRON_ORE,
+  BLK_IRON_BLOCK,
+  BLK_CRAFTING_TABLE,
+  BLK_FURNACE,
+  NUM_BLOCK_TYPES_PLUS1   // 作为边界（下方不用）
+};
+
+// ----------------- 每个方块 6 面对应的纹理 ID（index order: top, side1, side2, side3, side4, bottom） -----------------
+// 注意：对侧面我们简单都使用 side1（索引1），这样可以同时支持“所有侧面相同”的方块。
+// 如果你需要更精确地对不同侧使用不同纹理（例如面向玩家的 front），
+// 需要在 block_face_texture 中按方向填写不同的纹理索引。
+static const uint8_t block_face_texture[NUM_BLOCK_TYPES_PLUS1][6] = {
+  // index 0 unused (0 = air)
+  {0,0,0,0,0,0},
+  /* BLK_BEDROCK = 1 */        {TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK},
+  /* BLK_STONE = 2 */          {TEX_STONE, TEX_STONE, TEX_STONE, TEX_STONE, TEX_STONE, TEX_STONE},
+  /* BLK_GRASS = 3 */          {TEX_GRASS_TOP, TEX_GRASS_SIDE, TEX_GRASS_SIDE, TEX_GRASS_SIDE, TEX_GRASS_SIDE, TEX_DIRT},
+  /* BLK_DIRT = 4 */           {TEX_DIRT, TEX_DIRT, TEX_DIRT, TEX_DIRT, TEX_DIRT, TEX_DIRT},
+  /* BLK_COBBLE = 5 */         {TEX_COBBLE, TEX_COBBLE, TEX_COBBLE, TEX_COBBLE, TEX_COBBLE, TEX_COBBLE},
+  /* BLK_OAK_PLANKS = 6 */     {TEX_OAK_PLANKS, TEX_OAK_PLANKS, TEX_OAK_PLANKS, TEX_OAK_PLANKS, TEX_OAK_PLANKS, TEX_OAK_PLANKS},
+  /* BLK_OAK_LOG = 7 */        {TEX_OAK_LOG_TOP, TEX_OAK_LOG_SIDE, TEX_OAK_LOG_SIDE, TEX_OAK_LOG_SIDE, TEX_OAK_LOG_SIDE, TEX_OAK_LOG_TOP},
+  /* BLK_OAK_LEAVES = 8 */     {TEX_OAK_LEAVES, TEX_OAK_LEAVES, TEX_OAK_LEAVES, TEX_OAK_LEAVES, TEX_OAK_LEAVES, TEX_OAK_LEAVES},
+  /* BLK_SAND = 9 */           {TEX_SAND, TEX_SAND, TEX_SAND, TEX_SAND, TEX_SAND, TEX_SAND},
+  /* BLK_COAL_ORE = 10 */      {TEX_COAL_ORE, TEX_COAL_ORE, TEX_COAL_ORE, TEX_COAL_ORE, TEX_COAL_ORE, TEX_COAL_ORE},
+  /* BLK_COAL_BLOCK = 11 */    {TEX_COAL_BLOCK, TEX_COAL_BLOCK, TEX_COAL_BLOCK, TEX_COAL_BLOCK, TEX_COAL_BLOCK, TEX_COAL_BLOCK},
+  /* BLK_IRON_ORE = 12 */      {TEX_IRON_ORE, TEX_IRON_ORE, TEX_IRON_ORE, TEX_IRON_ORE, TEX_IRON_ORE, TEX_IRON_ORE},
+  /* BLK_IRON_BLOCK = 13 */    {TEX_IRON_BLOCK, TEX_IRON_BLOCK, TEX_IRON_BLOCK, TEX_IRON_BLOCK, TEX_IRON_BLOCK, TEX_IRON_BLOCK},
+  /* BLK_CRAFTING_TABLE = 14 */{TEX_CRAFTING_TOP, TEX_CRAFTING_FRONT, TEX_CRAFTING_SIDE, TEX_CRAFTING_SIDE, TEX_CRAFTING_SIDE, TEX_CRAFTING_TOP},
+  /* BLK_FURNACE = 15 */       {TEX_FURNACE_TOP, TEX_FURNACE_FRONT, TEX_FURNACE_SIDE, TEX_FURNACE_SIDE, TEX_FURNACE_SIDE, TEX_FURNACE_TOP},
+};
+
+// ----------------- 从纹理表取颜色（u,v 取 0..15） -----------------
+static inline uint16_t sample_texture(uint8_t tex_id, int u, int v) {
+  // 保证 u,v 在 0..15
+  u &= 15; v &= 15;
+  return TEXTURE[tex_id][v * 16 + u];
+}
+
+#endif // TEXTURE_H

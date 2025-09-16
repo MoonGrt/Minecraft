@@ -4,7 +4,7 @@
 static const DVTiming DVTCfg = h480_v272_r60;
 
 // Framebuffer - 16-bit 2D array
-__attribute__ ((section (".noinit"))) __attribute__ ((aligned (4*8))) uint16_t Framebuffer[DISPX][DISPY];
+__attribute__ ((section (".noinit"))) __attribute__ ((aligned (2*8))) uint16_t Framebuffer[DISPX][DISPY];
 
 /* 当前使用的显存地址，不是当前显示的显存
    比如现在使用的显存为LCD_VIDEO_BUFF2_ADDR，则LCD正在显示的显存为LCD_VIDEO_BUFF0_ADDR

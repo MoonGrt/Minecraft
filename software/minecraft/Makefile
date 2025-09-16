@@ -3,7 +3,7 @@
 DDREN = yes
 DDR_TEST = no
 PROJ_NAME = minecraft
-DEBUG = yes
+DEBUG = no
 BENCH = no
 FUNC_OPT = yes
 MULDIV = yes
@@ -56,7 +56,7 @@ CFLAGS += -march=$(MARCH) -mabi=$(MABI)
 ifeq ($(DEBUG), yes)
 	CFLAGS += -g3 -O0
 else
-	CFLAGS += -g -O3
+	CFLAGS += -g -O2
 endif
 
 ifeq ($(BENCH), yes)
@@ -83,7 +83,7 @@ RISCV_OBJDUMP = $(RISCV_PATH)/bin/$(RISCV_NAME)-objdump
 RISCV_CC=$(RISCV_PATH)/bin/$(RISCV_NAME)-gcc
 
 CFLAGS += -MD -fstrict-volatile-bitfields
-LDFLAGS += -nostdlib -lgcc -mcmodel=medany -nostartfiles -ffreestanding -Wl,-Bstatic,-T,$(LDSCRIPT),-Map,$(OBJDIR)/$(PROJ_NAME).map,--print-memory-usage
+LDFLAGS += -nostdlib -lgcc -mcmodel=medany -nostartfiles -ffreestanding -Wl,-Bstatic,-T,$(LDSCRIPT),-Map,$(OBJDIR)/$(PROJ_NAME).map,--print-memory-usage -lm
 
 OBJDIR = build
 OBJS := $(SRCS)
