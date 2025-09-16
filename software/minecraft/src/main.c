@@ -1,11 +1,14 @@
 #include "cyber.h"
 #include "delay.h"
+#include "map.h"
+#include "texture.h"
 
 void demo_DVTC(void);
 
 void main()
 {
     delay_init();
+    delay_s(1);
     demo_USART();
     demo_DVTC();
 }
@@ -83,7 +86,14 @@ void demo_lcd(void)
     /* 使能DVTC */
     DVTC_Cmd(ENABLE);
 
-
+    const uint16_t colors[8] = {
+        0xFFFF, 0xFFE0, 0x07FF, 0x07E0,
+        0xF81F, 0xF800, 0x001F, 0x0000
+    };
+    uint16_t *ptr = &Framebuffer[0][0];
+    for (uint32_t y = 0; y < DISPY; y++)
+        for (uint32_t x = 0; x < DISPX; x++)
+            *ptr++ = colors[(x * 8) / DISPX];
 }
 #endif // DEMO_LCD
 

@@ -95,40 +95,76 @@ def format_value(value, bitwidth, datatype):
 
 def write_textures(collection, filetype=None, datatype='bin', colortype='rgb888'):
     """通用输出函数"""
-    if filetype == 'coe':  # xilinx coe file
+    if filetype == 'coe':  # Xilinx COE 文件
         filename = f'output/textures.{filetype}'
         if datatype == 'bin':
             header = "memory_initialization_radix=2;\nmemory_initialization_vector="
         elif datatype == 'hex':
             header = "memory_initialization_radix=16;\nmemory_initialization_vector="
-    elif filetype == 'mi':  # gowin mi file
+    elif filetype == 'mi':  # Gowin MI 文件
         filename = f'output/textures.{filetype}'
         if datatype == 'bin':
             header = "#File_format=Bin\n#Address_depth=256\n#Data_width=32"
         elif datatype == 'hex':
             header = "#File_format=Hex\n#Address_depth=256\n#Data_width=32"
-    else:
+    elif filetype == 'c':  # C语言二维数组
+        filename = "output/textures.c"
         header = None
+    else:
         filename = f'output/textures.{datatype}'
+        header = None
+
     with open(filename, 'w') as f:
+        all_lines = []
+        all_textures = []
+        bitwidth_detected = None
         if header:
             print(header, file=f)
-        all_lines = []
         for texture in TEXTURE_COLLECTIONS[collection]:
-            # print(f"Converting {texture} ...")
             img = cv2.imread(f'texture/{texture}.png', cv2.IMREAD_UNCHANGED)
+            texture_values = []
             for j in range(RES):
+                row_values = []
                 for k in range(RES):
                     b, g, r = img[j, k, 0:3]
                     a = img[j, k, 3] if img.shape[2] == 4 else 255
                     value, bitwidth = convert_color(b, g, r, a, colortype)
-                    val_str = format_value(value, bitwidth, datatype)
-                    all_lines.append(val_str)
+                    if bitwidth_detected is None:
+                        bitwidth_detected = bitwidth
+                        if filetype == 'c':
+                            c_type = f"uint{max(8, ((bitwidth+7)//8)*8)}_t"
+                            f.write(f"const {c_type} TEXTURE[{len(TEXTURE_COLLECTIONS[collection])}][{RES*RES}] = {{\n")
+                    if datatype == 'bin':
+                        val_str = f"0b{format(value, f'0{bitwidth}b')}"
+                    elif datatype == 'hex':
+                        hexwidth = (bitwidth + 3) // 4
+                        val_str = f"0x{format(value, f'0{hexwidth}X')}"
+                    else:
+                        raise ValueError(f"Unsupported datatype: {datatype}")
+                    row_values.append(val_str)
+                texture_values.extend(row_values)
+            all_textures.append(texture_values)
+
         # 写入文件
         if filetype == 'coe':
             for i, line in enumerate(all_lines):
                 sep = ',' if i < len(all_lines) - 1 else ';'
                 f.write(line + sep + '\n')
+        elif filetype == 'c':
+            for t_idx, tex in enumerate(all_textures):
+                f.write("  {\n    ")
+                for r in range(RES):
+                    row_start = r * RES
+                    row_end = row_start + RES
+                    f.write(", ".join(tex[row_start:row_end]))
+                    if r < RES - 1:
+                        f.write(",\n    ")  # 每行换行并缩进
+                f.write("\n  }")
+                if t_idx < len(all_textures) - 1:
+                    f.write(",\n")
+                else:
+                    f.write("\n")
+            f.write("};\n")
         else:
             for line in all_lines:
                 f.write(line + '\n')
@@ -138,7 +174,9 @@ if __name__ == "__main__":
     write_textures('MIN', 'coe', 'hex', 'ARGB8888')
     write_textures('MIN', 'mi', 'bin', 'RGB888')
     write_textures('MIN', None, 'hex', 'RGB565')
+    write_textures('MIN', 'c', 'hex', 'RGB565')
     print("PNG convert to MI/COE/BIN/HEX files completed!")
+
 
 # Minecraft 方块集合
 # Block & Texture: MIN

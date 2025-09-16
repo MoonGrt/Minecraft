@@ -86,54 +86,76 @@ def format_value(value, bitwidth, datatype):
         raise ValueError(f"Unsupported datatype: {datatype}")
 
 def write_txt_idx(collection, filetype=None, datatype='bin'):
-    """生成方块纹理索引文件"""
+    """生成方块纹理索引文件（二维数组）"""
     # 文件名和头部
-    if filetype == 'coe':  # xilinx coe file
+    if filetype == 'coe':  # Xilinx COE 文件
         filename = f'output/txt_idx.{filetype}'
         if datatype == 'bin':
             header = "memory_initialization_radix=2;\nmemory_initialization_vector="
         elif datatype == 'hex':
             header = "memory_initialization_radix=16;\nmemory_initialization_vector="
-    elif filetype == 'mi':  # gowin mi file
+    elif filetype == 'mi':  # Gowin MI 文件
         filename = f'output/txt_idx.{filetype}'
         if datatype == 'bin':
             header = "#File_format=Bin\n#Address_depth=256\n#Data_width=32"
         elif datatype == 'hex':
             header = "#File_format=Hex\n#Address_depth=256\n#Data_width=32"
-    else:
+    elif filetype == 'c':  # C语言二维数组
+        filename = f'output/txt_idx.c'
         header = None
+    else:
         filename = f'output/txt_idx.{datatype}'
+        header = None
 
     # 生成纹理索引表
     texture_list = TEXTURE_COLLECTIONS[collection]
     texture_map = {name: idx for idx, name in enumerate(texture_list)}  # {纹理名: 索引}
 
+    # 构建二维数组
+    all_blocks = []
+    for block in BLOCK_TEXTURE_COLLECTIONS[collection]:
+        for block_name, faces in block.items():
+            block_row = []
+            for face in faces:
+                idx = texture_map.get(face)
+                if idx is None:
+                    raise ValueError(f"Texture '{face}' not found in TEXTURE_COLLECTIONS[{collection}]")
+                if datatype == 'bin':
+                    val_str = f"0b{format(idx, '06b')}"
+                elif datatype == 'hex':
+                    val_str = f"0x{format(idx, '02X')}"
+                else:
+                    val_str = str(idx)
+                block_row.append(val_str)
+            all_blocks.append(block_row)
+
+    # 写入文件
     with open(filename, 'w') as f:
         if header:
             print(header, file=f)
-        all_lines = []
-        for block in BLOCK_TEXTURE_COLLECTIONS[collection]:
-            for block_name, faces in block.items():
-                for face in faces:
-                    idx = texture_map.get(face)
-                    if idx is None:
-                        raise ValueError(f"Texture '{face}' not found in TEXTURE_COLLECTIONS[{collection}]")
-                    val_str = format_value(idx, bitwidth=6, datatype=datatype)  # 假设索引最多 256
-                    all_lines.append(val_str)
-        # 写入文件
-        if filetype == 'coe':
+        if filetype == 'c':
+            num_blocks = len(all_blocks)
+            num_faces = max(len(row) for row in all_blocks)
+            f.write(f"const uint8_t txt_idx[{num_blocks}][{num_faces}] = {{\n")
+            for i, row in enumerate(all_blocks):
+                f.write("  { " + ", ".join(row) + " }" + ("," if i < num_blocks - 1 else "") + "\n")
+            f.write("};\n")
+        elif filetype == 'coe':
+            all_lines = [val for row in all_blocks for val in row]
             for i, line in enumerate(all_lines):
                 sep = ',' if i < len(all_lines) - 1 else ';'
                 f.write(line + sep + '\n')
         else:
-            for line in all_lines:
-                f.write(line + '\n')
+            for row in all_blocks:
+                for line in row:
+                    f.write(line + '\n')
 
 
 if __name__ == "__main__":
     write_txt_idx('MIN', 'coe', 'hex')
     write_txt_idx('MIN', 'mi', 'bin')
     write_txt_idx('MIN', None, 'hex')
+    write_txt_idx('MIN', 'c', 'bin')
     print("Texture index file generation completed!")
 
 

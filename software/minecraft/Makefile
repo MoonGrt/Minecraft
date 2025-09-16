@@ -17,7 +17,7 @@ endif
 ifeq ($(DDR_TEST),yes)
     SRCS = $(wildcard src/ddr_test.S)
 else
-    INC += -I./libs -I./src -I./src/lcd
+    INC += -I./libs -I./src -I./src/lcd -I./src/data
     SRCS = $(wildcard libs/*.c) \
            $(wildcard libs/*.S) \
            $(wildcard src/*.c) \
