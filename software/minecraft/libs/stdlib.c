@@ -11,6 +11,12 @@ extern int printf(const char *format, ...);
 char heap_memory[1024];
 int heap_memory_used = 0;
 
+void *memset(void *dest, int value, int n) {
+    unsigned char *ptr = (unsigned char *)dest;
+    while (n--) *ptr++ = (unsigned char)value;
+    return dest;
+}
+
 char *malloc(int size)
 {
     char *p = heap_memory + heap_memory_used;
