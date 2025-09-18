@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.12.0    git head : 1aa7d7b5732f11cca2dd83bacc2a4cb92ca8e5c9
 // Component : CyberPlusWithDdrLcd
-// Git hash  : 399328c05c5b97e88640b19bf77ee37e2f669a3f
+// Git hash  : f93c047808ed1baed46b30d83362ab703fa04643
 
 `timescale 1ns/1ps
 `define SYNTHESIS
@@ -27,6 +27,7 @@ module CyberPlusWithDdrLcd (
   inout  wire [1:0]    io_sdram_IO_ddr_dqs,
   inout  wire [1:0]    io_sdram_IO_ddr_dqs_n,
   output wire          io_uart_tx,
+  input  wire          io_uart_rx,
   output wire          io_dvti_vs,
   output wire          io_dvti_hs,
   output wire          io_dvti_de,
@@ -40,7 +41,6 @@ module CyberPlusWithDdrLcd (
   wire       [31:0]   axi_afioCtrl_io_device_read;
   wire       [4:0]    axi_extiCtrl_io_apb_PADDR;
   wire       [12:0]   axi_gpioCtrl_io_apb_PADDR;
-  wire       [31:0]   axi_gpioCtrl_io_gpio_read;
   wire       [12:0]   axi_timCtrl_io_apb_PADDR;
   wire       [12:0]   axi_wdgCtrl_io_apb_PADDR;
   wire       [3:0]    axi_systickCtrl_io_apb_PADDR;
@@ -454,14 +454,14 @@ module CyberPlusWithDdrLcd (
   reg                 resetCtrl_axiResetUnbuffered;
   reg                 resetCtrl_coreResetUnbuffered;
   reg        [5:0]    resetCtrl_axiResetCounter;
-  wire       [5:0]    _zz_when_cyberpluswithddrlcd_l192;
-  wire                when_cyberpluswithddrlcd_l192;
-  wire                when_cyberpluswithddrlcd_l196;
+  wire       [5:0]    _zz_when_cyberpluswithddrlcd_l193;
+  wire                when_cyberpluswithddrlcd_l193;
+  wire                when_cyberpluswithddrlcd_l197;
   reg                 resetCtrl_axiReset;
   reg                 resetCtrl_coreReset;
   wire                axi_extiInterrupt;
   wire                axi_timerInterrupt;
-  wire                when_cyberpluswithddrlcd_l275;
+  wire                when_cyberpluswithddrlcd_l276;
   wire                axi_systickInterrupt;
   wire                axi_uartInterrupt;
   wire                axi_i2cInterrupt;
@@ -785,6 +785,7 @@ module CyberPlusWithDdrLcd (
   reg        [31:0]   io_output_w_rData_data_2;
   reg        [3:0]    io_output_w_rData_strb_2;
   reg                 io_output_w_rData_last_2;
+  reg        [31:0]   gpioRead;
 
   assign _zz_dbus_axi_arw_payload_len = ((dBusToAxi4Shared_cmdStage_payload_size == 3'b101) ? 3'b111 : 3'b000);
   assign _zz_io_device_read = {{{{{1'b0,axi_spiCtrl_io_spis_1_mosi},axi_spiCtrl_io_spis_1_ss},axi_spiCtrl_io_spis_0_sclk},1'b0},axi_spiCtrl_io_spis_0_mosi};
@@ -931,7 +932,7 @@ module CyberPlusWithDdrLcd (
     .io_device_read        (axi_afioCtrl_io_device_read[31:0]       ), //i
     .io_device_write       (axi_afioCtrl_io_device_write[31:0]      ), //o
     .io_device_writeEnable (axi_afioCtrl_io_device_writeEnable[31:0]), //o
-    .io_afio_read          (axi_gpioCtrl_io_gpio_read[31:0]         ), //i
+    .io_afio_read          (gpioRead[31:0]                          ), //i
     .io_afio_write         (axi_afioCtrl_io_afio_write[31:0]        ), //o
     .io_afio_writeEnable   (axi_afioCtrl_io_afio_writeEnable[31:0]  ), //o
     .io_afioExti           (axi_afioCtrl_io_afioExti[15:0]          ), //o
@@ -961,7 +962,7 @@ module CyberPlusWithDdrLcd (
     .io_apb_PWDATA       (apb3Router_7_io_outputs_0_PWDATA[31:0]), //i
     .io_apb_PRDATA       (axi_gpioCtrl_io_apb_PRDATA[31:0]      ), //o
     .io_apb_PSLVERROR    (axi_gpioCtrl_io_apb_PSLVERROR         ), //o
-    .io_gpio_read        (axi_gpioCtrl_io_gpio_read[31:0]       ), //i
+    .io_gpio_read        (gpioRead[31:0]                        ), //i
     .io_gpio_write       (axi_gpioCtrl_io_gpio_write[31:0]      ), //o
     .io_gpio_writeEnable (axi_gpioCtrl_io_gpio_writeEnable[31:0]), //o
     .io_afio             (axi_afioCtrl_io_afio_write[31:0]      ), //i
@@ -1627,7 +1628,7 @@ module CyberPlusWithDdrLcd (
   assign io_lcdclk = lcdclk_clkout;
   always @(*) begin
     resetCtrl_axiResetUnbuffered = 1'b0;
-    if(when_cyberpluswithddrlcd_l192) begin
+    if(when_cyberpluswithddrlcd_l193) begin
       resetCtrl_axiResetUnbuffered = 1'b1;
     end
   end
@@ -1637,19 +1638,19 @@ module CyberPlusWithDdrLcd (
     if(resetCtrl_axiResetUnbuffered) begin
       resetCtrl_coreResetUnbuffered = 1'b1;
     end
-    if(when_cyberpluswithddrlcd_l275) begin
+    if(when_cyberpluswithddrlcd_l276) begin
       resetCtrl_coreResetUnbuffered = 1'b1;
     end
   end
 
-  assign _zz_when_cyberpluswithddrlcd_l192[5 : 0] = 6'h3f;
-  assign when_cyberpluswithddrlcd_l192 = (resetCtrl_axiResetCounter != _zz_when_cyberpluswithddrlcd_l192);
+  assign _zz_when_cyberpluswithddrlcd_l193[5 : 0] = 6'h3f;
+  assign when_cyberpluswithddrlcd_l193 = (resetCtrl_axiResetCounter != _zz_when_cyberpluswithddrlcd_l193);
   assign bufferCC_38_io_dataIn = (! io_rstn);
-  assign when_cyberpluswithddrlcd_l196 = bufferCC_38_io_dataOut;
+  assign when_cyberpluswithddrlcd_l197 = bufferCC_38_io_dataOut;
   assign axi_sdramCtrl_io_pll_lock = (memclk_lock && sysclk_lock);
   assign axi_extiInterrupt = (|axi_extiCtrl_io_interrupt);
   assign axi_timerInterrupt = (|axi_timCtrl_io_interrupt);
-  assign when_cyberpluswithddrlcd_l275 = (axi_wdgCtrl_io_iwdgRst || axi_wdgCtrl_io_wwdgRst);
+  assign when_cyberpluswithddrlcd_l276 = (axi_wdgCtrl_io_iwdgRst || axi_wdgCtrl_io_wwdgRst);
   assign axi_systickInterrupt = (|axi_systickCtrl_io_interrupt);
   assign axi_uartInterrupt = (|axi_uartCtrl_io_interrupt);
   assign axi_i2cInterrupt = (|axi_i2cCtrl_io_interrupt);
@@ -2010,7 +2011,11 @@ module CyberPlusWithDdrLcd (
   assign io_output_w_halfPipe_payload_strb = io_output_w_rData_strb_2;
   assign io_output_w_halfPipe_payload_last = io_output_w_rData_last_2;
   assign io_output_w_halfPipe_ready = axi_apbBridge_io_axi_w_ready;
-  assign axi_gpioCtrl_io_gpio_read = 32'h0;
+  always @(*) begin
+    gpioRead = 32'h0;
+    gpioRead[17] = io_uart_rx;
+  end
+
   assign io_uart_tx = axi_uartCtrl_io_uarts_0_txd;
   assign io_sdram_O_ddr_addr = axi_sdramCtrl_io_ddr_iface_O_ddr_addr;
   assign io_sdram_O_ddr_ba = axi_sdramCtrl_io_ddr_iface_O_ddr_ba;
@@ -2029,10 +2034,10 @@ module CyberPlusWithDdrLcd (
   assign io_dvti_de = axi_lcdCtrl_io_dvti_de;
   assign io_dvti_data = axi_lcdCtrl_io_dvti_data;
   always @(posedge sysclk_clkout) begin
-    if(when_cyberpluswithddrlcd_l192) begin
+    if(when_cyberpluswithddrlcd_l193) begin
       resetCtrl_axiResetCounter <= (resetCtrl_axiResetCounter + 6'h01);
     end
-    if(when_cyberpluswithddrlcd_l196) begin
+    if(when_cyberpluswithddrlcd_l197) begin
       resetCtrl_axiResetCounter <= 6'h0;
     end
   end
@@ -12439,10 +12444,10 @@ module Axi4Ram (
   assign _zz_Axi4Incr_result_11 = Axi4Incr_base[11 : 6];
   assign _zz_Axi4Incr_result_12 = Axi4Incr_baseIncr[5 : 0];
   initial begin
-    $readmemb("G:/VM/share/Minecraft/software/minecraft/build/mem/minecraft1.bin",ram_symbol0);
-    $readmemb("G:/VM/share/Minecraft/software/minecraft/build/mem/minecraft2.bin",ram_symbol1);
-    $readmemb("G:/VM/share/Minecraft/software/minecraft/build/mem/minecraft3.bin",ram_symbol2);
-    $readmemb("G:/VM/share/Minecraft/software/minecraft/build/mem/minecraft4.bin",ram_symbol3);
+    $readmemb("G:/VM/share/OpenPeriph/test/software/cyberplus/build/mem/demo1.bin",ram_symbol0);
+    $readmemb("G:/VM/share/OpenPeriph/test/software/cyberplus/build/mem/demo2.bin",ram_symbol1);
+    $readmemb("G:/VM/share/OpenPeriph/test/software/cyberplus/build/mem/demo3.bin",ram_symbol2);
+    $readmemb("G:/VM/share/OpenPeriph/test/software/cyberplus/build/mem/demo4.bin",ram_symbol3);
   end
   always @(*) begin
     ram_spinal_port0 = {_zz_ramsymbol_read_3, _zz_ramsymbol_read_2, _zz_ramsymbol_read_1, _zz_ramsymbol_read};

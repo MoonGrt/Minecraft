@@ -332,7 +332,6 @@ uint8_t Serial_RxData; // 定义串口接收的数据变量
 void irqCallback()
 {
 #ifdef CYBER_USART
-    printf("Interrupt\n");
     if (USART_GetITStatus(USART1, USART_IT_RXNE) == SET)
     {
         Serial_RxData = USART_ReceiveData(USART1);
@@ -340,25 +339,21 @@ void irqCallback()
         switch (Serial_RxData)
         {
             case 'w': // 前
-                cam.pz += cam.dz * STEP;
-                cam.px += cam.dx * STEP;
+                cam.px += STEP;
                 break;
             case 's': // 后
-                cam.pz -= cam.dz * STEP;
-                cam.px -= cam.dx * STEP;
+                cam.px -= STEP;
                 break;
             case 'a': // 左
-                cam.px -= cam.uz * STEP;
-                cam.pz += cam.ux * STEP;
+                cam.pz += STEP;
                 break;
             case 'd': // 右
-                cam.px += cam.uz * STEP;
-                cam.pz -= cam.ux * STEP;
+                cam.pz -= STEP;
                 break;
             default:
                 return; // 非 wasd 不处理
         }
-        printf("Cam pos: x=%.2f y=%.2f z=%.2f\n", cam.px, cam.py, cam.pz);
+        printf(" -> Cam pos: x=%d y=%d z=%d\n", (int)cam.px, (int)cam.py, (int)cam.pz);
     }
 #endif
 }
