@@ -413,9 +413,10 @@ enum {
   // (共21个，TEX indices 0..20)
 };
 
-// ----------------- 方块 ID 枚举（按你给的 MIN 列表顺序） -----------------
+// ----------------- 方块 ID 枚举（按 MIN 列表顺序） -----------------
 enum {
-  BLK_BEDROCK = 1,
+  AIR = 0,
+  BLK_BEDROCK,
   BLK_STONE,
   BLK_GRASS,
   BLK_DIRT,
@@ -429,17 +430,15 @@ enum {
   BLK_IRON_ORE,
   BLK_IRON_BLOCK,
   BLK_CRAFTING_TABLE,
-  BLK_FURNACE,
-  NUM_BLOCK_TYPES_PLUS1   // 作为边界（下方不用）
+  BLK_FURNACE
 };
 
 // ----------------- 每个方块 6 面对应的纹理 ID（index order: top, side1, side2, side3, side4, bottom） -----------------
 // 注意：对侧面我们简单都使用 side1（索引1），这样可以同时支持“所有侧面相同”的方块。
 // 如果你需要更精确地对不同侧使用不同纹理（例如面向玩家的 front），
 // 需要在 block_face_texture 中按方向填写不同的纹理索引。
-static const uint8_t block_face_texture[NUM_BLOCK_TYPES_PLUS1][6] = {
-  // index 0 unused (0 = air)
-  {0,0,0,0,0,0},
+static const uint8_t block_face_texture[BLK_FURNACE+1][6] = {
+  /* AIR = 0 */                {0,0,0,0,0,0},
   /* BLK_BEDROCK = 1 */        {TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK},
   /* BLK_STONE = 2 */          {TEX_STONE, TEX_STONE, TEX_STONE, TEX_STONE, TEX_STONE, TEX_STONE},
   /* BLK_GRASS = 3 */          {TEX_GRASS_TOP, TEX_GRASS_SIDE, TEX_GRASS_SIDE, TEX_GRASS_SIDE, TEX_GRASS_SIDE, TEX_DIRT},
@@ -458,9 +457,8 @@ static const uint8_t block_face_texture[NUM_BLOCK_TYPES_PLUS1][6] = {
 };
 
 // ----------------- 从纹理表取颜色（u,v 取 0..15） -----------------
-static inline uint16_t sample_texture(uint8_t tex_id, int u, int v) {
-  // 保证 u,v 在 0..15
-  u &= 15; v &= 15;
+static inline uint16_t get_texture(uint8_t tex_id, int u, int v) {
+  u &= 15; v &= 15;  // 保证 u,v 在 0..15
   return TEXTURE[tex_id][v * 16 + u];
 }
 

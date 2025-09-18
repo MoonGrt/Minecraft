@@ -3,7 +3,7 @@ OUTPUT_ARCH(riscv)
 ENTRY(crtStart)
 
 MEMORY {
-  onChipRam : ORIGIN = 0x00000000, LENGTH = 32k
+  onChipRam : ORIGIN = 0x80000000, LENGTH = 32k
   sdram : ORIGIN = 0x40000000, LENGTH = 128M
 }
 
