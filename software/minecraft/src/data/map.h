@@ -4,6 +4,11 @@
 #include "cyber.h"
 
 // ----------------- 地图数据 -----------------
+#define MAPSIZE 32
+#define MAPX 32
+#define MAPY 32
+#define MAPZ 32
+__attribute__ ((section (".noinit"))) __attribute__ ((aligned (8))) uint8_t MAP[MAPX][MAPY][MAPZ];
 // const uint8_t MAP[32][32][16] = {
 //   {
 //     { 0b00010001, 0b01000100, 0b01000100, 0b01000100, 0b01000100, 0b01000100, 0b01000100, 0b00110011, 0b00000000, 0b00000000, 0b10001000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000 },
@@ -1096,11 +1101,6 @@
 // };
 
 // ----------------- 辅助：安全读取体素 -----------------
-#define MAPSIZE 32
-#define MAPX 32
-#define MAPY 32
-#define MAPZ 32
-__attribute__ ((section (".noinit"))) __attribute__ ((aligned (8))) uint8_t MAP[MAPX][MAPY][MAPZ];
 static inline uint8_t getVoxel(int x, int y, int z) {
     if ((unsigned)x >= MAPSIZE || (unsigned)y >= MAPSIZE || (unsigned)z >= MAPSIZE) return 0;
     return MAP[x][y][z];

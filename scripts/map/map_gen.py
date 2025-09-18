@@ -54,8 +54,7 @@ for x in range(x_size):
 # 设置基岩
 for x in range(x_size):
     for y in range(y_size):
-        for z in range(2):
-            terrain[x][y][z] = 1
+        terrain[x][y][0] = 1
 
 # 打印地形数组
 # 打印地形数组

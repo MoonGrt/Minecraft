@@ -21,6 +21,23 @@ static inline float sqrtf(float x) {
     return x * y;
 }
 
+// 简单整数噪声函数
+static int16_t noise(int x, int y) {
+    uint32_t n = (uint32_t)(x * 73856093) ^ (uint32_t)(y * 19349663);
+    n = (n << 13) ^ n;
+    uint32_t nn = (n * (n * n * 15731u + 789221u) + 1376312589u);
+    return (int16_t)(nn >> 16);
+}
+
+// 伪随机数生成器（LCG）
+#define RAND_MAX  0x7FFF
+static uint32_t rng_state = 1;
+static inline void srand(uint32_t seed) { rng_state = seed; }
+static inline int rand(void) {
+    rng_state = rng_state * 1103515245u + 12345u;
+    return (int)((rng_state >> 16) & RAND_MAX);
+}
+
 // ----------------- Ray DDA 并返回 RGB565 颜色 -----------------
 #define PI 3.1416
 static uint16_t raycast_sample(float ox, float oy, float oz, float dx, float dy, float dz, int max_steps) {
@@ -28,12 +45,10 @@ static uint16_t raycast_sample(float ox, float oy, float oz, float dx, float dy,
     int bx = (int)floorf(ox);
     int by = (int)floorf(oy);
     int bz = (int)floorf(oz);
-
     // 步进方向
     int stepX = (dx > 0.0f) ? 1 : -1;
     int stepY = (dy > 0.0f) ? 1 : -1;
     int stepZ = (dz > 0.0f) ? 1 : -1;
-
     // 计算 tDelta（穿过每个单位格在参数 t 上的增量）
     float invDx = (dx != 0.0f) ? (1.0f / fabsf(dx)) : 1e30f;
     float invDy = (dy != 0.0f) ? (1.0f / fabsf(dy)) : 1e30f;
@@ -41,7 +56,6 @@ static uint16_t raycast_sample(float ox, float oy, float oz, float dx, float dy,
     float tDeltaX = invDx;
     float tDeltaY = invDy;
     float tDeltaZ = invDz;
-
     // 计算初始 tMax：从起点到第一条网格面的距离（以 t 参数计）
     float tMaxX = (stepX > 0)
         ? ((float)(bx + 1) - ox) * invDx
@@ -52,7 +66,6 @@ static uint16_t raycast_sample(float ox, float oy, float oz, float dx, float dy,
     float tMaxZ = (stepZ > 0)
         ? ((float)(bz + 1) - oz) * invDz
         : (oz - (float)bz) * invDz;
-
     // 最大步数保护
     for (int i = 0; i < max_steps; ++i) {
         // 在 DDA 中更常用的做法是：先跨格（根据最小 tMax），然后检查进入的方块（bx,by,bz 更新后）
@@ -81,14 +94,13 @@ static uint16_t raycast_sample(float ox, float oy, float oz, float dx, float dy,
 
         // 检查越界或命中
         uint8_t id = 0;
-        if ((unsigned)bx < MAPSIZE && (unsigned)by < MAPSIZE && (unsigned)bz < MAPSIZE) {
+        if ((unsigned)bx < MAPSIZE && (unsigned)by < MAPSIZE && (unsigned)bz < MAPSIZE)
             id = MAP[bx][by][bz];
-        } else {
+        else
             // 越界当作空气（不命中），继续循环或直接返回背景色
             // 这里直接返回黑色背景
-            printf("Ray out of bounds at (%d, %d, %d)\n", bx, by, bz);
+            // printf("Ray out of bounds at (%d, %d, %d)\n", bx, by, bz);
             return 0x0000;
-        }
         if (id != 0) {
             // 发生命中：计算交点坐标
             float hx = ox + dx * tHit;
@@ -116,17 +128,16 @@ static uint16_t raycast_sample(float ox, float oy, float oz, float dx, float dy,
                 u = (int)(fx * 16.0f) & 15;
                 v = (int)(fz * 16.0f) & 15;
                 // 顶面/底面选择
-                if (dy > 0.0f) {
-                    // 向上行进，进入块的是 -Y 面 => new block 的 bottom? 
+                if (dy > 0.0f)
+                    // 向上行进，进入块的是 -Y 面 => new block 的 bottom?
                     // 语义上更直观的是：如果 ray 向上，穿过的面是 block 的 bottom（朝下）还是 top（朝上）？
                     // 为简单并匹配常见实现：当 stepY>0（从下向上走，引入的是块的 -Y 面），
                     // 我们把上面的 top 纹理分配给 stepY<0 的情况（即从上向下命中 top）
                     // 实际上我们想：如果命中的是块的顶（向下的射线），使用 top；若命中块的底（向上的射线），使用 bottom。
                     // 因此：dy > 0（向上） => 命中的是 block 的 bottom（index5）；dy <0 => hit top (index0).
                     face_tex = block_face_texture[id][5]; // bottom
-                } else {
+                else
                     face_tex = block_face_texture[id][0]; // top
-                }
             } else {
                 // Z 面（面所在为 XY）
                 float fx = hx - floorf(hx);
@@ -136,40 +147,14 @@ static uint16_t raycast_sample(float ox, float oy, float oz, float dx, float dy,
                 face_tex = block_face_texture[id][1]; // 侧面
             }
             // 取颜色并返回
-            return sample_texture(face_tex, u, v);
+            // printf("id: %d, face: %d, u: %d, v: %d\n", id, face_tex, u, v);
+            return get_texture(face_tex, u, v);
         }
         // 否则继续下一步
     }
     // 未命中——背景色（黑）
-    printf("Ray missed at (%d, %d, %d)\n", bx, by, bz);
+    // printf("Ray missed at (%d, %d, %d)\n", bx, by, bz);
     return 0x0000;
-}
-
-// ----------------- 示例：初始化一个简单地图（用于测试） -----------------
-void init_test_map(void) {
-    // 清空
-    memset(MAP, 0, sizeof(MAP));
-    // 地面：y=8 以下全为石头（示例）
-    for (int x = 0; x < MAPSIZE; ++x) {
-        for (int z = 0; z < MAPSIZE; ++z) {
-            for (int y = 0; y < 6; ++y)
-                MAP[x][y][z] = BLK_STONE;
-            // 一层草地
-            MAP[x][6][z] = BLK_GRASS;
-            // 在中心放一棵树（简单的原木+叶子）
-            if ( (x > 14 && x < 18) && (z > 14 && z < 18) ) {
-                for (int h = 7; h < 11; ++h) MAP[x][h][z] = BLK_OAK_LOG;
-                if ( (x > 13 && x < 19) && (z > 13 && z < 19) ) {
-                    for (int h = 11; h < 13; ++h) MAP[x][h][z] = BLK_OAK_LEAVES;
-                }
-            }
-        }
-    }
-    // 放几个矿石块作演示
-    MAP[10][7][10] = BLK_COAL_ORE;
-    MAP[12][7][9]  = BLK_IRON_ORE;
-    MAP[20][7][20] = BLK_CRAFTING_TABLE;
-    MAP[21][7][20] = BLK_FURNACE;
 }
 
 // ----------------- 渲染函数（按像素发射射线并写入 Framebuffer） -----------------
@@ -207,16 +192,123 @@ void render_scene(Camera *cam)
             if (len > 0.0f)
                 dirx /= len; diry /= len; dirz /= len;
             // 最多步数（防止无限）
-            const int MAX_STEPS = 64;
+            const int MAX_STEPS = 31;
             // 发射射线得到颜色
             uint16_t color = raycast_sample(cam->px, cam->py, cam->pz, dirx, diry, dirz, MAX_STEPS);
             // 注意 Framebuffer 的索引顺序，这里是 [x][y]，保持和你定义一致
-            Framebuffer[px][py] = color;
-            printf("x=%d, y=%d, addr=%x, color=%x\n", px, py, &Framebuffer[px][py], color);
-            delay_ms(1000); // 延时，降低 CPU 使用率
+            Framebuffer[py][px] = color;
+            // printf("x=%d, y=%d, addr=%x, color=%x\n", px, py, &Framebuffer[py][px], color);
+            // delay_ms(50); // 延时，降低 CPU 使用率
         }
     }
 }
+
+// ----------------- 示例：初始化一个简单地图（用于测试） -----------------
+void init_test_map(void) {
+    memset(MAP, 0, sizeof(MAP));  // 清空地图
+    const int ground_height = 6;  // 草地高度
+    // 1. 填充地面
+    for (int x = 0; x < MAPX; ++x) {
+        for (int z = 0; z < MAPZ; ++z) {
+            for (int y = 0; y < ground_height - 1; ++y)
+                MAP[x][y][z] = BLK_STONE;
+            MAP[x][ground_height][z] = BLK_GRASS;
+            for (int y = ground_height + 1; y < MAPY; ++y)
+                MAP[x][y][z] = AIR;
+        }
+    }
+    // 2. 在地图中心生成一棵 Minecraft 风格树
+    const int center_x = MAPX / 2;
+    const int center_z = MAPZ / 2;
+    const int trunk_height = 5; // 树干高度
+    const int leaves_radius = 2; // 树叶半径
+    const int leaves_height = 2; // 树叶层数
+    // 树干
+    for (int y = ground_height + 1; y <= ground_height + trunk_height; ++y)
+        MAP[center_x][y][center_z] = BLK_OAK_LOG;
+    // 树叶（球状/方块层叠）
+    for (int y = ground_height + trunk_height; y <= ground_height + trunk_height + leaves_height; ++y) {
+        int layer_radius = leaves_radius + (ground_height + trunk_height) - y; // 顶层半径小一点
+        if (layer_radius < 1) layer_radius = 1;
+        for (int dx = -layer_radius; dx <= layer_radius; ++dx) {
+            for (int dz = -layer_radius; dz <= layer_radius; ++dz) {
+                int ax = center_x + dx;
+                int az = center_z + dz;
+                if (ax < 0 || ax >= MAPX || az < 0 || az >= MAPZ) continue;
+                // 不覆盖树干位置
+                if (!(dx == 0 && dz == 0 && y <= ground_height + trunk_height))
+                    MAP[ax][y][az] = BLK_OAK_LEAVES;
+            }
+        }
+    }
+    // 3. 放几个矿石块作演示
+    MAP[10][7][10] = BLK_COAL_ORE;
+    MAP[12][7][9]  = BLK_IRON_ORE;
+    MAP[20][7][20] = BLK_COAL_BLOCK;
+    MAP[21][7][20] = BLK_IRON_BLOCK;
+}
+
+// static inline int is_coord_valid(int x, int y, int z) {
+//     return (x >= 0 && x < MAPX &&
+//             y >= 0 && y < MAPY &&
+//             z >= 0 && z < MAPZ);
+// }
+
+// void init_test_map(void) {
+//     const int ground_offset = 5;
+//     srand(1234);  // 初始化 Seed
+//     memset(MAP, 0, sizeof(MAP));  // 清空地图
+//     for (int x = 0; x < MAPX; x++) {
+//         for (int z = 0; z < MAPZ; z++) {  // 水平平面
+//             // 计算噪声值：[-32768,32767] -> [0,12]
+//             int noise_val = noise(x / 4, z / 4);
+//             int height = ((noise_val + 32768) * 12) / 65536 + ground_offset;
+//             if (height >= MAPY - 3) height = MAPY - 4;
+//             if (height < 3) height = 3;
+//             // 草方块
+//             for (int y = height; y < height + 2 && y < MAPY; y++)
+//                 MAP[x][y][z] = BLK_GRASS;
+//             // 随机生成树：1%概率
+//             if ((rand() % 200) == 0) {
+//                 for (int y = height + 2; y < height + 7 && y < MAPY; y++)
+//                     MAP[x][y][z] = BLK_OAK_LOG;
+//                 for (int xx = x - 3; xx <= x + 3; xx++)
+//                     for (int zz = z - 3; zz <= z + 3; zz++)
+//                         if (abs(xx - x) + abs(zz - z) < 3)
+//                             for (int yy = height + 7; yy < height + 9 && yy < MAPY; yy++)
+//                                 if (is_coord_valid(xx, yy, zz))
+//                                     MAP[xx][yy][zz] = BLK_OAK_LEAVES;
+//             }
+//             // 地下方块
+//             for (int y = height - 1; y >= 0; y--)
+//                 if (y > 1)
+//                     MAP[x][y][z] = BLK_DIRT;
+//                 else
+//                     MAP[x][y][z] = BLK_STONE;
+//         }
+//     }
+//     // 底层基岩
+//     for (int x = 0; x < MAPX; x++)
+//         for (int z = 0; z < MAPZ; z++)
+//             MAP[x][0][z] = BLK_BEDROCK;
+// }
+
+
+// ----------------- Main -----------------
+#define STEP 0.5f // 每次移动的距离
+// 初始化相机
+Camera cam = {
+    .px = 16.0f,  // 世界中心
+    .py = 10.0f,  // 稍微抬高
+    .pz = 31.0f,  // 往地图里看
+    .dx = 0.0f,   // 朝 -Z
+    .dy = 0.0f,
+    .dz = -1.0f,
+    .ux = 0.0f,   // 上方向 = Y
+    .uy = 1.0f,
+    .uz = 0.0f,
+    .fov = 70.0f
+};
 
 void main()
 {
@@ -225,35 +317,48 @@ void main()
     demo_DVTC();
 
     // Minecraft
-    // 初始化相机
-    Camera cam = {
-        .px = 16.0f,  // 世界中心 (x)
-        .py = 10.0f,  // 高度稍微抬起 (y)
-        .pz = 31.0f,  // z 比较大，往地图里面看
-        .dx = 0.0f,   // 前向向量 = 朝 -Z
-        .dy = 0.0f,
-        .dz = -1.0f,
-        .ux = 0.0f,   // 上向量 = Y 轴
-        .uy = 1.0f,
-        .uz = 0.0f,
-        .fov = 70.0f  // 视场角，类似 Minecraft 默认
-    };
     // 初始化 MAP
     init_test_map();
     printf("Init map completed...\n");
-    // 渲染场景
-    render_scene(&cam);
+    while (1)
+    {
+        // 渲染场景
+        render_scene(&cam);
+        printf("Frame rendering once\n");
+    }
 }
 
 uint8_t Serial_RxData; // 定义串口接收的数据变量
 void irqCallback()
 {
 #ifdef CYBER_USART
-    /*!< USART */
-    if (USART_GetITStatus(USART1, USART_IT_RXNE) == SET) // 判断是否是USART1的接收事件触发的中断
+    printf("Interrupt\n");
+    if (USART_GetITStatus(USART1, USART_IT_RXNE) == SET)
     {
-        Serial_RxData = USART_ReceiveData(USART1); // 读取数据寄存器，存放在接收的数据变量
-        USART_SendData(USART1, Serial_RxData);
+        Serial_RxData = USART_ReceiveData(USART1);
+        USART_SendData(USART1, Serial_RxData); // 回显
+        switch (Serial_RxData)
+        {
+            case 'w': // 前
+                cam.pz += cam.dz * STEP;
+                cam.px += cam.dx * STEP;
+                break;
+            case 's': // 后
+                cam.pz -= cam.dz * STEP;
+                cam.px -= cam.dx * STEP;
+                break;
+            case 'a': // 左
+                cam.px -= cam.uz * STEP;
+                cam.pz += cam.ux * STEP;
+                break;
+            case 'd': // 右
+                cam.px += cam.uz * STEP;
+                cam.pz -= cam.ux * STEP;
+                break;
+            default:
+                return; // 非 wasd 不处理
+        }
+        printf("Cam pos: x=%.2f y=%.2f z=%.2f\n", cam.px, cam.py, cam.pz);
     }
 #endif
 }

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# OpenOCD configuration file for cyber board
+# /home/moon/VexRiscv/openocd_riscv/src/openocd -f /home/moon/VexRiscv/openocd_riscv/tcl/target/riscv_spinal.cfg
+/home/moon/VexRiscv/openocd_riscv/src/openocd -f /mnt/hgfs/share/Minecraft/scripts/jtag/cyber.cfg
