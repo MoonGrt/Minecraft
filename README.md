@@ -91,9 +91,12 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+![Frame_render](Document\Frame_render.jpg)
+
 This FPGA project involves the development of a Minecraft game entirely in hardware. The game enables players to place and break blocks, move, and fly. It utilizes a rendering pipeline to calculate the color of each pixel, ultimately displaying the generated frames on an HDMI screen. This hardware-based approach ensures efficient real-time rendering and interaction within the game environment.
 
-<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">[![Product Name Screen Shot][product-screenshot]](https://example.com) Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`</p></body></html>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">
+
 <p align="right">(<a href="#top">top</a>)</p>
 
 
@@ -125,7 +128,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Contact
 
 MoonGrt - 1561145394@qq.com
-Project Link: [MoonGrt/](https://github.com/MoonGrt/)
+Project Link: [MoonGrt](https://github.com/MoonGrt/)
 <p align="right">(<a href="#top">top</a>)</p>
 
 
