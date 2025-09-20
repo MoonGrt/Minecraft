@@ -65,8 +65,10 @@ module sort #(
     always @(posedge clk or posedge rst) begin
         if (rst)
             data_sorted_vs <= 'b0;
-        else
-            data_sorted_vs <= data_vs;
+        else if ((data_addr == `H_DISP * `V_DISP - 1) && data_valid) begin
+            data_sorted_vs <= 'b1;
+        end else
+            data_sorted_vs <= 'b0;
     end
 
 endmodule

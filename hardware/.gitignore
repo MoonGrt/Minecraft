@@ -3,7 +3,7 @@
 *hw/
 *ip_user_files/
 *runs/
-*sim/
+*.sim/
 *.zip
 *vivado*
 *.Xil/

@@ -110,9 +110,15 @@ module ppl_proc #(
 
     reg [2:0] min_flag_d2 = 'b0;  // x, y, z
     reg [`ANGLE_RADIX-1:0] min = 'b0;
-    wire signed [`ANGLE_RADIX-1:0] ray_slope_x_abs = (ray_slope_x_d1 < 0) ? -ray_slope_x_d1 : ray_slope_x_d1;
-    wire signed [`ANGLE_RADIX-1:0] ray_slope_y_abs = (ray_slope_y_d1 < 0) ? -ray_slope_y_d1 : ray_slope_y_d1;
-    wire signed [`ANGLE_RADIX-1:0] ray_slope_z_abs = (ray_slope_z_d1 < 0) ? -ray_slope_z_d1 : ray_slope_z_d1;
+    // wire signed [`ANGLE_RADIX-1:0] ray_slope_x_abs = (ray_slope_x_d1 < 0) ? -ray_slope_x_d1 : ray_slope_x_d1;
+    // wire signed [`ANGLE_RADIX-1:0] ray_slope_y_abs = (ray_slope_y_d1 < 0) ? -ray_slope_y_d1 : ray_slope_y_d1;
+    // wire signed [`ANGLE_RADIX-1:0] ray_slope_z_abs = (ray_slope_z_d1 < 0) ? -ray_slope_z_d1 : ray_slope_z_d1;
+    wire signed [`ANGLE_RADIX-1:0] ray_slope_x_abs = ray_slope_x_d1[19] ? -ray_slope_x_d1 : ray_slope_x_d1;
+    wire signed [`ANGLE_RADIX-1:0] ray_slope_y_abs = ray_slope_y_d1[19] ? -ray_slope_y_d1 : ray_slope_y_d1;
+    wire signed [`ANGLE_RADIX-1:0] ray_slope_z_abs = ray_slope_z_d1[19] ? -ray_slope_z_d1 : ray_slope_z_d1;
+    // wire signed [`ANGLE_RADIX-1:0] ray_slope_x_abs = ray_slope_x_pn_d1 ? ray_slope_x_d1 : -ray_slope_x_d1;
+    // wire signed [`ANGLE_RADIX-1:0] ray_slope_y_abs = ray_slope_y_pn_d1 ? ray_slope_y_d1 : -ray_slope_y_d1;
+    // wire signed [`ANGLE_RADIX-1:0] ray_slope_z_abs = ray_slope_z_pn_d1 ? ray_slope_z_d1 : -ray_slope_z_d1;
     wire signed [43:0] div_edge_x = ray_slope_x_d1 ? (edge_x_d1 << 22) / ray_slope_x_abs : 'b0;
     wire signed [43:0] div_edge_y = ray_slope_y_d1 ? (edge_y_d1 << 22) / ray_slope_y_abs : 'b0;
     wire signed [43:0] div_edge_z = ray_slope_z_d1 ? (edge_z_d1 << 22) / ray_slope_z_abs : 'b0;
