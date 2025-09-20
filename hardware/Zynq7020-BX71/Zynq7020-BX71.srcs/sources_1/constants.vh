@@ -14,13 +14,13 @@
 // `define V_FRONT 5
 // `define H_TOTAL 750   // V_DISP + V_FRONT + V_SYNC + V_BACK
 
-`define H_DISP 15
-`define V_DISP 10
+`define H_DISP 24
+`define V_DISP 16
 
 // viewport constants
 `define LOOKAT_REL_FAC 2
 // `define CENTER_ADDR H_DISP * V_DISP / 2 + H_DISP / 2
-`define EOF_ADDR 30 * 20 -1
+`define EOF_ADDR 30 * 20 - 1
 
 // block constants
 `define TEXTURE_RES 16
@@ -44,10 +44,10 @@
 `define POS_X_RADIX 18  // position [17:0]  // POS_INTEGER_X + POS_FRACTION + POS_ADDITION
 `define POS_Y_RADIX 18  // position [17:0]  // POS_INTEGER_Y + POS_FRACTION + POS_ADDITION
 `define POS_Z_RADIX 17  // position [16:0]  // POS_INTEGER_Z + POS_FRACTION + POS_ADDITION
-`define DISP_ADDR_RADIX 20                  // $clog2(H_DISP * V_DISP)
-`define BLOCK_TYPE_RADIX 5                  // $clog2(BLOCK_TYPE)
-`define TEXTURE_ADDR_RADIX 13               // $clog2(TEXTURE_TYPE * TEXTURE_SIZE)
-`define MAP_ADDR_RADIX 17                   // $clog2(MAP_SIZE_X * MAP_SIZE_Y * MAP_SIZE_Z)
+`define DISP_ADDR_RADIX 20    // $clog2(H_DISP * V_DISP)
+`define BLOCK_TYPE_RADIX 5    // $clog2(BLOCK_TYPE)
+`define TEXTURE_ADDR_RADIX 13 // $clog2(TEXTURE_TYPE * TEXTURE_SIZE)
+`define MAP_ADDR_RADIX 17     // $clog2(MAP_SIZE_X * MAP_SIZE_Y * MAP_SIZE_Z)
 
 `define ANGLE_RADIX 22
 

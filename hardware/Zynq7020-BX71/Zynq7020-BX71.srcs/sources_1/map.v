@@ -12,11 +12,9 @@ module map (
     input  [`TEXTURE_ADDR_RADIX-1:0] texture_addr,
     output [  `BLOCK_TYPE_RADIX-1:0] block_id,
 
-    input                             vs,
     input                             valid,
     input      [`DISP_ADDR_RADIX-1:0] pixel_addr,
 
-    output reg                        data_vs,
     output reg                        data_valid,
     output reg [`DISP_ADDR_RADIX-1:0] data_addr,
     output     [                31:0] texture_data
@@ -56,11 +54,9 @@ module map (
         if (rst) begin
             data_valid <= 'b0;
             data_addr  <= 'b0;
-            data_vs    <= 'b0;
         end else begin
             data_valid <= valid;
             data_addr  <= pixel_addr;
-            data_vs    <= vs;
         end
     end
     texture_rom texture_rom (

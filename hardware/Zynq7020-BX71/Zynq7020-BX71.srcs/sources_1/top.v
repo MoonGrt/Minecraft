@@ -22,7 +22,7 @@ module top (
     wire [`DISP_ADDR_RADIX-1:0] pixel_addr_out;
     wire [`MAP_ADDR_RADIX-1:0] block_addr;
     wire [`TEXTURE_ADDR_RADIX-1:0] texture_addr;
-    wire valid, vs;
+    wire valid;
 
     ppl ppl (
         .clk_ppl     (clk),
@@ -37,7 +37,6 @@ module top (
         .block_id    (block_id),
 
         .valid         (valid),
-        .vs            (vs),
         .block_addr    (block_addr),
         .pixel_addr_out(pixel_addr_out),
         .texture_addr  (texture_addr)
@@ -45,7 +44,6 @@ module top (
 
     wire [`DISP_ADDR_RADIX-1:0] data_addr;
     wire                        data_valid;
-    wire                        data_vs;
     map map (
         .clk(clk),
         .rst(rst),
@@ -57,11 +55,9 @@ module top (
         .texture_addr(texture_addr),
         .block_id    (block_id),
 
-        .vs          (vs),
         .valid       (valid),
         .pixel_addr  (pixel_addr_out),
 
-        .data_vs     (data_vs),
         .data_valid  (data_valid),
         .data_addr   (data_addr),
         .texture_data(texture_data)
@@ -69,7 +65,6 @@ module top (
 
     wire [23:0] data_sorted;
     wire        data_sorted_valid;
-    wire        data_sorted_vs;
     sort sort (
         .clk       (clk),
         .rst       (rst),
@@ -77,11 +72,25 @@ module top (
         .data      (color),
         .data_addr (data_addr),
         .data_valid(data_valid),
-        .data_vs        (data_vs),
 
         .data_sorted      (data_sorted),
-        .data_sorted_valid(data_sorted_valid),
-        .data_sorted_vs   (data_sorted_vs)
+        .data_sorted_valid(data_sorted_valid)
+    );
+
+    wire [23:0] data_linefifo;
+    wire        data_linefifo_valid;
+    wire        data_linefifo_vs;
+    linefifo #(
+        .H(`H_DISP),
+        .V(`V_DISP)
+    )linefifo(
+        .clk            (clk),
+        .rst            (rst),
+        .data_in        (data_sorted),
+        .data_in_valid  (data_sorted_valid),
+        .data_out       (data_linefifo),
+        .data_out_valid (data_linefifo_valid),
+        .data_out_vs    (data_linefifo_vs)
     );
 
 endmodule

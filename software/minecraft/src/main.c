@@ -40,7 +40,8 @@ static inline int rand(void) {
 
 // ----------------- Ray DDA 并返回 RGB565 颜色 -----------------
 #define PI 3.1416
-static uint16_t raycast_sample(float ox, float oy, float oz, float dx, float dy, float dz, int max_steps) {
+#define MAX_STEPS 31  // 最多步数（防止无限）
+static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float dz) {
     // 起始方块坐标（floor）
     int bx = (int)floorf(ox);
     int by = (int)floorf(oy);
@@ -66,8 +67,8 @@ static uint16_t raycast_sample(float ox, float oy, float oz, float dx, float dy,
     float tMaxZ = (stepZ > 0)
         ? ((float)(bz + 1) - oz) * invDz
         : (oz - (float)bz) * invDz;
-    // 最大步数保护
-    for (int i = 0; i < max_steps; ++i) {
+    // DDA 主循环
+    for (int i = 0; i < MAX_STEPS; ++i) { // 最大步数保护
         // 在 DDA 中更常用的做法是：先跨格（根据最小 tMax），然后检查进入的方块（bx,by,bz 更新后）
         // 因此这里先选轴并跨格，然后检查新方块是否为非空气
         int steppedAxis = 0; // 1=X, 2=Y, 3=Z
@@ -129,8 +130,6 @@ static uint16_t raycast_sample(float ox, float oy, float oz, float dx, float dy,
                 v = (int)(fz * 16.0f) & 15;
                 // 顶面/底面选择
                 if (dy > 0.0f)
-                    // 向上行进，进入块的是 -Y 面 => new block 的 bottom?
-                    // 语义上更直观的是：如果 ray 向上，穿过的面是 block 的 bottom（朝下）还是 top（朝上）？
                     // 为简单并匹配常见实现：当 stepY>0（从下向上走，引入的是块的 -Y 面），
                     // 我们把上面的 top 纹理分配给 stepY<0 的情况（即从上向下命中 top）
                     // 实际上我们想：如果命中的是块的顶（向下的射线），使用 top；若命中块的底（向上的射线），使用 bottom。
@@ -159,10 +158,10 @@ static uint16_t raycast_sample(float ox, float oy, float oz, float dx, float dy,
 
 // ----------------- 渲染函数（按像素发射射线并写入 Framebuffer） -----------------
 typedef struct {
-    float px, py, pz;   // 相机位置
-    float dx, dy, dz;   // 前向单位向量
-    float ux, uy, uz;   // 上向单位向量（不必单位化，但为简便建议已归一）
-    float fov;          // 垂直视场（度）
+    float px, py, pz; // 相机位置
+    float dx, dy, dz; // 前向单位向量
+    float ux, uy, uz; // 上向单位向量
+    float fov;        // 垂直视场（度）
 } Camera;
 
 // 渲染入口：只负责计算结果写入 Framebuffer
@@ -189,13 +188,10 @@ void render_scene(Camera *cam)
             float dirz = cam->dz + u * rz + v * cam->uz;
             // 归一化方向
             float len = sqrtf(dirx*dirx + diry*diry + dirz*dirz);
-            if (len > 0.0f)
-                dirx /= len; diry /= len; dirz /= len;
-            // 最多步数（防止无限）
-            const int MAX_STEPS = 31;
+            if (len > 0.0f) { dirx /= len; diry /= len; dirz /= len; }
             // 发射射线得到颜色
-            uint16_t color = raycast_sample(cam->px, cam->py, cam->pz, dirx, diry, dirz, MAX_STEPS);
-            // 注意 Framebuffer 的索引顺序，这里是 [x][y]，保持和你定义一致
+            uint16_t color = raycast(cam->px, cam->py, cam->pz, dirx, diry, dirz);
+            // 注意 Framebuffer 的索引顺序
             Framebuffer[py][px] = color;
             // printf("x=%d, y=%d, addr=%x, color=%x\n", px, py, &Framebuffer[py][px], color);
             // delay_ms(50); // 延时，降低 CPU 使用率

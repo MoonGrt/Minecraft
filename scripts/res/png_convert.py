@@ -97,29 +97,18 @@ def write_textures(collection, filetype=None, datatype='bin', colortype='rgb888'
     """通用输出函数"""
     if filetype == 'coe':  # Xilinx COE 文件
         filename = f'output/textures.{filetype}'
-        if datatype == 'bin':
-            header = "memory_initialization_radix=2;\nmemory_initialization_vector="
-        elif datatype == 'hex':
-            header = "memory_initialization_radix=16;\nmemory_initialization_vector="
     elif filetype == 'mi':  # Gowin MI 文件
         filename = f'output/textures.{filetype}'
-        if datatype == 'bin':
-            header = "#File_format=Bin\n#Address_depth=256\n#Data_width=32"
-        elif datatype == 'hex':
-            header = "#File_format=Hex\n#Address_depth=256\n#Data_width=32"
     elif filetype == 'c':  # C语言二维数组
         filename = "output/textures.c"
-        header = None
     else:
         filename = f'output/textures.{datatype}'
-        header = None
-
+    # 读取图片并转换颜色
+    bitwidth = None
     with open(filename, 'w') as f:
         all_lines = []
         all_textures = []
         bitwidth_detected = None
-        if header:
-            print(header, file=f)
         for texture in TEXTURE_COLLECTIONS[collection]:
             img = cv2.imread(f'texture/{texture}.png', cv2.IMREAD_UNCHANGED)
             texture_values = []
@@ -135,10 +124,14 @@ def write_textures(collection, filetype=None, datatype='bin', colortype='rgb888'
                             c_type = f"uint{max(8, ((bitwidth+7)//8)*8)}_t"
                             f.write(f"const {c_type} TEXTURE[{len(TEXTURE_COLLECTIONS[collection])}][{RES*RES}] = {{\n")
                     if datatype == 'bin':
-                        val_str = f"0b{format(value, f'0{bitwidth}b')}"
+                        data = format(value, f'0{bitwidth}b')
+                        val_str = f"0b{data}"
+                        all_lines.append(data)
                     elif datatype == 'hex':
                         hexwidth = (bitwidth + 3) // 4
-                        val_str = f"0x{format(value, f'0{hexwidth}X')}"
+                        data = format(value, f'0{hexwidth}X')
+                        val_str = f"0x{data}"
+                        all_lines.append(data)
                     else:
                         raise ValueError(f"Unsupported datatype: {datatype}")
                     row_values.append(val_str)
@@ -146,6 +139,22 @@ def write_textures(collection, filetype=None, datatype='bin', colortype='rgb888'
             all_textures.append(texture_values)
 
         # 写入文件
+        if filetype == 'coe':  # Xilinx COE 文件
+            if datatype == 'bin':
+                header = "memory_initialization_radix=2;\nmemory_initialization_vector="
+            elif datatype == 'hex':
+                header = "memory_initialization_radix=16;\nmemory_initialization_vector="
+        elif filetype == 'mi':  # Gowin MI 文件
+            if datatype == 'bin':
+                header = f"#File_format=Bin\n#Address_depth={len(TEXTURE_COLLECTIONS[collection])*RES*RES}\n#Data_width={bitwidth}"
+            elif datatype == 'hex':
+                header = f"#File_format=Hex\n#Address_depth={len(TEXTURE_COLLECTIONS[collection])*RES*RES}\n#Data_width={bitwidth}"
+        elif filetype == 'c':  # C语言二维数组
+            header = None
+        else:
+            header = None
+        if header:
+            print(header, file=f)
         if filetype == 'coe':
             for i, line in enumerate(all_lines):
                 sep = ',' if i < len(all_lines) - 1 else ';'
@@ -172,7 +181,7 @@ def write_textures(collection, filetype=None, datatype='bin', colortype='rgb888'
 
 if __name__ == "__main__":
     write_textures('MIN', 'coe', 'hex', 'ARGB8888')
-    write_textures('MIN', 'mi', 'bin', 'RGB888')
+    write_textures('MIN', 'mi', 'bin', 'RGB565')
     write_textures('MIN', None, 'hex', 'RGB565')
     write_textures('MIN', 'c', 'hex', 'RGB565')
     print("PNG convert to MI/COE/BIN/HEX files completed!")
