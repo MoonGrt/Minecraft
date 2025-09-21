@@ -1,4 +1,4 @@
-`timescale 1ns/100ps
+`timescale 1ns/1ps
 
 /*例化模板和参数说明
     // System Signal

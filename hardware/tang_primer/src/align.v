@@ -34,10 +34,10 @@ module align #(
     );
 
     // FIFO信号
-    wire [$clog2(H_DISP*2):0] fifo_wr_count;
-    wire [$clog2(H_DISP*2):0] fifo_rd_count;
-    wire                 fifo_wr_full;
-    wire                 fifo_rd_empty;
+    wire [$clog2(H_DISP+64):0] fifo_wr_count;
+    wire [$clog2(H_DISP+64):0] fifo_rd_count;
+    wire                       fifo_wr_full;
+    wire                       fifo_rd_empty;
 
     wire              rd_en;
     reg               sending;

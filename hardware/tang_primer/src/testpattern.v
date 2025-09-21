@@ -16,34 +16,34 @@
 
 module testpattern
 (
-	input              I_pxl_clk   ,//pixel clock
-    input              I_rst_n     ,//low active 
-    input      [2:0]   I_mode      ,//data select
+	input              I_pxl_clk   , // pixel clock
+    input              I_rst_n     , // low active 
+    input      [2:0]   I_mode      , // data select
     input      [7:0]   I_single_r  ,
     input      [7:0]   I_single_g  ,
     input      [7:0]   I_single_b  ,
-    input      [11:0]  I_h_total   ,//hor total time 
-    input      [11:0]  I_h_sync    ,//hor sync time
-    input      [11:0]  I_h_bporch  ,//hor back porch
-    input      [11:0]  I_h_res     ,//hor resolution
-    input      [11:0]  I_v_total   ,//ver total time 
-    input      [11:0]  I_v_sync    ,//ver sync time  
-    input      [11:0]  I_v_bporch  ,//ver back porch  
-    input      [11:0]  I_v_res     ,//ver resolution 
-    input              I_hs_pol    ,//HS polarity , 0:负极性，1：正极性
-    input              I_vs_pol    ,//VS polarity , 0:负极性，1：正极性
+    input      [11:0]  I_h_total   , // hor total time 
+    input      [11:0]  I_h_sync    , // hor sync time
+    input      [11:0]  I_h_bporch  , // hor back porch
+    input      [11:0]  I_h_res     , // hor resolution
+    input      [11:0]  I_v_total   , // ver total time 
+    input      [11:0]  I_v_sync    , // ver sync time  
+    input      [11:0]  I_v_bporch  , // ver back porch  
+    input      [11:0]  I_v_res     , // ver resolution 
+    input              I_hs_pol    , // HS polarity , 0:负极性，1：正极性
+    input              I_vs_pol    , // VS polarity , 0:负极性，1：正极性
     output             O_de        ,   
-    output reg         O_hs        ,//负极性
-    output reg         O_vs        ,//负极性
+    output reg         O_hs        , // 负极性
+    output reg         O_vs        , // 负极性
     output     [7:0]   O_data_r    ,    
     output     [7:0]   O_data_g    ,
     output     [7:0]   O_data_b    
 ); 
 
 //====================================================
-localparam N = 5; //delay N clocks
+localparam N = 5; // delay N clocks
 
-localparam	WHITE	= {8'd255 , 8'd255 , 8'd255 };//{B,G,R}
+localparam	WHITE	= {8'd255 , 8'd255 , 8'd255 }; // {B,G,R}
 localparam	YELLOW	= {8'd0   , 8'd255 , 8'd255 };
 localparam	CYAN	= {8'd255 , 8'd255 , 8'd0   };
 localparam	GREEN	= {8'd0   , 8'd255 , 8'd0   };
@@ -75,21 +75,21 @@ reg  [11:0]   De_hcnt_d1  ;
 reg  [11:0]   De_hcnt_d2  ;
 
 //-------------------------
-//Color bar //8色彩条
+// Color bar // 8色彩条
 reg  [11:0]   Color_trig_num; 
 reg           Color_trig    ;
 reg  [3:0]    Color_cnt     ;
 reg  [23:0]   Color_bar     ;
 
 //----------------------------
-//Net grid //32网格
+// Net grid // 32网格
 reg           Net_h_trig;
 reg           Net_v_trig;
 wire [1:0]    Net_pos   ;
 reg  [23:0]   Net_grid  ;
 
 //----------------------------
-//Gray  //黑白灰阶
+// Gray  // 黑白灰阶
 reg  [23:0]   Gray;
 reg  [23:0]   Gray_d1;
 
@@ -103,7 +103,7 @@ wire [23:0]   Data_sel;
 reg  [23:0]   Data_tmp/*synthesis syn_keep=1*/;
 
 //==============================================================================
-//Generate HS, VS, DE signals
+// Generate HS, VS, DE signals
 always@(posedge I_pxl_clk or negedge I_rst_n)
 begin
 	if(!I_rst_n)
@@ -153,7 +153,7 @@ begin
 		end
 end
 
-assign O_de = Pout_de_dn[4];//注意与数据对齐
+assign O_de = Pout_de_dn[4]; // 注意与数据对齐
 
 always@(posedge I_pxl_clk or negedge I_rst_n)
 begin
@@ -170,10 +170,10 @@ begin
 end
 
 //=================================================================================
-//Test Pattern
-assign De_pos	= !Pout_de_dn[1] & Pout_de_dn[0]; //de rising edge
-assign De_neg	= Pout_de_dn[1] && !Pout_de_dn[0];//de falling edge
-assign Vs_pos	= !Pout_vs_dn[1] && Pout_vs_dn[0];//vs rising edge
+// Test Pattern
+assign De_pos	= !Pout_de_dn[1] & Pout_de_dn[0];  // de rising edge
+assign De_neg	= Pout_de_dn[1] && !Pout_de_dn[0]; // de falling edge
+assign Vs_pos	= !Pout_vs_dn[1] && Pout_vs_dn[0]; // vs rising edge
 
 always @(posedge I_pxl_clk or negedge I_rst_n)
 begin
@@ -200,14 +200,14 @@ begin
 end
 
 //---------------------------------------------------
-//Color bar
+// Color bar
 //---------------------------------------------------
 always @(posedge I_pxl_clk or negedge I_rst_n)
 begin
 	if(!I_rst_n)
 		Color_trig_num <= 12'd0;
 	else if (Pout_de_dn[1] == 1'b0)
-		Color_trig_num <= I_h_res[11:3]; //8色彩条宽度
+		Color_trig_num <= I_h_res[11:3]; // 8色彩条宽度
 	else if ((Color_trig == 1'b1) && (Pout_de_dn[1] == 1'b1))
 		Color_trig_num <= Color_trig_num + I_h_res[11:3];
 	else
@@ -257,7 +257,7 @@ begin
 end
 
 //---------------------------------------------------
-//Net grid
+// Net grid
 //---------------------------------------------------
 always @(posedge I_pxl_clk or negedge I_rst_n)
 begin
@@ -298,7 +298,7 @@ begin
 end
 
 //---------------------------------------------------
-//Gray
+// Gray
 //---------------------------------------------------
 always @(posedge I_pxl_clk or negedge I_rst_n)
 begin
@@ -317,7 +317,7 @@ begin
 end
 
 //---------------------------------------------------
-//Single color
+// Single color
 //---------------------------------------------------
 assign Single_color = {I_single_b,I_single_g,I_single_r};
 
