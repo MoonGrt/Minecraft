@@ -6,10 +6,10 @@ module top (
     input rst_n
 );
 
-    // parameter H_DISP = 200;
-    // parameter V_DISP = 8;
-    parameter H_DISP = 1280;
-    parameter V_DISP = 720;
+    parameter H_DISP = 32;
+    parameter V_DISP = 24;
+    // parameter H_DISP = 1280;
+    // parameter V_DISP = 720;
 
     reg  [17:0] p_pos_x = 'd170 << 8;
     reg  [17:0] p_pos_y = 'd170 << 8;
@@ -25,7 +25,7 @@ module top (
     wire [19:0] pixel_addr_out;
     wire [14:0] block_addr;
     wire [12:0] texture_addr;
-    wire valid, vs;
+    wire valid;
 
     ppl #(
         .H_DISP(H_DISP),
@@ -41,7 +41,6 @@ module top (
         .block_id (block_id),
 
         .valid         (valid),
-        .vs            (vs),
         .block_addr    (block_addr),
         .pixel_addr_out(pixel_addr_out),
         .texture_addr  (texture_addr)
@@ -49,7 +48,6 @@ module top (
 
     wire [19:0] data_addr;
     wire        data_valid;
-    wire        data_vs;
     map map (
         .clk(PPL_clk),
         .rst(~rst_n),
@@ -61,11 +59,9 @@ module top (
         .texture_addr(texture_addr),
         .block_id    (block_id),
 
-        .vs        (vs),
         .valid     (valid),
         .pixel_addr(pixel_addr_out),
 
-        .data_vs     (data_vs),
         .data_valid  (data_valid),
         .data_addr   (data_addr),
         .texture_data(texture_data)
@@ -74,7 +70,6 @@ module top (
 
     wire [15:0] data_aligned;
     wire        data_aligned_valid;
-    wire        data_aligned_vs;
     align #(
         .H_DISP(H_DISP),
         .V_DISP(V_DISP),
@@ -86,7 +81,6 @@ module top (
         .data      (color),
         .data_addr (data_addr),
         .data_valid(data_valid),
-        .data_vs   (data_vs),
 
         .data_aligned      (data_aligned),
         .data_aligned_valid(data_aligned_valid),
