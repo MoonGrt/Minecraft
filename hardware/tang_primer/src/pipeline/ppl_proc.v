@@ -133,9 +133,6 @@ module ppl_proc #(
     wire signed [19:0] ray_slope_x_abs = ray_slope_x_d1[19] ? -ray_slope_x_d1 : ray_slope_x_d1;
     wire signed [19:0] ray_slope_y_abs = ray_slope_y_d1[19] ? -ray_slope_y_d1 : ray_slope_y_d1;
     wire signed [19:0] ray_slope_z_abs = ray_slope_z_d1[19] ? -ray_slope_z_d1 : ray_slope_z_d1;
-    // wire signed [19:0] ray_slope_x_abs = ray_slope_x_pn_d1 ? ray_slope_x_d1 : -ray_slope_x_d1;
-    // wire signed [19:0] ray_slope_y_abs = ray_slope_y_pn_d1 ? ray_slope_y_d1 : -ray_slope_y_d1;
-    // wire signed [19:0] ray_slope_z_abs = ray_slope_z_pn_d1 ? ray_slope_z_d1 : -ray_slope_z_d1;
     wire signed [39:0] div_edge_x = ray_slope_x_d1 ? (edge_x_d1 << 20) / ray_slope_x_abs : 'hffffffffff;
     wire signed [39:0] div_edge_y = ray_slope_y_d1 ? (edge_y_d1 << 20) / ray_slope_y_abs : 'hffffffffff;
     wire signed [39:0] div_edge_z = ray_slope_z_d1 ? (edge_z_d1 << 20) / ray_slope_z_abs : 'hffffffffff;

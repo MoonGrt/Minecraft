@@ -12,7 +12,6 @@ module sort #(
     output reg        data_sorted_valid
 );
 
-    // sort
     reg  [         23:0] buffer[0:N-1];
     reg  [        N-1:0] valid_flags = 'b0;
     reg  [$clog2(N)-1:0] out_ptr = 'b0;

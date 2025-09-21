@@ -34,19 +34,19 @@ module map (
     //     .doutb(block_id)     // output wire [4 : 0] doutb
     // );
     map_ram map_ram (
-        .clka  (clk),         //input clka
-        .reseta('b0),         //input reseta
-        .cea   (write_en),    //input cea
-        .ada   (write_addr),  //input [14:0] ada
-        .din   (write_data),  //input [4:0] din
+        .clka  (clk),         // input clka
+        .reseta('b0),         // input reseta
+        .cea   (write_en),    // input cea
+        .ada   (write_addr),  // input [14:0] ada
+        .din   (write_data),  // input [4:0] din
 
-        .oce('b0),  //input oce
+        .oce('b0),  // input oce
 
-        .clkb  (clk),         //input clkb
-        .resetb('b0),         //input resetb
-        .ceb   ('b1),         //input ceb
-        .adb   (block_addr),  //input [14:0] adb
-        .dout  (block_id)     //output [4:0] dout
+        .clkb  (clk),         // input clkb
+        .resetb('b0),         // input resetb
+        .ceb   ('b1),         // input ceb
+        .adb   (block_addr),  // input [14:0] adb
+        .dout  (block_id)     // output [4:0] dout
     );
 
     // texture colour
@@ -66,12 +66,12 @@ module map (
     //     .douta(texture_data)   // output wire [31 : 0] douta
     // );
     texture_rom texture_rom (
-        .clk  (clk),           //input clk
-        .reset('b0),           //input reset
-        .oce  ('b0),           //input oce
-        .ce   (~rst),          //input ce
-        .dout (texture_data),  //output [31:0] dout
-        .ad   (texture_addr)   //input [12:0] ad
+        .clk  (clk),           // input clk
+        .reset('b0),           // input reset
+        .oce  ('b0),           // input oce
+        .ce   (~rst),          // input ce
+        .dout (texture_data),  // output [31:0] dout
+        .ad   (texture_addr)   // input [12:0] ad
     );
 
 endmodule
