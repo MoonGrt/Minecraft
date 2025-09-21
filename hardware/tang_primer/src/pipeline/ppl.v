@@ -15,7 +15,6 @@ module ppl #(
     input        [ 4:0] block_id,
 
     output        valid,
-    output        vs,
     output [19:0] pixel_addr_out,
     output [14:0] block_addr,
     output [12:0] texture_addr
@@ -53,8 +52,7 @@ module ppl #(
 
         .prepare_flag(prepare_flag),
         .scanner_en  (scanner_en),
-        .scanner_stop(scanner_stop),
-        .vs          (vs)
+        .scanner_stop(scanner_stop)
     );
 
     ppl_entry #(

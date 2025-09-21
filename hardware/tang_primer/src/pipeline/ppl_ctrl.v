@@ -26,7 +26,7 @@ module ppl_ctrl #(
     reg [1:0] prepare_state = BEFORE_PREPARE;
     reg [3:0] prepare_cnt = 'b0;
     reg vs_reg = 'b0;
-    wire frame_end = (pixel_addr_out == H_DISP * V_DISP - 1);
+    wire frame_end = (pixel_addr_out == H_DISP * V_DISP);
     assign prepare_flag = (prepare_state == BEFORE_PREPARE || prepare_state == PREPARING);
     assign scanner_en   = next_en && ~scanner_stop;
 
@@ -34,7 +34,7 @@ module ppl_ctrl #(
     always @(posedge clk or posedge rst) begin
         if (rst) pixel_cnt <= 'b0;
         else if (next_en && ~prepare_flag)
-            if (pixel_cnt == H_DISP * V_DISP - 'd1) pixel_cnt <= 'b0;
+            if (pixel_cnt == H_DISP * V_DISP) pixel_cnt <= 'b0;
             else pixel_cnt <= pixel_cnt + 'b1;
 //        else if (prepare_flag)
 //            pixel_cnt <= 'b0;
@@ -67,7 +67,7 @@ module ppl_ctrl #(
                 end
                 NEXT: begin
                     // if (next_en && frame_end) begin
-                    if (pixel_cnt == H_DISP * V_DISP - 'd1) begin
+                    if (pixel_cnt == H_DISP * V_DISP) begin
                         prepare_state <= BEFORE_PREPARE;
                         scanner_stop <= 1'b0;
                         vs_reg <= 'b1;

@@ -7,11 +7,9 @@ module sort #(
     input wire [23:0] data,
     input wire [19:0] data_addr,
     input wire        data_valid,
-    input wire        data_vs,
 
     output reg [23:0] data_sorted,
-    output reg        data_sorted_valid,
-    output reg        data_sorted_vs
+    output reg        data_sorted_valid
 );
 
     // sort
@@ -61,13 +59,6 @@ module sort #(
         if (rst) pixel_cnt <= 'b0;
         else if (data_sorted_valid) pixel_cnt <= pixel_cnt + 'b1;
         else pixel_cnt <= pixel_cnt;
-    end
-
-    always @(posedge clk or posedge rst) begin
-        if (rst)
-            data_sorted_vs <= 'b0;
-        else
-            data_sorted_vs <= data_vs;
     end
 
 endmodule

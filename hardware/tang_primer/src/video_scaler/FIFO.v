@@ -1,52 +1,52 @@
 `timescale 1ns/100ps
 
-/*例化模板和参数说明
+/*����ģ��Ͳ���˵��
     // System Signal
-    // 复位信号输入；高电平有效
-    // 内部做复位同步，保证两个时钟域都复位了才开始工作；
+    // ��λ�ź����룻�ߵ�ƽ��Ч
+    // �ڲ�����λͬ������֤����ʱ���򶼸�λ�˲ſ�ʼ������
     wire Reset;  // System Reset
 
     // Write Signal
-    // 写时钟输入；上升沿有效
+    // дʱ�����룻��������Ч
     wire WrClk;  // (I)Wirte Clock
-    // 写允许信号；高电平有效
+    // д�����źţ��ߵ�ƽ��Ч
     wire WrEn;  // (I)Write Enable
-    // 写数据输入；
+    // д�������룻
     wire [DW_C-1:0] WrData;  // (I)Write Data
-    // 数据个数；表示从WrClk时钟域中FIFO中数据的个数
-    // 由于读写时钟不在一个时钟域，该值可能会不连续
-    // 可以使用数据个数（WrDNum）在 WrClk 时钟域实现
-    // Almostfull 、 AlmostEmpty、 WrEmpty 信号
+    // ���ݸ�������ʾ��WrClkʱ������FIFO�����ݵĸ���
+    // ���ڶ�дʱ�Ӳ���һ��ʱ���򣬸�ֵ���ܻ᲻����
+    // ����ʹ�����ݸ�����WrDNum���� WrClk ʱ����ʵ��
+    // Almostfull �� AlmostEmpty�� WrEmpty �ź�
     wire [AW_C-1:0] WrDNum;  // (O)Write Data Number In Fifo
-    //满信号；有效时，WrEn无效
+    //���źţ���Чʱ��WrEn��Ч
     wire WrFull;  // (O)Write Full
 
     // Read Signal    
-    // 读时钟输入；上升沿有效
+    // ��ʱ�����룻��������Ч
     wire RdClk;  // (I)Read Clock
-    // 读允许信号；高电平有效
+    // �������źţ��ߵ�ƽ��Ч
     wire RdEn;  // (I)Read Enable
-    // 读数据输出；
+    // �����������
     wire [DW_C-1:0] RdData;  // (O)Read Data
-    // 数据个数；表示从 RdClk 时钟域中FIFO中数据的个数
-    // 由于读写时钟不在一个时钟域，该值可能会不连续
-    // 可以使用数据个数（RdDNum）在 RdClk 时钟域实现
-    // Almostfull 、 AlmostEmpty、 Rdfull 信号
+    // ���ݸ�������ʾ�� RdClk ʱ������FIFO�����ݵĸ���
+    // ���ڶ�дʱ�Ӳ���һ��ʱ���򣬸�ֵ���ܻ᲻����
+    // ����ʹ�����ݸ�����RdDNum���� RdClk ʱ����ʵ��
+    // Almostfull �� AlmostEmpty�� Rdfull �ź�
     wire [AW_C-1:0] RdDNum;  // (O)Radd Data Number In Fifo
-    // 指示当前的数据有效
+    // ָʾ��ǰ��������Ч
     wire DataVal;  // (O)Data Valid 
-    // 空信号；有效时 RdEn 无效
+    // ���źţ���Чʱ RdEn ��Ч
     wire RdEmpty;  // (O)Read FifoEmpty
 
-    // FIFO数据输出模式： "Normal" & "ShowAhead"
-    // Normal : RdEn 有效的下一个时钟周期出数据
-    // ShowAhead ：RdEn 有效，数据有效
-    // 仅对数据输出有影响
+    // FIFO�������ģʽ�� "Normal" & "ShowAhead"
+    // Normal : RdEn ��Ч����һ��ʱ�����ڳ�����
+    // ShowAhead ��RdEn ��Ч��������Ч
+    // �������������Ӱ��
     defparam UX_XXXXXXXXXXXXX.FIFO_MODE = "Normal", //"Normal"; //"ShowAhead"
-    // 数据宽度
+    // ���ݿ���
     defparam UX_XXXXXXXXXXXXX.DATA_WIDTH = 8,
-    // FIFO深度
-    // FIFO深度会自动使用满足设置的2的n次方作为深度设置
+    // FIFO���
+    // FIFO��Ȼ��Զ�ʹ���������õ�2��n�η���Ϊ�������
     defparam UX_XXXXXXXXXXXXX.FIFO_DEPTH = 512
 
     ///////////////////////////
@@ -99,8 +99,8 @@ module FIFO #(
 localparam TCo_C = 1;
 
 //********************************************************/
-// 将输入的异步复位信号，同步到内部时钟源；
-// 保证两个时钟域都接收到了复位信号，才释放同步复位信号	
+// ��������첽��λ�źţ�ͬ�����ڲ�ʱ��Դ��
+// ��֤����ʱ���򶼽��յ��˸�λ�źţ����ͷ�ͬ����λ�ź�	
 //********************************************************/
 reg  [1:0] WrClkRstGen = 2'h3;
 reg  [1:0] RdClkRstGen = 2'h3;
@@ -132,8 +132,8 @@ end
 /////////////////////////////////////////////////////////
 
 //********************************************************/
-// 写数据到 FifoBuff
-// 地址采用格雷码
+// д���ݵ� FifoBuff
+// ��ַ���ø�����
 //********************************************************/
 wire           FifoWrEn = WrEn & (~WrFull);
 wire [AW_C :0] WrNextAddr;
@@ -164,8 +164,8 @@ end
 
 
 //********************************************************/
-// 从 FifoBuff 中读出数据
-// 地址采用格雷码
+// �� FifoBuff �ж�������
+// ��ַ���ø�����
 //********************************************************/
 wire           FifoEmpty;
 wire           FifoRdEn;
@@ -198,9 +198,9 @@ assign RdData   =   FifoRdData  ;  // (O)Read Data
 
 
 //********************************************************/
-// 在写时钟域计算读写地址差
+// ��дʱ��������д��ַ��
 //********************************************************/
-// 把读地址搬到写时钟域(WrClk)
+// �Ѷ���ַ�ᵽдʱ����(WrClk)
 reg  [AW_C:0] RdAddrOut = {AW_C+1{1'h0}};
 reg  [AW_C:0] WrRdAddr = {AW_C+1{1'h0}};
 
@@ -210,14 +210,14 @@ always @(posedge WrClk)   begin
 end
 
 /////////////////////////////////////////////////////////
-// 把读写地址的格雷码转化为16进制
+// �Ѷ�д��ַ�ĸ�����ת��Ϊ16����
 wire [AW_C-1:0] WrRdAHex;
 wire [AW_C-1:0] WrWrAHex;
 GrayDecode #(AW_C) WRAGray2Hex (WrRdAddr   [AW_C-1:0], WrRdAHex[AW_C-1:0]);
 GrayDecode #(AW_C) WWAGray2Hex (FifoWrAddr [AW_C-1:0], WrWrAHex[AW_C-1:0]);
 
 /////////////////////////////////////////////////////////
-// 写时钟域中计算读写地址差
+// дʱ�����м����д��ַ��
 reg  [AW_C:0] WrAddrDiff = {AW_C+1{1'h0}};
 
 wire [AW_C:0] Calc_WrAddrDiff = ({FifoWrAddr[AW_C], WrWrAHex} + {{AW_C{1'h0}}, FifoWrEn});
@@ -231,10 +231,10 @@ assign WrDNum = WrAddrDiff;  // (O)Data Number In Fifo
 /////////////////////////////////////////////////////////
 
 //********************************************************/
-// 计算 WrFull 信号
+// ���� WrFull �ź�
 //********************************************************/
-// 产生 WrFull 的清除信号 （ WrFullClr ）
-// 当 FifoRdAddr 发生变化，产生 WrFullClr
+// ���� WrFull ������ź� �� WrFullClr ��
+// �� FifoRdAddr �����仯������ WrFullClr
 reg  [AW_C:0] WrRdAddrReg = {AW_C+1{1'h0}};
 reg  WrFullClr = 1'h0;
 
@@ -249,7 +249,7 @@ always @(posedge WrClk) begin
 end
   
 /////////////////////////////////////////////////////////
-// 计算满信号 
+// �������ź� 
 reg  RdAHighNext = 1'h0;
 wire RdAHighRise = (~WrRdAddrReg[AW_C-1]) & WrRdAddr[AW_C-1];
 
@@ -278,9 +278,9 @@ assign WrFull = FifoWrFull;  // (I)Write Full
 
 
 //********************************************************/
-// 在读时钟域计算读写地址差
+// �ڶ�ʱ��������д��ַ��
 //********************************************************/
-// 把写地址 （ FifoWrAddr ）搬到读时钟域
+// ��д��ַ �� FifoWrAddr ���ᵽ��ʱ����
 reg  [AW_C :0] RdWrAddr = {AW_C+1{1'h0}}; 
 
 always @(posedge RdClk) begin
@@ -289,7 +289,7 @@ always @(posedge RdClk) begin
 end
 
 /////////////////////////////////////////////////////////
-// 根据 FIFO_MODE的设置，产生运算 WrDNum 和 RdDNum 用的 RdAddr
+// ���� FIFO_MODE�����ã��������� WrDNum �� RdDNum �õ� RdAddr
 wire ReadEn = (RdEn & (~RdEmpty));
 
 generate
@@ -310,7 +310,7 @@ GrayDecode # (AW_C) RWAGray2Hex (RdWrAddr   [AW_C-1:0], RdWrAHex[AW_C-1:0]);
 GrayDecode # (AW_C) RRAGray2Hex (RdAddrOut  [AW_C-1:0], RdRdAHex[AW_C-1:0]);
 
 /////////////////////////////////////////////////////////
-// 在读时钟域计算地址差  
+// �ڶ�ʱ��������ַ��  
 reg  [AW_C:0] RdAddrDiff = {AW_C+1{1'h0}};
 
 wire [AW_C:0] Calc_RdAddrDiff = ({RdAddrOut[AW_C], RdRdAHex} + {{AW_C{1'h0}}, ReadEn});
@@ -325,9 +325,9 @@ assign RdDNum = RdAddrDiff;  // (O)Data Number In Fifo
 
 
 //********************************************************/
-// 计算 RdEmpty 信号
+// ���� RdEmpty �ź�
 //********************************************************/
-// 产生 RdEmpty 的清除信号  
+// ���� RdEmpty ������ź�  
 reg  [AW_C:0] RdWrAddrReg = {AW_C+1{1'h0}}; 
 reg           EmptyClr    = 1'h0;
 
@@ -345,7 +345,7 @@ reg  EmptyClrReg = 1'h0;
 always @(posedge RdClk ) EmptyClrReg <= EmptyClr;
 
 /////////////////////////////////////////////////////////
-// 计算空信号 （EmptyCalc）
+// ������ź� ��EmptyCalc��
 reg  WrAHighNext = 1'h0;
 wire WrAHighRise = (~RdWrAddrReg[AW_C-1]) & RdWrAddr[AW_C-1];
 
