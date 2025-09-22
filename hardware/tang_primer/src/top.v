@@ -180,16 +180,13 @@ module top (
     reg  [19:0] p_angle_x = 30;
     reg  [19:0] p_angle_y = -120;
     wire [14:0] write_addr;
-    wire [ 4:0] write_data;
+    wire [ 3:0] write_data;
     wire        write_en;
-    wire [ 4:0] block_id;
-    wire [31:0] texture_data;
-    wire [23:0] color = texture_data[23:0];
+    wire [ 3:0] block_id;
     wire [19:0] pixel_addr_out;
     wire [14:0] block_addr;
     wire [12:0] texture_addr;
     wire valid;
-
     ppl #(
         .H_DISP(`H_DISP),
         .V_DISP(`V_DISP)
@@ -211,6 +208,7 @@ module top (
 
     wire [19:0] data_addr;
     wire        data_valid;
+    wire [15:0] texture_data;
     map map (
         .clk(PPL_clk),
         .rst(~TMDS_DDR_pll_lock && ~PLL_lock),
@@ -241,7 +239,7 @@ module top (
         .PPL_clk   (PPL_clk),
         .video_clk (video_clk),
         .rst       (~TMDS_DDR_pll_lock && ~PLL_lock),
-        .data      (color),
+        .data      (texture_data),
         .data_addr (data_addr),
         .data_valid(data_valid),
 

@@ -4,15 +4,15 @@ module sort #(
     input wire clk,
     input wire rst,
 
-    input wire [23:0] data,
+    input wire [15:0] data,
     input wire [19:0] data_addr,
     input wire        data_valid,
 
-    output reg [23:0] data_sorted,
+    output reg [15:0] data_sorted,
     output reg        data_sorted_valid
 );
 
-    reg  [         23:0] buffer[0:N-1];
+    reg  [         15:0] buffer[0:N-1];
     reg  [        N-1:0] valid_flags = 'b0;
     reg  [$clog2(N)-1:0] out_ptr = 'b0;
     reg                  out_flag = 'b0;
