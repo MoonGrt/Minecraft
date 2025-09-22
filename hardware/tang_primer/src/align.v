@@ -8,7 +8,7 @@ module align #(
     input      video_clk,
     input wire rst,
 
-    input wire [23:0] data,
+    input wire [15:0] data,
     input wire [19:0] data_addr,
     input wire        data_valid,
 
@@ -17,7 +17,7 @@ module align #(
     output wire        data_aligned_vs
 );
 
-    wire [23:0] data_sorted;
+    wire [15:0] data_sorted;
     wire        data_sorted_valid;
     sort #(
         .N(N)

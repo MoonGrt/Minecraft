@@ -7,12 +7,12 @@
 
 -mod_name texture_rom
 -file_name texture_rom
--path F:/Project/Sipeed/Tang_Primer/Minecraft/minecraft/src/gowin_prom/
+-path G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_prom/
 -type RAM_ROM
 -file_type vlg
 -pROM true
--depth 4096
--width 32
+-depth 5120
+-width 16
 -read_mode bypass
 -reset_mode sync
--init_file F:\Project\Sipeed\Tang_Primer\Minecraft\Tool\textures_24_new.mi
+-init_file G:\VM\share\Minecraft\scripts\res\output\textures.mi

@@ -5,37 +5,34 @@ RES = 16  # Texture resolution
 
 BLOCK_COLLECTIONS = {
     "MIN": [
-        "bedrock", "stone", "grass", "dirt", "cobblestone", "oak_planks", 
-        "oak_log", "oak_leaves", "sand", "coal_ore", "coal_block", "iron_ore", 
-        "iron_block", "crafting_table", "furnace",
+        "", "bedrock", "stone", "grass", "dirt", "cobblestone", "oak_planks",
+        "oak_log", "oak_leaves", "sand", "sandstone", "coal_ore", "coal_block",
+        "iron_ore", "iron_block", "crafting_table",
     ],
     "MID": [
-        "bedrock", "stone", "grass", "dirt", "cobblestone", "oak_planks", 
-        "oak_log", "oak_leaves", "sand", "coal_ore", "coal_block", "iron_ore", 
-        "iron_block", "crafting_table", "furnace",
-        "gravel", "sandstone", "birch_planks", "birch_log", "birch_leaves", 
-        "gold_ore", "gold_block", "diamond_ore", "diamond_block",  "ice", 
-        "water", "glass", "tnt", "bookshelf", "bricks", "stone_bricks",
+        "", "bedrock", "stone", "grass", "dirt", "cobblestone", "oak_planks",
+        "oak_log", "oak_leaves", "sand", "sandstone", "coal_ore", "coal_block",
+        "iron_ore", "iron_block", "crafting_table",
+        "gravel", "birch_planks", "birch_log", "birch_leaves", "melon",
+        "gold_ore", "gold_block", "diamond_ore", "diamond_block",  "ice",
+        "water", "glass", "furnace", "bookshelf", "bricks", "stone_bricks",
     ]
 }
 TEXTURE_COLLECTIONS = {
     "MIN": [
         "bedrock", "stone", "grass_block_top", "grass_block_side", "dirt",
         "cobblestone", "oak_planks", "oak_log_top", "oak_log", "oak_leaves",
-        "sand", "coal_ore", "coal_block", "iron_ore", "iron_block",
-        "crafting_table_top", "crafting_table_front", "crafting_table_side",
-        "furnace_top", "furnace_front", "furnace_side",
+        "sand", "sandstone_top", "sandstone", "coal_ore", "coal_block", "iron_ore",
+        "iron_block", "crafting_table_top", "crafting_table_front", "crafting_table_side",
     ],
     "MID": [
         "bedrock", "stone", "grass_block_top", "grass_block_side", "dirt",
         "cobblestone", "oak_planks", "oak_log_top", "oak_log", "oak_leaves",
-        "sand", "coal_ore", "coal_block", "iron_ore", "iron_block",
-        "crafting_table_top", "crafting_table_front", "crafting_table_side",
-        "furnace_top", "furnace_front", "furnace_side",
-        "gravel", "sandstone_top", "sandstone", "birch_planks", "birch_log_top",
-        "birch_log", "birch_leaves", "gold_ore", "gold_block", "diamond_ore",
-        "diamond_block", "ice", "water", "glass", "tnt_top", "tnt_side",
-        "tnt_bottom", "bookshelf", "bricks", "stone_bricks",
+        "sand", "sandstone_top", "sandstone", "coal_ore", "coal_block", "iron_ore",
+        "iron_block", "crafting_table_top", "crafting_table_front", "crafting_table_side",
+        "gravel", "birch_planks", "birch_log_top", "birch_log", "birch_leaves",
+        "melon_top", "melon_side", "gold_ore", "gold_block", "diamond_ore", "diamond_block", "ice", "water",
+        "glass", "furnace_top", "furnace_front", "furnace_side", "bookshelf", "bricks", "stone_bricks",
     ]
 }
 
@@ -110,6 +107,8 @@ def write_textures(collection, filetype=None, datatype='bin', colortype='rgb888'
         all_textures = []
         bitwidth_detected = None
         for texture in TEXTURE_COLLECTIONS[collection]:
+            if texture == '':  # 空纹理
+                continue
             img = cv2.imread(f'texture/{texture}.png', cv2.IMREAD_UNCHANGED)
             texture_values = []
             for j in range(RES):
@@ -199,26 +198,26 @@ if __name__ == "__main__":
 #   Oak Log(7):         7(top, bottom), 8(side);
 #   Oak Leaves(8):      9;
 #   Sand(9):            10;
-#   Coal Ore(10):       11;
-#   Coal Block(11):     12;
-#   Iron Ore(12):       13;
-#   Iron Block(13):     14;
-#   Crafting Table(14): 15(top, bottom), 16(front), 17(side);
-#   Furnace(15):        18(top, bottom), 19(front), 20(side);
+#   Sandstone(10):      11(top), 12(side);
+#   Coal Ore(11):       13;
+#   Coal Block(12):     14;
+#   Iron Ore(13):       15;
+#   Iron Block(14):     16;
+#   Crafting Table(15): 17(top, bottom), 18(front), 19(side);
 # Block & Texture: MID
-#   gravel(16):         21;
-#   Sandstone(17):      22(top), 23(side);
-#   Birch Planks(18):   24;
-#   Birch Log(19):      25(top, bottom), 26(side);
-#   Birch Leaves(20):   27;
-#   Gold Ore(21):       28;
-#   Gold Block(22):     29;
-#   Diamond Ore(23):    30;
-#   Diamond Block(24):  31;
-#   Ice(25):            32;
-#   Water(26):          33;
-#   Glass(27):          34;
-#   TNT(28):            35(top), 36(side), 37(bottom);
-#   Bookshelf(29):      38;
-#   Bricks(30):         39;
-#   Stone Bricks(31):   40;
+#   gravel(16):         20;
+#   Birch Planks(17):   21;
+#   Birch Log(18):      22(top, bottom), 23(side);
+#   Birch Leaves(19):   24;
+#   Melon(20):          25(top, bottom), 26(side);
+#   Gold Ore(21):       27;
+#   Gold Block(22):     28;
+#   Diamond Ore(23):    29;
+#   Diamond Block(24):  30;
+#   Ice(25):            31;
+#   Water(26):          32;
+#   Glass(27):          33;
+#   Furnace(28):        34(top, bottom), 35(front), 36(side);
+#   Bookshelf(29):      27;
+#   Bricks(30):         38;
+#   Stone Bricks(31):   39;

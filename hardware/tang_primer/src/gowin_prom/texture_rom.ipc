@@ -7,9 +7,9 @@ type=ram_prom
 version=1.0
 
 [Config]
-DEPTH=4096
+DEPTH=5120
 LANG=0
-MEM_FILE=F:\\Project\\Sipeed\\Tang_Primer\\Minecraft\\Tool\\textures_24_new.mi
+MEM_FILE=G:\\VM\\share\\Minecraft\\scripts\\res\\output\\textures.mi
 READ=0
 RESET_MODE=true
-WIDTH=32
+WIDTH=16

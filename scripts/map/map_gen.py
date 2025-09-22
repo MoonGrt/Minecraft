@@ -32,29 +32,29 @@ for x in range(x_size):
         height = int((noise_val + 1) * 6) + ground_offset
         # 设置草方块
         for z in range(height, height + 2):
-            terrain[x][y][z] = 3
+            terrain[x][y][z] = 3 # 草方块
         # 设置树
         if np.random.random() < 0.01:
             for z in range(height + 2, height + 7):
                 if is_coord_valid(x, y, z):
-                    terrain[x][y][z] = 7
+                    terrain[x][y][z] = 7 # 树干
             for xx in range(x - 3, x + 4):
                 for yy in range(y - 3, y + 4):
                     if abs(xx - x) + abs(yy - y) < 3:
                         for zz in range(height + 7, height + 9):
                             if is_coord_valid(xx, yy, zz):
-                                terrain[xx][yy][zz] = 8
+                                terrain[xx][yy][zz] = 8 # 树叶
         # 设置下方方块类型
         for z in range(height - 1, -1, -1):
             if z > 1:
-                terrain[x][y][z] = 4
+                terrain[x][y][z] = 4 # 泥土
             else:
-                terrain[x][y][z] = 2
+                terrain[x][y][z] = 2 # 石头
 
 # 设置基岩
 for x in range(x_size):
     for y in range(y_size):
-        terrain[x][y][0] = 1
+        terrain[x][y][0] = 1 # 基岩
 
 # 打印地形数组
 # 打印地形数组
@@ -203,26 +203,26 @@ plt.show()
 #   Oak Log(7):         7(top, bottom), 8(side);
 #   Oak Leaves(8):      9;
 #   Sand(9):            10;
-#   Coal Ore(10):       11;
-#   Coal Block(11):     12;
-#   Iron Ore(12):       13;
-#   Iron Block(13):     14;
-#   Crafting Table(14): 15(top, bottom), 16(front), 17(side);
-#   Furnace(15):        18(top, bottom), 19(front), 20(side);
+#   Sandstone(10):      11(top), 12(side);
+#   Coal Ore(11):       13;
+#   Coal Block(12):     14;
+#   Iron Ore(13):       15;
+#   Iron Block(14):     16;
+#   Crafting Table(15): 17(top, bottom), 18(front), 19(side);
 # Block & Texture: MID
-#   gravel(16):         21;
-#   Sandstone(17):      22(top), 23(side);
-#   Birch Planks(18):   24;
-#   Birch Log(19):      25(top, bottom), 26(side);
-#   Birch Leaves(20):   27;
-#   Gold Ore(21):       28;
-#   Gold Block(22):     29;
-#   Diamond Ore(23):    30;
-#   Diamond Block(24):  31;
-#   Ice(25):            32;
-#   Water(26):          33;
-#   Glass(27):          34;
-#   TNT(28):            35(top), 36(side), 37(bottom);
-#   Bookshelf(29):      38;
-#   Bricks(30):         39;
-#   Stone Bricks(31):   40;
+#   gravel(16):         20;
+#   Birch Planks(17):   21;
+#   Birch Log(18):      22(top, bottom), 23(side);
+#   Birch Leaves(19):   24;
+#   Melon(20):          25(top, bottom), 26(side);
+#   Gold Ore(21):       27;
+#   Gold Block(22):     28;
+#   Diamond Ore(23):    29;
+#   Diamond Block(24):  30;
+#   Ice(25):            31;
+#   Water(26):          32;
+#   Glass(27):          33;
+#   Furnace(28):        34(top, bottom), 35(front), 36(side);
+#   Bookshelf(29):      27;
+#   Bricks(30):         38;
+#   Stone Bricks(31):   39;
