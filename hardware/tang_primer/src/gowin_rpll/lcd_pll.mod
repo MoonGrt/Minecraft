@@ -1,28 +1,29 @@
 -series GW2A
--device GW2A-18C
+-device GW2A-18
+-device_version C
 -package PBGA256
 -part_number GW2A-LV18PG256C8/I7
 
 
--mod_name cmos_pll
--file_name cmos_pll
--path D:/Users/HUIP/Desktop/OV5640_LCD800_DDR3/src/gowin_rpll/
+-mod_name lcd_pll
+-file_name lcd_pll
+-path G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_rpll/
 -type PLL
 -rPll true
 -file_type vlg
 -dev_type GW2A-18C
 -dyn_idiv_sel false
--idiv_sel 9
+-idiv_sel 3
 -dyn_fbdiv_sel false
--fbdiv_sel 8
+-fbdiv_sel 1
 -dyn_odiv_sel false
--odiv_sel 32
+-odiv_sel 64
 -dyn_da_en true
 -rst_sig false
 -rst_sig_p false
 -fclkin 27
 -clkfb_sel 0
--en_lock false
+-en_lock true
 -clkout_bypass false
 -clkout_ft_dir 1
 -en_clkoutp false

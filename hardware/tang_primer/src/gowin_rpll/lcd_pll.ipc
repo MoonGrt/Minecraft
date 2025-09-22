@@ -1,7 +1,7 @@
 [General]
 ipc_version=4
-file=cmos_pll
-module=cmos_pll
+file=lcd_pll
+module=lcd_pll
 target_device=gw2a18c-011
 type=clock_rpll
 version=1.0
@@ -14,11 +14,11 @@ CLKOUTD=false
 CLKOUTP=false
 CLKOUT_BYPASS=false
 CLKOUT_DIVIDE_DYN=true
-CLKOUT_FREQ=24
+CLKOUT_FREQ=9
 CLKOUT_TOLERANCE=0
 DYNAMIC=true
 LANG=0
-LOCK_EN=false
+LOCK_EN=true
 MODE_GENERAL=true
 PLL_PWD=false
 RESET_PLL=false
