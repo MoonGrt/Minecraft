@@ -1,3 +1,14 @@
+// `define HDMI // 1280x720@60Hz
+`define LCD // 480x272@60Hz
+
+`ifdef HDMI
+    `define H_DISP 1280
+    `define V_DISP 720
+`elsif LCD
+    `define H_DISP 480
+    `define V_DISP 272
+`endif
+
 module top (
     input clk,
     input rst_n,
@@ -19,11 +30,20 @@ module top (
     inout  [16-1:0] ddr_dq,       // DQ_WIDTH=16
     inout  [ 2-1:0] ddr_dqs,      // DQS_WIDTH=2
     inout  [ 2-1:0] ddr_dqs_n,    // DQS_WIDTH=2
-
+`ifdef HDMI
     output       O_tmds_clk_p,
     output       O_tmds_clk_n,
     output [2:0] O_tmds_data_p,  // {r,g,b}
     output [2:0] O_tmds_data_n
+`elsif LCD
+    output       lcd_clk,
+    output       lcd_hs,
+    output       lcd_vs,
+    output       lcd_de,
+    output [4:0] lcd_r,
+    output [5:0] lcd_g,
+    output [4:0] lcd_b
+`endif
 );
 
     //=========================================================
@@ -33,7 +53,7 @@ module top (
     `define RD_VIDEO_WIDTH_16
     `define DEF_RD_VIDEO_WIDTH 16
     `define USE_THREE_FRAME_BUFFER
-    `define DEF_ADDR_WIDTH 28 
+    `define DEF_ADDR_WIDTH 28
     `define DEF_SRAM_DATA_WIDTH 128
     parameter ADDR_WIDTH = `DEF_ADDR_WIDTH;  // 存储单元是byte，总容量=2^27*16bit = 2Gbit,增加1位rank地址，{rank[0],bank[2:0],row[13:0],cloumn[9:0]}
     parameter DATA_WIDTH = `DEF_SRAM_DATA_WIDTH;  // 与生成DDR3IP有关，此ddr3 2Gbit, x16， 时钟比例1:4 ，则固定128bit
@@ -42,7 +62,7 @@ module top (
 
     //-------------------
     //状态指示灯
-    // assign state_led[3] = 
+    // assign state_led[3] =
     assign state_led[2] = lcd_vs_cnt[4];
     assign state_led[1] = rst_n;  //复位指示灯
     assign state_led[0] = init_calib_complete;  //DDR3初始化指示灯
@@ -59,14 +79,15 @@ module top (
         .clkout(memory_clk),
         .lock  (DDR_pll_lock)
     );
+`ifdef HDMI
     //TMDS TX (HDMI4)
     wire serial_clk;
     wire video_clk;  // video pixel clock
     wire TMDS_DDR_pll_lock;
     wire hdmi4_rst_n = rst_n & TMDS_DDR_pll_lock;
     TMDS_rPLL TMDS_rPLL (
-        .clkin (clk),               // input clk 
-        .clkout(serial_clk),        // output clk 
+        .clkin (clk),               // input clk
+        .clkout(serial_clk),        // output clk
         .lock  (TMDS_DDR_pll_lock)  // output lock
     );
     CLKDIV u_clkdiv (
@@ -76,6 +97,16 @@ module top (
         .CALIB (1'b1)
     );
     defparam u_clkdiv.DIV_MODE = "5"; defparam u_clkdiv.GSREN = "false";
+`elsif LCD
+    // LCD Pll
+    wire video_clk;  // video pixel clock
+    wire lcd_pll_lock;
+    lcd_pll lcd_pll (
+        .clkin (clk),
+        .clkout(video_clk),
+        .lock  (lcd_pll_lock)
+    );
+`endif
     // Pipeline pll
     wire PPL_clk;
     wire PLL_lock;
@@ -96,23 +127,34 @@ module top (
     wire [7:0] tp0_data_r;
     wire [7:0] tp0_data_g;
     wire [7:0] tp0_data_b;
-    testpattern testpattern_inst (
+    testpattern testpattern1 (
         .I_pxl_clk (video_clk),            // pixel clock
         .I_rst_n   (rst_n),                // low active
         .I_mode    ({1'b0, cnt_vs[8:7]}),  // data select
         .I_single_r(8'd255),
         .I_single_g(8'd255),
-        .I_single_b(8'd255),      //                    800x600   // 1024x768  // 1280x720  // 1920x1080
-        .I_h_total (12'd1650),    // hor total time  // 12'd1056  // 12'd1344  // 12'd1650  // 12'd2200
-        .I_h_sync  (12'd40),      // hor sync time   // 12'd128   // 12'd136   // 12'd40    // 12'd44
-        .I_h_bporch(12'd220),     // hor back porch  // 12'd88    // 12'd160   // 12'd220   // 12'd148
-        .I_h_res   (12'd1280),    // hor resolution  // 12'd800   // 12'd1024  // 12'd1280  // 12'd1920
-        .I_v_total (12'd750),     // ver total time  // 12'd628   // 12'd806   // 12'd750   // 12'd1125
-        .I_v_sync  (12'd5),       // ver sync time   // 12'd4     // 12'd6     // 12'd5     // 12'd5
-        .I_v_bporch(12'd20),      // ver back porch  // 12'd23    // 12'd29    // 12'd20    // 12'd36
-        .I_v_res   (12'd720),     // ver resolution  // 12'd600   // 12'd768   // 12'd720   // 12'd1080
-        .I_hs_pol  (1'b1),        // 0,负极性; 1,正极性
-        .I_vs_pol  (1'b1),        // 0,负极性; 1,正极性
+        .I_single_b(8'd255),
+`ifdef HDMI                     //                 // 480x272     800x600   // 1024x768  // 1280x720  // 1920x1080
+        .I_h_total (12'd1650),  // hor total time  // 12'd523  // 12'd1056  // 12'd1344  // 12'd1650  // 12'd2200
+        .I_h_sync  (12'd40),    // hor sync time   // 12'd41   // 12'd128   // 12'd136   // 12'd40    // 12'd44
+        .I_h_bporch(12'd220),   // hor back porch  // 12'd2    // 12'd88    // 12'd160   // 12'd220   // 12'd148
+        .I_h_res   (12'd1280),  // hor resolution  // 12'd480  // 12'd800   // 12'd1024  // 12'd1280  // 12'd1920
+        .I_v_total (12'd750),   // ver total time  // 12'd284  // 12'd628   // 12'd806   // 12'd750   // 12'd1125
+        .I_v_sync  (12'd5),     // ver sync time   // 12'd10   // 12'd4     // 12'd6     // 12'd5     // 12'd5
+        .I_v_bporch(12'd20),    // ver back porch  // 12'd2    // 12'd23    // 12'd29    // 12'd20    // 12'd36
+        .I_v_res   (12'd720),   // ver resolution  // 12'd272  // 12'd600   // 12'd768   // 12'd720   // 12'd1080
+`elsif LCD
+        .I_h_total (12'd523),
+        .I_h_sync  (12'd41),
+        .I_h_bporch(12'd2),
+        .I_h_res   (12'd480),
+        .I_v_total (12'd284),
+        .I_v_sync  (12'd10),
+        .I_v_bporch(12'd2),
+        .I_v_res   (12'd272),
+`endif
+        .I_hs_pol  (1'b1),  // 0,负极性; 1,正极性
+        .I_vs_pol  (1'b1),  // 0,负极性; 1,正极性
         .O_de      (tp0_de_in),
         .O_hs      (tp0_hs_in),
         .O_vs      (tp0_vs_in),
@@ -127,9 +169,6 @@ module top (
         else if (vs_r && !tp0_vs_in)  // tp0_vs_in falling edge
             cnt_vs <= cnt_vs + 1'b1;
     end
-
-
-
 
 
 
@@ -152,8 +191,8 @@ module top (
     wire valid;
 
     ppl #(
-        .H_DISP(1280),
-        .V_DISP(720)
+        .H_DISP(`H_DISP),
+        .V_DISP(`V_DISP)
     ) ppl (
         .clk_ppl  (PPL_clk),
         .rst      (~TMDS_DDR_pll_lock && ~PLL_lock),
@@ -195,8 +234,8 @@ module top (
     wire        data_aligned_valid;
     wire        data_aligned_vs;
     align #(
-        .H_DISP(1280),
-        .V_DISP(720),
+        .H_DISP(`H_DISP),
+        .V_DISP(`V_DISP),
         .N     (16)
     ) align (
         .PPL_clk   (PPL_clk),
@@ -225,35 +264,33 @@ module top (
     parameter OUTPUT_Y_RES_WIDTH = 11;
 
     // algorithm Inputs
-    // parameter START_X = 12'd1280 / 4;
-    // parameter START_Y = 12'd720 / 4;
-    // parameter END_X = 12'd1280 * 3 / 4;
-    // parameter END_Y = 12'd720 * 3 / 4;
-    // parameter OUTPUT_X_RES = 12'd1280 - 1;  //Resolution of output data minus 1
-    // parameter OUTPUT_Y_RES = 12'd720 - 1;  //Resolution of output data minus 1
+    // parameter START_X = `H_DISP / 4;
+    // parameter START_Y = `V_DISP / 4;
+    // parameter END_X = `H_DISP * 3 / 4;
+    // parameter END_Y = `V_DISP * 3 / 4;
+    // parameter OUTPUT_X_RES = `H_DISP - 1;  //Resolution of output data minus 1
+    // parameter OUTPUT_Y_RES = `V_DISP - 1;  //Resolution of output data minus 1
 
     parameter START_X = 0;
     parameter START_Y = 0;
-    parameter END_X = 12'd1280;
-    parameter END_Y = 12'd720;
-    parameter OUTPUT_X_RES = 12'd1280 - 1;  //Resolution of output data minus 1
-    parameter OUTPUT_Y_RES = 12'd720 - 1;  //Resolution of output data minus 1
+    parameter END_X = `H_DISP;
+    parameter END_Y = `V_DISP;
+    parameter OUTPUT_X_RES = `H_DISP - 1;  //Resolution of output data minus 1
+    parameter OUTPUT_Y_RES = `V_DISP - 1;  //Resolution of output data minus 1
 
     // parameter START_X = 0;
     // parameter START_Y = 0;
-    // parameter END_X = 12'd1280;
-    // parameter END_Y = 12'd720;
-    // parameter OUTPUT_X_RES = 12'd1280 / 2 - 1;  //Resolution of output data minus 1
-    // parameter OUTPUT_Y_RES = 12'd720 / 2 - 1;  //Resolution of output data minus 1
+    // parameter END_X = `H_DISP;
+    // parameter END_Y = `V_DISP;
+    // parameter OUTPUT_X_RES = `H_DISP / 2 - 1;  //Resolution of output data minus 1
+    // parameter OUTPUT_Y_RES = `V_DISP / 2 - 1;  //Resolution of output data minus 1
 
     reg                                algorithm_sel = 1;
     wire [VIO_DATA_WIDTH*CHANNELS-1:0] algorithm_data;
     wire                               algorithm_dataValid;
-
     algorithm #(
-        .H_DISP(12'd1280),
-        .V_DISP(12'd720),
-
+        .H_DISP(`H_DISP),
+        .V_DISP(`V_DISP),
         .DATA_WIDTH (VIO_DATA_WIDTH),
         .CHANNELS   (CHANNELS),
         .BUFFER_SIZE(BUFFER_SIZE),
@@ -298,23 +335,50 @@ module top (
     wire [             5:0] app_burst_number;
     wire [  ADDR_WIDTH-1:0] addr;
     wire                    wr_data_rdy;
-    wire                    wr_data_en;  
-    wire                    wr_data_end;  
+    wire                    wr_data_en;
+    wire                    wr_data_end;
     wire [  DATA_WIDTH-1:0] wr_data;
     wire [DATA_WIDTH/8-1:0] wr_data_mask;
     wire                    rd_data_valid;
     wire                    rd_data_end;
     wire [  DATA_WIDTH-1:0] rd_data;
     wire                    init_calib_complete;
-    // The video output timing generator and generate a frame read data request
-    // 输出
+    // 输入测试图
     wire out_de;
-    vga_timing vga_timing (
-        .clk(video_clk),
-        .rst(~rst_n),
-        .hs (syn_off0_hs),
-        .vs (syn_off0_vs),
-        .de (out_de)
+    testpattern testpattern2 (
+        .I_pxl_clk (video_clk), // pixel clock
+        .I_rst_n   (rst_n),     // low active
+        .I_mode    (0),         // data select
+        .I_single_r(8'd255),
+        .I_single_g(8'd255),
+        .I_single_b(8'd255),
+`ifdef HDMI                     //                 // 480x272     800x600   // 1024x768  // 1280x720  // 1920x1080
+        .I_h_total (12'd1650),  // hor total time  // 12'd523  // 12'd1056  // 12'd1344  // 12'd1650  // 12'd2200
+        .I_h_sync  (12'd40),    // hor sync time   // 12'd41   // 12'd128   // 12'd136   // 12'd40    // 12'd44
+        .I_h_bporch(12'd220),   // hor back porch  // 12'd2    // 12'd88    // 12'd160   // 12'd220   // 12'd148
+        .I_h_res   (12'd1280),  // hor resolution  // 12'd480  // 12'd800   // 12'd1024  // 12'd1280  // 12'd1920
+        .I_v_total (12'd750),   // ver total time  // 12'd284  // 12'd628   // 12'd806   // 12'd750   // 12'd1125
+        .I_v_sync  (12'd5),     // ver sync time   // 12'd10   // 12'd4     // 12'd6     // 12'd5     // 12'd5
+        .I_v_bporch(12'd20),    // ver back porch  // 12'd2    // 12'd23    // 12'd29    // 12'd20    // 12'd36
+        .I_v_res   (12'd720),   // ver resolution  // 12'd272  // 12'd600   // 12'd768   // 12'd720   // 12'd1080
+`elsif LCD
+        .I_h_total (12'd523),
+        .I_h_sync  (12'd41),
+        .I_h_bporch(12'd2),
+        .I_h_res   (12'd480),
+        .I_v_total (12'd284),
+        .I_v_sync  (12'd10),
+        .I_v_bporch(12'd2),
+        .I_v_res   (12'd272),
+`endif
+        .I_hs_pol  (1'b1),  // 0,负极性; 1,正极性
+        .I_vs_pol  (1'b1),  // 0,负极性; 1,正极性
+        .O_de      (out_de),
+        .O_hs      (syn_off0_hs),
+        .O_vs      (syn_off0_vs),
+        .O_data_r  (),
+        .O_data_g  (),
+        .O_data_b  ()
     );
     Video_Frame_Buffer_Top Video_Frame_Buffer_Top_inst (
         .I_rst_n  (init_calib_complete),
@@ -329,20 +393,20 @@ module top (
         // .I_vin0_de       (tp0_de_in),
         // .I_vin0_data     ({tp0_data_r[7:3], tp0_data_g[7:2], tp0_data_b[7:3]}),
 
-        // algorithm
-        .I_vin0_clk      (video_clk),
-        .I_vin0_vs_n     (~tp0_vs_in), // 只接收负极性
-        .I_vin0_de       (algorithm_dataValid),
-        .I_vin0_data     ({algorithm_data[23:19], algorithm_data[15:10], algorithm_data[7:3]}),
-
-        // // minecraft
+        // // algorithm
         // .I_vin0_clk      (video_clk),
-        // .I_vin0_vs_n     (~data_aligned_vs), // 只接收负极性
-        // .I_vin0_de       (data_aligned_valid),
-        // .I_vin0_data     (data_aligned),
+        // .I_vin0_vs_n     (~tp0_vs_in), // 只接收负极性
+        // .I_vin0_de       (algorithm_dataValid),
+        // .I_vin0_data     ({algorithm_data[23:19], algorithm_data[15:10], algorithm_data[7:3]}),
+
+        // minecraft
+        .I_vin0_clk      (video_clk),
+        .I_vin0_vs_n     (~data_aligned_vs), // 只接收负极性
+        .I_vin0_de       (data_aligned_valid),
+        .I_vin0_data     (data_aligned),
 
         .O_vin0_fifo_full(),
-        // video data output            
+        // video data output
         .I_vout0_clk          (video_clk),
         .I_vout0_vs_n         (~syn_off0_vs), // 只接收负极性
         .I_vout0_de           (out_de),
@@ -351,7 +415,7 @@ module top (
         .O_vout0_fifo_empty   (),
         // ddr write request
         .I_cmd_ready          (cmd_ready),
-        .O_cmd                (cmd),                 
+        .O_cmd                (cmd),
         .O_cmd_en             (cmd_en),
         .O_app_burst_number   (app_burst_number),
         .O_addr               (addr),
@@ -427,6 +491,7 @@ module top (
         .IO_ddr_dqs_n       (ddr_dqs_n)
     );
 
+`ifdef HDMI
     //==============================================================================
     wire [4:0] lcd_r, lcd_b;
     wire [5:0] lcd_g;
@@ -452,5 +517,18 @@ module top (
         .O_tmds_data_p(O_tmds_data_p),
         .O_tmds_data_n(O_tmds_data_n)
     );
+`elsif LCD
+    //==============================================================================
+    assign {lcd_r, lcd_g, lcd_b} = off0_syn_data;  // {r,g,b}
+    assign lcd_vs = Pout_vs_dn[4];  // syn_off0_vs;
+    assign lcd_hs = Pout_hs_dn[4];  // syn_off0_hs;
+    assign lcd_de = Pout_de_dn[4];  // off0_syn_de;
+    assign lcd_clk = video_clk;
+    // assign {lcd_r, lcd_g, lcd_b} = {tp0_data_r[7:3], tp0_data_g[7:2], tp0_data_b[7:3]};  // {r,g,b}
+    // assign lcd_vs = tp0_vs_in;
+    // assign lcd_hs = tp0_hs_in;
+    // assign lcd_de = tp0_de_in;
+    // assign lcd_clk = video_clk;
+`endif
 
 endmodule
