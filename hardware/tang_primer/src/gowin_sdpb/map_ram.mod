@@ -17,5 +17,5 @@
 -width_1 4
 -read_mode bypass
 -reset_mode sync
--init_file G:/VM/share/Minecraft/scripts/map/output/map.mi
+-init_file G:/VM/share/Minecraft/scripts/map/output/map_test.mi
 -init_match port_A

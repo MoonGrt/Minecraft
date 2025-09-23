@@ -438,9 +438,9 @@ static const uint8_t block_face_texture[BLK_CRAFTING_TABLE+1][6] = {
 };
 
 // ----------------- 从纹理表取颜色（u,v 取 0..15） -----------------
-static inline uint16_t get_texture(uint8_t tex_id, int u, int v) {
+static inline uint16_t get_texture(uint8_t tex_idx, int u, int v) {
   u &= 15; v &= 15;  // 保证 u,v 在 0..15
-  return TEXTURE[tex_id][v * 16 + u];
+  return TEXTURE[tex_idx][v * 16 + u];
 }
 
 #endif // TEXTURE_H

@@ -2,18 +2,18 @@
 
 module angle_relative (
     input                     rst,
-    input  wire signed [19:0] angle_x,
-    input  wire signed [19:0] angle_y,
-    output reg signed  [19:0] lookat_rel_x,
-    output reg signed  [19:0] lookat_rel_y,
-    output reg signed  [19:0] lookat_rel_z,
-    output reg signed  [19:0] lookat_h_rel_x,
-    output reg signed  [19:0] lookat_h_rel_y
+    input  wire signed [15:0] angle_x,
+    input  wire signed [15:0] angle_y,
+    output reg signed  [15:0] lookat_rel_x,
+    output reg signed  [15:0] lookat_rel_y,
+    output reg signed  [15:0] lookat_rel_z,
+    output reg signed  [15:0] lookat_h_rel_x,
+    output reg signed  [15:0] lookat_h_rel_y
 );
 
     // Internal signals
-    wire signed [19:0] coord_h_x, coord_h_y;
-    wire signed [19:0] coord_v_x, coord_v_y;
+    wire signed [15:0] coord_h_x, coord_h_y;
+    wire signed [15:0] coord_v_x, coord_v_y;
 
     // Instantiate angle_to_coord module
     angle_to_coord ac_cvt_h (

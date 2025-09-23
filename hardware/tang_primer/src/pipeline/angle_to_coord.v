@@ -1,16 +1,16 @@
 `timescale 1ns / 1ps
 
 module angle_to_coord (
-    input  wire signed [19:0] angle,
-    output wire signed [19:0] coord_x,
-    output wire signed [19:0] coord_y
+    input  wire signed [15:0] angle,
+    output wire signed [15:0] coord_x,
+    output wire signed [15:0] coord_y
 );
 
     reg x_inverse, y_inverse, xy_inverse;
-    reg [19:0] x_mapped, y_mapped;
-    wire [19:0] coord_rev_x, coord_rev_y;
-    wire signed [19:0] angle_abs = (angle < 0) ? -angle : angle;
-    reg signed  [19:0] ang;
+    reg [15:0] x_mapped, y_mapped;
+    wire [15:0] coord_rev_x, coord_rev_y;
+    wire signed [15:0] angle_abs = (angle < 0) ? -angle : angle;
+    reg signed  [15:0] ang;
 
     assign coord_rev_x = (xy_inverse == 'b0) ? x_mapped : y_mapped;
     assign coord_rev_y = (xy_inverse == 'b0) ? y_mapped : x_mapped;

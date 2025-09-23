@@ -5,24 +5,24 @@ module viewport_params #(
     parameter V_DISP = 720
 ) (
     input wire               rst,
-    input wire signed [19:0] p_angle_x,
-    input wire signed [19:0] p_angle_y,
+    input wire signed [15:0] p_angle_x,
+    input wire signed [15:0] p_angle_y,
 
-    output reg signed [19:0] vp_origin_x,
-    output reg signed [19:0] vp_origin_y,
-    output reg signed [19:0] vp_origin_z,
-    output reg signed [19:0] vp_u_x,
-    output reg signed [19:0] vp_u_y,
-    output reg signed [19:0] vp_u_z,
-    output reg signed [19:0] vp_v_x,
-    output reg signed [19:0] vp_v_y,
-    output reg signed [19:0] vp_v_z
+    output reg signed [15:0] vp_origin_x,
+    output reg signed [15:0] vp_origin_y,
+    output reg signed [15:0] vp_origin_z,
+    output reg signed [15:0] vp_u_x,
+    output reg signed [15:0] vp_u_y,
+    output reg signed [15:0] vp_u_z,
+    output reg signed [15:0] vp_v_x,
+    output reg signed [15:0] vp_v_y,
+    output reg signed [15:0] vp_v_z
 );
 
-    reg signed [19:0] towards_h_x;
-    reg signed [19:0] towards_h_y;
-    wire signed [19:0] lookat_rel_x, lookat_rel_y, lookat_rel_z;
-    wire signed [19:0] lookat_h_rel_x, lookat_h_rel_y;
+    reg signed [15:0] towards_h_x;
+    reg signed [15:0] towards_h_y;
+    wire signed [15:0] lookat_rel_x, lookat_rel_y, lookat_rel_z;
+    wire signed [15:0] lookat_h_rel_x, lookat_h_rel_y;
 
     angle_relative angle_relatives (
         .rst           (rst),

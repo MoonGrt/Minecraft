@@ -10,8 +10,8 @@ module ppl #(
     input        [15:0] p_pos_x,
     input        [15:0] p_pos_y,
     input        [15:0] p_pos_z,
-    input signed [19:0] p_angle_x,
-    input signed [19:0] p_angle_y,
+    input signed [15:0] p_angle_x,
+    input signed [15:0] p_angle_y,
     input        [ 3:0] block_id,
 
     output        valid,
@@ -26,15 +26,15 @@ module ppl #(
     wire        [15:0] start_pos_x;
     wire        [15:0] start_pos_y;
     wire        [15:0] start_pos_z;
-    wire signed [19:0] ray_slope_x;
-    wire signed [19:0] ray_slope_y;
-    wire signed [19:0] ray_slope_z;
-    wire signed [19:0] ray_slope_out_x;
-    wire signed [19:0] ray_slope_out_y;
-    wire signed [19:0] ray_slope_out_z;
+    wire signed [15:0] ray_slope_x;
+    wire signed [15:0] ray_slope_y;
+    wire signed [15:0] ray_slope_z;
+    wire signed [15:0] ray_slope_out_x;
+    wire signed [15:0] ray_slope_out_y;
+    wire signed [15:0] ray_slope_out_z;
 
     wire        [19:0] pixel_addr;
-    wire [3:0] block_cnt_out, block_cnt;
+    wire [4:0] block_cnt_out, block_cnt;
     wire next_en;
 
     wire prepare_flag;
@@ -100,6 +100,9 @@ module ppl #(
         .ray_slope_x(ray_slope_x),
         .ray_slope_y(ray_slope_y),
         .ray_slope_z(ray_slope_z),
+        // .ray_slope_x(-663),
+        // .ray_slope_y(374),
+        // .ray_slope_z(-651),
         .pixel_addr (pixel_addr),
         .block_id   (block_id),
         .block_cnt  (block_cnt),
