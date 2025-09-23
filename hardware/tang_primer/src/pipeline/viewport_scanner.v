@@ -7,13 +7,13 @@ module viewport_scanner #(
     input         clk,
     input         rst,
     input         enable,
-    output [19:0] fragment_uv_x,
-    output [19:0] fragment_uv_y
+    output [15:0] fragment_uv_x,
+    output [15:0] fragment_uv_y
 );
 
     //  one-cycle
-    reg [19:0] h_cnt_reg = 'b0;
-    reg [19:0] v_cnt_reg = 'b0;
+    reg [15:0] h_cnt_reg = 'b0;
+    reg [15:0] v_cnt_reg = 'b0;
     always @(posedge clk) begin
         if (rst) begin
             h_cnt_reg <= 'b0;

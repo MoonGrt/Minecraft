@@ -1,67 +1,80 @@
 import numpy as np
-import opensimplex
-
-
-# 初始化噪声对象
-noise = opensimplex.OpenSimplex(seed=233)
 
 # 地形尺寸
-x_size, y_size, z_size = 32, 32, 32
-
-def is_coord_valid(x, y, z):
-    if x < 0 or x >= x_size:
-        return False
-    if y < 0 or y >= y_size:
-        return False
-    if z < 0 or z >= z_size:
-        return False
-    return True
+MAPX, MAPY, MAPZ = 32, 32, 32
 
 # 初始化地形数组
-terrain = np.zeros((x_size, y_size, z_size), dtype=np.uint8)
+terrain = np.zeros((MAPX, MAPY, MAPZ), dtype=np.uint8)
 
-# 定义地表高度
-ground_offset = 8
+# 方块类型
+AIR = 0
+BLK_BEDROCK = 1
+BLK_STONE = 2
+BLK_GRASS = 3
+BLK_DIRT = 4
+BLK_COBBLE = 5
+BLK_OAK_PLANKS = 6
+BLK_OAK_LOG = 7
+BLK_OAK_LEAVES = 8
+BLK_SAND = 9
+BLK_SANDSTONE = 10
+BLK_COAL_ORE = 11
+BLK_COAL_BLOCK = 12
+BLK_IRON_ORE = 13
+BLK_IRON_BLOCK = 14
+BLK_CRAFTING_TABLE = 15
 
-# 生成地形
-for x in range(x_size):
-    for y in range(y_size):
-        # 计算噪声值
-        noise_val = noise.noise2(x / 20, y / 20)
-        # 将噪声值转化为高度
-        height = int((noise_val + 1) * 6) + ground_offset
-        # 设置草方块
-        for z in range(height, height + 2):
-            terrain[x][y][z] = 3 # 草方块
-        # 设置树
-        if np.random.random() < 0.01:
-            for z in range(height + 2, height + 7):
-                if is_coord_valid(x, y, z):
-                    terrain[x][y][z] = 7 # 树干
-            for xx in range(x - 3, x + 4):
-                for yy in range(y - 3, y + 4):
-                    if abs(xx - x) + abs(yy - y) < 3:
-                        for zz in range(height + 7, height + 9):
-                            if is_coord_valid(xx, yy, zz):
-                                terrain[xx][yy][zz] = 8 # 树叶
-        # 设置下方方块类型
-        for z in range(height - 1, -1, -1):
-            if z > 1:
-                terrain[x][y][z] = 4 # 泥土
-            else:
-                terrain[x][y][z] = 2 # 石头
+# 初始化地图数组
+terrain = np.zeros((MAPX, MAPY, MAPZ), dtype=int)
+ground_height = 8  # 草地高度
 
-# 设置基岩
-for x in range(x_size):
-    for y in range(y_size):
-        terrain[x][y][0] = 1 # 基岩
-
-
+def init_test_map(terrain):
+    terrain.fill(0)  # 清空地图
+    # 1. 填充地面
+    for x in range(MAPX):
+        for y in range(MAPY):
+            for z in range(ground_height - 1):
+                terrain[x, y, z] = BLK_STONE
+            terrain[x, y, ground_height] = BLK_GRASS
+            for z in range(ground_height + 1, MAPZ):
+                terrain[x, y, z] = AIR
+    # 2. 在地图中心生成一棵 Minecraft 风格树
+    center_x = MAPX // 2
+    center_y = MAPY // 2
+    trunk_height = 5
+    leaves_radius = 2
+    leaves_height = 2
+    # 树干
+    for z in range(ground_height + 1, ground_height + trunk_height + 1):
+        terrain[center_x, center_y, z] = BLK_OAK_LOG
+    # 树叶（球状/方块层叠）
+    for z in range(ground_height + trunk_height, ground_height + trunk_height + leaves_height + 1):
+        layer_radius = leaves_radius + (ground_height + trunk_height) - z
+        if layer_radius < 1:
+            layer_radius = 1
+        for dx in range(-layer_radius, layer_radius + 1):
+            for dy in range(-layer_radius, layer_radius + 1):
+                ax = center_x + dx
+                ay = center_y + dy
+                if ax < 0 or ax >= MAPX or ay < 0 or ay >= MAPY:
+                    continue
+                # 不覆盖树干位置
+                if not (dx == 0 and dy == 0 and z <= ground_height + trunk_height):
+                    terrain[ax, ay, z] = BLK_OAK_LEAVES
+    # 3. 底层基岩
+    for x in range(MAPX):
+        for y in range(MAPY):
+            terrain[x, y, 0] = BLK_BEDROCK
+    # 4. 放几个矿石块作演示
+    terrain[10, 10, 9] = BLK_COAL_ORE
+    terrain[12, 9, 9] = BLK_IRON_ORE
+    terrain[20, 20, 9] = BLK_COAL_BLOCK
+    terrain[21, 20, 9] = BLK_IRON_BLOCK
 
 
 # 打印地形数组
 # 打印地形数组
-def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', bitwidth=4):
+def write_map(terrain, MAPX, MAPY, MAPZ, filetype='coe', datatype='bin', bitwidth=4):
     """通用地图文件输出函数
     terrain: 三维地形数组
     filetype: 'coe' / 'mi' / 'c' / None
@@ -72,51 +85,49 @@ def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', b
 
     # 选择文件名和头
     if filetype == 'coe':  # Xilinx COE 文件
-        filename = f'output/map.{filetype}'
+        filename = f'output/map_test.{filetype}'
         if datatype == 'bin':
             header = "memory_initialization_radix=2;\nmemory_initialization_vector="
         elif datatype == 'hex':
             header = "memory_initialization_radix=16;\nmemory_initialization_vector="
     elif filetype == 'mi':  # Gowin MI 文件
-        filename = f'output/map.{filetype}'
+        filename = f'output/map_test.{filetype}'
         if datatype == 'bin':
-            header = f"#File_format=Bin\n#Address_depth={x_size*y_size*z_size}\n#Data_width={bitwidth}"
+            header = f"#File_format=Bin\n#Address_depth={MAPX*MAPY*MAPZ}\n#Data_width={bitwidth}"
         elif datatype == 'hex':
-            header = f"#File_format=Hex\n#Address_depth={x_size*y_size*z_size}\n#Data_width={bitwidth}"
+            header = f"#File_format=Hex\n#Address_depth={MAPX*MAPY*MAPZ}\n#Data_width={bitwidth}"
     elif filetype == 'c':  # C语言数组
-        filename = f'output/map.c'
+        filename = f'output/map_test.c'
         header = None
     else:  # 纯文本输出
-        filename = f'output/map.{datatype}'
+        filename = f'output/map_test.{datatype}'
         header = None
 
     with open(filename, 'w') as f:
         all_lines = []
         if header:
             print(header, file=f)
-
         # === C语言模式，检测是否需要打包 ===
         pack_two = (filetype == 'c' and bitwidth == 4)
         if filetype == 'c':
             if pack_two:
-                c_z_size = math.ceil(z_size / 2)  # 打包后长度
-                f.write(f"const uint8_t MAP[{x_size}][{y_size}][{c_z_size}] = {{\n")
+                c_z_size = math.ceil(MAPZ / 2)  # 打包后长度
+                f.write(f"const uint8_t MAP[{MAPX}][{MAPY}][{c_z_size}] = {{\n")
             else:
                 c_bitwidth = max(8, ((bitwidth + 7) // 8) * 8)
-                f.write(f"const uint{c_bitwidth}_t MAP[{x_size}][{y_size}][{z_size}] = {{\n")
-
-        for i in range(x_size):
+                f.write(f"const uint{c_bitwidth}_t MAP[{MAPX}][{MAPY}][{MAPZ}] = {{\n")
+        for i in range(MAPX):
             if filetype == 'c':
                 f.write("  {\n")
-            for j in range(y_size):
+            for j in range(MAPY):
                 if filetype == 'c':
                     f.write("    { ")
                 if pack_two:
                     # 每两个4bit打包成一个uint8_t
                     packed_bytes = []
-                    for k in range(0, z_size, 2):
+                    for k in range(0, MAPZ, 2):
                         v1 = int(terrain[i, j, k])
-                        v2 = int(terrain[i, j, k+1]) if k+1 < z_size else 0
+                        v2 = int(terrain[i, j, k+1]) if k+1 < MAPZ else 0
                         byte_val = (v2 << 4) | v1
                         if datatype == 'bin':
                             packed_bytes.append(f"0b{byte_val:08b}")
@@ -124,7 +135,7 @@ def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', b
                             packed_bytes.append(f"0x{byte_val:02X}")
                     f.write(", ".join(packed_bytes))
                 else:
-                    for k in range(z_size):
+                    for k in range(MAPZ):
                         v = int(terrain[i, j, k])
                         if datatype == 'bin':
                             val_str = format(v, f'0{bitwidth}b')
@@ -138,15 +149,14 @@ def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', b
                         else:
                             raise ValueError(f"Unsupported datatype: {datatype}")
                         if filetype == 'c':
-                            sep = ", " if k < z_size - 1 else ""
+                            sep = ", " if k < MAPZ - 1 else ""
                             f.write(val_str + sep)
                         else:
                             all_lines.append(val_str)
                 if filetype == 'c':
-                    f.write(" }" + ("," if j < y_size - 1 else "") + "\n")
+                    f.write(" }" + ("," if j < MAPY - 1 else "") + "\n")
             if filetype == 'c':
-                f.write("  }" + ("," if i < x_size - 1 else "") + "\n")
-
+                f.write("  }" + ("," if i < MAPX - 1 else "") + "\n")
         # 写入文件
         if filetype == 'coe':
             for i, line in enumerate(all_lines):
@@ -159,10 +169,11 @@ def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', b
             f.write("};\n")
 
 
-write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', bitwidth=4)
-write_map(terrain, x_size, y_size, z_size, filetype='mi', datatype='hex', bitwidth=4)
-write_map(terrain, x_size, y_size, z_size, filetype=None, datatype='bin', bitwidth=4)
-write_map(terrain, x_size, y_size, z_size, filetype='c', datatype='bin', bitwidth=4)
+init_test_map(terrain)
+write_map(terrain, MAPX, MAPY, MAPZ, filetype='coe', datatype='bin', bitwidth=4)
+write_map(terrain, MAPX, MAPY, MAPZ, filetype='mi', datatype='hex', bitwidth=4)
+write_map(terrain, MAPX, MAPY, MAPZ, filetype=None, datatype='bin', bitwidth=4)
+write_map(terrain, MAPX, MAPY, MAPZ, filetype='c', datatype='bin', bitwidth=4)
 print("Map generation and output files completed!")
 
 
@@ -177,7 +188,7 @@ ax = fig.add_subplot(111, projection='3d')
 X, Y, Z = [], [], []
 for i in range(32):
     for j in range(32):
-        for k in range(12, 32):
+        for k in range(7, 16):
             if terrain[i, j, k] != 0:
                 X.append(i)
                 Y.append(j)
