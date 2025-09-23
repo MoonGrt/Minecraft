@@ -7,12 +7,12 @@ module ppl #(
     input clk_ppl,
     input rst,
 
-    input        [17:0] p_pos_x,
-    input        [17:0] p_pos_y,
-    input        [17:0] p_pos_z,
+    input        [15:0] p_pos_x,
+    input        [15:0] p_pos_y,
+    input        [15:0] p_pos_z,
     input signed [19:0] p_angle_x,
     input signed [19:0] p_angle_y,
-    input        [ 4:0] block_id,
+    input        [ 3:0] block_id,
 
     output        valid,
     output [19:0] pixel_addr_out,
@@ -20,12 +20,12 @@ module ppl #(
     output [12:0] texture_addr
 );
 
-    wire        [17:0] end_pos_x;
-    wire        [17:0] end_pos_y;
-    wire        [17:0] end_pos_z;
-    wire        [17:0] start_pos_x;
-    wire        [17:0] start_pos_y;
-    wire        [17:0] start_pos_z;
+    wire        [15:0] end_pos_x;
+    wire        [15:0] end_pos_y;
+    wire        [15:0] end_pos_z;
+    wire        [15:0] start_pos_x;
+    wire        [15:0] start_pos_y;
+    wire        [15:0] start_pos_z;
     wire signed [19:0] ray_slope_x;
     wire signed [19:0] ray_slope_y;
     wire signed [19:0] ray_slope_z;

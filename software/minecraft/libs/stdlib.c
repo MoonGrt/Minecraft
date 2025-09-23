@@ -78,7 +78,6 @@ static void printf_x(unsigned int val, int uppercase)
     char buffer[32];
     char *p = buffer;
     const char *digits = uppercase ? "0123456789ABCDEF" : "0123456789abcdef";
-
     while (val || p == buffer)
     {
         *(p++) = digits[val % 16];
@@ -88,13 +87,29 @@ static void printf_x(unsigned int val, int uppercase)
         printf_c(*(--p));
 }
 
+static void printf_f(float val)
+{
+    if (val < 0) {
+        printf_c('-');
+        val = -val;
+    }
+    int int_part = (int)val;
+    float frac_part = val - int_part;
+    printf_d(int_part);
+    printf_c('.');
+    for (int i = 0; i < 4; i++) {
+        frac_part *= 10;
+        int digit = (int)frac_part;
+        printf_c('0' + digit);
+        frac_part -= digit;
+    }
+}
+
 int printf(const char *format, ...)
 {
     int i;
     va_list ap;
-
     va_start(ap, format);
-
     for (i = 0; format[i]; i++)
         if (format[i] == '%')
         {
@@ -128,6 +143,11 @@ int printf(const char *format, ...)
                 if (format[i] == 'X')
                 {
                     printf_x(va_arg(ap, unsigned int), 1);
+                    break;
+                }
+                if (format[i] == 'f')
+                {
+                    printf_f(va_arg(ap, double));
                     break;
                 }
             }

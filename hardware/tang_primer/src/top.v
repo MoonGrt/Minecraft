@@ -173,10 +173,10 @@ module top (
 
 
 
-
-    reg  [17:0] p_pos_x = 'd170 << 8;
-    reg  [17:0] p_pos_y = 'd170 << 8;
-    reg  [17:0] p_pos_z = 'd280 << 8;
+    // 5 + 4 + 7 = 16
+    reg  [15:0] p_pos_x = 'd110 << 7;
+    reg  [15:0] p_pos_y = 'd280 << 7;
+    reg  [15:0] p_pos_z = 'd110 << 7;
     reg  [19:0] p_angle_x = 30;
     reg  [19:0] p_angle_y = -120;
     wire [14:0] write_addr;

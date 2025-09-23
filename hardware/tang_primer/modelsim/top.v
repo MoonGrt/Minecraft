@@ -15,7 +15,7 @@ module top (
     wire [7:0] tp0_data_r;
     wire [7:0] tp0_data_g;
     wire [7:0] tp0_data_b;
-    testpattern testpattern_inst (
+    testpattern testpattern (
         .I_pxl_clk (video_clk),   //pixel clock
         .I_rst_n   (rst_n),       //low active 
         .I_mode    (0),  //data select
@@ -45,14 +45,14 @@ module top (
 
     // parameter H_DISP = 32;
     // parameter V_DISP = 24;
-    parameter H_DISP = 1280;
-    parameter V_DISP = 720;
+    parameter H_DISP = 480;
+    parameter V_DISP = 272;
 
-    reg  [17:0] p_pos_x = 'd170 << 8;
-    reg  [17:0] p_pos_y = 'd170 << 8;
-    reg  [17:0] p_pos_z = 'd280 << 8;
+    reg  [16:0] p_pos_x = 'd170 << 7;
+    reg  [16:0] p_pos_y = 'd170 << 7;
+    reg  [16:0] p_pos_z = 'd280 << 7;
     reg  [19:0] p_angle_x = 30;
-    reg  [19:0] p_angle_y = -120;
+    reg  [19:0] p_angle_y = 60;
     wire [14:0] write_addr;
     wire [ 4:0] write_data;
     wire        write_en;
