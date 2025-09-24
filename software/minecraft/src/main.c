@@ -88,7 +88,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
         // 检查越界或命中
         uint8_t id = 0;
         if ((unsigned)bx < MAPSIZE && (unsigned)by < MAPSIZE && (unsigned)bz < MAPSIZE)
-            id = MAP[bx][by][bz];
+            id = get_block(bx, by, bz);
         else
             // 越界当作空气（不命中），直接返回背景色
             // printf("Ray out of bounds at (%d, %d, %d)\n", bx, by, bz);
@@ -152,43 +152,38 @@ typedef struct {
     float px, py, pz; // 相机位置
     float dx, dy, dz; // 前向单位向量
     float ux, uy, uz; // 上向单位向量
+    float vx, vy, vz; // 右向单位向量
     float fov;        // 垂直视场（度）
 } Camera;
 
 // 渲染入口：只负责计算结果写入 Framebuffer
 void render_scene(Camera *cam)
 {
-    // 计算右向量 = forward × up
-    float rx = cam->dy * cam->uz - cam->dz * cam->uy;
-    float ry = cam->dz * cam->ux - cam->dx * cam->uz;
-    float rz = cam->dx * cam->uy - cam->dy * cam->ux;
-    // 归一化右向量
-    float rlen = sqrtf(rx*rx + ry*ry + rz*rz);
-    if (rlen > 1e-6f) { rx /= rlen; ry /= rlen; rz /= rlen; }
+    // 计算视场角度
     float aspect = (float)DISPX / (float)DISPY;
     float fovScale = tanf(cam->fov * 0.5f * (float)PI / 180.0f);
-    // printf("rx=%f, ry=%f, rz=%f, fovScale=%f\n", rx, ry, rz, fovScale);
+    // printf("aspect=%f, fovScale=%f\n", aspect, fovScale);
     // 每像素产生射线并采样
     for (int py = 0; py < DISPY; ++py) {
         for (int px = 0; px < DISPX; ++px) {
             // 屏幕归一化坐标
             float u = (2.0f * (px + 0.5f) / (float)DISPX - 1.0f) * aspect * fovScale;
             float v = (1.0f - 2.0f * (py + 0.5f) / (float)DISPY) * fovScale;
-            printf("(%d, %d) => (%f, %f)\n", px, py, u, v);
+            printf("\n");
+            printf("(x, y)(%d, %d) => (u, v)(%f, %f)\n", px, py, u, v);
             // 构造世界方向（未严格正交投影，但足够）
-            float dirx = cam->dx + u * rx + v * cam->ux;
-            float diry = cam->dy + u * ry + v * cam->uy;
-            float dirz = cam->dz + u * rz + v * cam->uz;
+            float dirx = cam->dx + u * cam->vx + v * cam->ux;
+            float diry = cam->dy + u * cam->vy + v * cam->uy;
+            float dirz = cam->dz + u * cam->vz + v * cam->uz;
             // 归一化方向
             float len = sqrtf(dirx*dirx + diry*diry + dirz*dirz);
             if (len > 0.0f) { dirx /= len; diry /= len; dirz /= len; }
             // 发射射线得到颜色
-            printf("(%f, %f, %f) => (%f, %f, %f)\n", cam->px, cam->py, cam->pz, dirx, diry, dirz);
+            printf("(px, py, pz)(%f, %f, %f) => (dx, dy, dz)(%f, %f, %f)\n", cam->px, cam->py, cam->pz, dirx, diry, dirz);
             uint16_t color = raycast(cam->px, cam->py, cam->pz, dirx, diry, dirz);
             // 注意 Framebuffer 的索引顺序
             Framebuffer[py][px] = color;
             printf("x=%d, y=%d, addr=%x, color=%x\n", px, py, &Framebuffer[py][px], color);
-            // delay_ms(50); // 延时，降低 CPU 使用率
             if (px == 5)
                 return;
         }
@@ -196,17 +191,19 @@ void render_scene(Camera *cam)
 }
 
 // ----------------- 示例：初始化一个简单地图（用于测试） -----------------
+#ifdef MAPGEN
+#define GROUND 15  // 草地高度
+// 地图生成函数
 void init_test_map(void) {
     memset(MAP, 0, sizeof(MAP));  // 清空地图
-    const int ground_height = 8;  // 草地高度
     // 1. 填充地面
     for (int x = 0; x < MAPX; ++x) {
         for (int y = 0; y < MAPY; ++y) {
-            for (int z = 0; z < ground_height - 1; ++z)
-                MAP[x][y][z] = BLK_STONE;
-            MAP[x][y][ground_height] = BLK_GRASS;
-            for (int z = ground_height + 1; z < MAPZ; ++z)
-                MAP[x][y][z] = AIR;
+            for (int z = 0; z < GROUND - 1; ++z)
+                set_block(x, y, z, BLK_STONE);
+            set_block(x, y, GROUND, BLK_GRASS);
+            for (int z = GROUND + 1; z < MAPZ; ++z)
+                set_block(x, y, z, AIR);
         }
     }
     // 2. 在地图中心生成一棵 Minecraft 风格树
@@ -216,32 +213,31 @@ void init_test_map(void) {
     const int leaves_radius = 2; // 树叶半径
     const int leaves_height = 2; // 树叶层数
     // 树干
-    for (int z = ground_height + 1; z <= ground_height + trunk_height; ++z)
-        MAP[center_x][center_y][z] = BLK_OAK_LOG;
-    // 树叶（球状/方块层叠）
-    for (int z = ground_height + trunk_height; z <= ground_height + trunk_height + leaves_height; ++z) {
-        int layer_radius = leaves_radius + (ground_height + trunk_height) - z;
+    for (int z = GROUND + 1; z <= GROUND + trunk_height; ++z)
+        set_block(center_x, center_y, z, BLK_OAK_LOG);
+    // 树叶
+    for (int z = GROUND + trunk_height; z <= GROUND + trunk_height + leaves_height; ++z) {
+        int layer_radius = leaves_radius + (GROUND + trunk_height) - z;
         if (layer_radius < 1) layer_radius = 1;
         for (int dx = -layer_radius; dx <= layer_radius; ++dx) {
             for (int dy = -layer_radius; dy <= layer_radius; ++dy) {
                 int ax = center_x + dx;
                 int ay = center_y + dy;
                 if (ax < 0 || ax >= MAPX || ay < 0 || ay >= MAPY) continue;
-                // 不覆盖树干位置
-                if (!(dx == 0 && dy == 0 && z <= ground_height + trunk_height))
-                    MAP[ax][ay][z] = BLK_OAK_LEAVES;
+                if (!(dx == 0 && dy == 0 && z <= GROUND + trunk_height))
+                    set_block(ax, ay, z, BLK_OAK_LEAVES);
             }
         }
     }
     // 3. 底层基岩
     for (int x = 0; x < MAPX; x++)
-        for (int y = 0; y < MAPZ; y++)
-            MAP[x][y][0] = BLK_BEDROCK;
-    // 4. 放几个矿石块作演示
-    MAP[10][10][9] = BLK_COAL_ORE;
-    MAP[12][ 9][9] = BLK_IRON_ORE;
-    MAP[20][20][9] = BLK_COAL_BLOCK;
-    MAP[21][20][9] = BLK_IRON_BLOCK;
+        for (int y = 0; y < MAPY; y++)
+            set_block(x, y, 0, BLK_BEDROCK);
+    // 4. 演示矿石
+    set_block(10, 10, GROUND+1, BLK_COAL_ORE);
+    set_block(12,  9, GROUND+1, BLK_IRON_ORE);
+    set_block(20, 20, GROUND+1, BLK_COAL_BLOCK);
+    set_block(21, 20, GROUND+1, BLK_IRON_BLOCK);
 }
 
 // static inline int is_coord_valid(int x, int y, int z) {
@@ -288,20 +284,48 @@ void init_test_map(void) {
 //         for (int z = 0; z < MAPZ; z++)
 //             MAP[x][0][z] = BLK_BEDROCK;
 // }
+#endif
 
 
 // ----------------- Main -----------------
 #define STEP 0.5f // 每次移动的距离
 // 初始化相机
 Camera cam = {
-    .px = 16.0f,
-    .py = 16.0f,
-    .pz = 24.0f,
-    .dx =  0.0f, .ux = 0.0f,
-    .dy =  0.0f, .uy = 1.0f,
-    .dz = -1.0f, .uz = 0.0f,
+    .px = 16.5f, .py = 16.5f, .pz = 31.0f,
+    .dx =  0.0f, .dy =  0.0f, .dz = -1.0f,
+    .ux = -1.0f, .uy =  0.0f, .uz =  0.0f,
+    .vx =  0.0f, .vy =  1.0f, .vz =  0.0f,
     .fov = 60.0f
 };
+
+#define RAD(deg) ((deg) * (float)PI / 180.0f)
+#define DEG(rad) ((rad) * 180.0f / (float)PI)
+const float world_up[3] = {0.0f, 1.0f, 0.0f}; // 世界坐标系的上向量
+void set_camera_direction(Camera* cam, float radx, float rady) {
+    float cosPitch = cosf(rady);
+    float sinPitch = sinf(rady);
+    float cosYaw   = cosf(radx);
+    float sinYaw   = sinf(radx);
+    // 前向向量
+    cam->dx = sinYaw * cosPitch;
+    cam->dy = sinPitch;
+    cam->dz = -cosYaw * cosPitch;
+    printf(" -> Cam.d: dx=%f dy=%f dz=%f\n", cam->dx, cam->dy, cam->dz);
+    // 右向量
+    cam->vx = world_up[1]*cam->dz - world_up[2]*cam->dy;
+    cam->vy = world_up[2]*cam->dx - world_up[0]*cam->dz;
+    cam->vz = world_up[0]*cam->dy - world_up[1]*cam->dx;
+    float right_len = sqrtf(cam->vx*cam->vx + cam->vy*cam->vy + cam->vz*cam->vz);
+    cam->vx /= right_len; cam->vy /= right_len; cam->vz /= right_len;
+    printf(" -> Cam.v: vx=%f vy=%f vz=%f\n", cam->vx, cam->vy, cam->vz);
+    // 上向量 = forward × right
+    cam->ux = cam->dy*cam->vz - cam->dz*cam->vy;
+    cam->uy = cam->dz*cam->vx - cam->dx*cam->vz;
+    cam->uz = cam->dx*cam->vy - cam->dy*cam->vx;
+    float up_len = sqrtf(cam->ux*cam->ux + cam->uy*cam->uy + cam->uz*cam->uz);
+    cam->ux /= up_len; cam->uy /= up_len; cam->uz /= up_len;
+    printf(" -> Cam.u: ux=%f uy=%f uz=%f\n", cam->ux, cam->uy, cam->uz);
+}
 
 void main()
 {
@@ -310,12 +334,15 @@ void main()
     demo_DVTC();
 
     // Minecraft
+    set_camera_direction(&cam, RAD(0), RAD(0));
+#ifdef MAPGEN
     // 初始化 MAP
     init_test_map();
-    printf("Init map completed...\n");
+    printf("Init MAP Completed...\n");
+#endif
     // 渲染场景
     render_scene(&cam);
-    printf("Frame rendering once\n");
+    printf("Frame Rendering Once\n");
     // while (1)
     // {
     //     // 渲染场景

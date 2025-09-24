@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.12.0    git head : 1aa7d7b5732f11cca2dd83bacc2a4cb92ca8e5c9
 // Component : CyberPlusWithDdrLcd
-// Git hash  : f93c047808ed1baed46b30d83362ab703fa04643
+// Git hash  : 8b10934741cd6466de280191a9a532c70a096c60
 
 `timescale 1ns/1ps
 `define SYNTHESIS
@@ -59,8 +59,8 @@ module CyberPlusWithDdrLcd (
   wire       [7:0]    axi_core_cpu_debug_bus_cmd_payload_address;
   wire                axi_core_cpu_iBus_rsp_payload_error;
   reg                 dbus_axi_decoder_io_input_r_ready;
-  wire       [14:0]   axi_ram_io_axi_arbiter_io_readInputs_0_ar_payload_addr;
-  wire       [14:0]   axi_ram_io_axi_arbiter_io_sharedInputs_0_arw_payload_addr;
+  wire       [15:0]   axi_ram_io_axi_arbiter_io_readInputs_0_ar_payload_addr;
+  wire       [15:0]   axi_ram_io_axi_arbiter_io_sharedInputs_0_arw_payload_addr;
   wire                axi_ram_io_axi_arbiter_io_output_arw_ready;
   wire       [27:0]   axi_sdramCtrl_io_axi_arbiter_io_readInputs_0_ar_payload_addr;
   wire       [27:0]   axi_sdramCtrl_io_axi_arbiter_io_readInputs_1_ar_payload_addr;
@@ -378,7 +378,7 @@ module CyberPlusWithDdrLcd (
   wire       [1:0]    axi_ram_io_axi_arbiter_io_sharedInputs_0_r_payload_resp;
   wire                axi_ram_io_axi_arbiter_io_sharedInputs_0_r_payload_last;
   wire                axi_ram_io_axi_arbiter_io_output_arw_valid;
-  wire       [14:0]   axi_ram_io_axi_arbiter_io_output_arw_payload_addr;
+  wire       [15:0]   axi_ram_io_axi_arbiter_io_output_arw_payload_addr;
   wire       [3:0]    axi_ram_io_axi_arbiter_io_output_arw_payload_id;
   wire       [7:0]    axi_ram_io_axi_arbiter_io_output_arw_payload_len;
   wire       [2:0]    axi_ram_io_axi_arbiter_io_output_arw_payload_size;
@@ -687,7 +687,7 @@ module CyberPlusWithDdrLcd (
   wire       [2:0]    _zz_io_sharedInputs_0_arw_payload_id;
   wire                io_output_arw_halfPipe_valid;
   wire                io_output_arw_halfPipe_ready;
-  wire       [14:0]   io_output_arw_halfPipe_payload_addr;
+  wire       [15:0]   io_output_arw_halfPipe_payload_addr;
   wire       [3:0]    io_output_arw_halfPipe_payload_id;
   wire       [7:0]    io_output_arw_halfPipe_payload_len;
   wire       [2:0]    io_output_arw_halfPipe_payload_size;
@@ -695,7 +695,7 @@ module CyberPlusWithDdrLcd (
   wire                io_output_arw_halfPipe_payload_write;
   reg                 io_output_arw_rValid;
   wire                io_output_arw_halfPipe_fire;
-  reg        [14:0]   io_output_arw_rData_addr;
+  reg        [15:0]   io_output_arw_rData_addr;
   reg        [3:0]    io_output_arw_rData_id;
   reg        [7:0]    io_output_arw_rData_len;
   reg        [2:0]    io_output_arw_rData_size;
@@ -816,7 +816,7 @@ module CyberPlusWithDdrLcd (
   Axi4Ram axi_ram (
     .io_axi_arw_valid         (io_output_arw_halfPipe_valid                  ), //i
     .io_axi_arw_ready         (axi_ram_io_axi_arw_ready                      ), //o
-    .io_axi_arw_payload_addr  (io_output_arw_halfPipe_payload_addr[14:0]     ), //i
+    .io_axi_arw_payload_addr  (io_output_arw_halfPipe_payload_addr[15:0]     ), //i
     .io_axi_arw_payload_id    (io_output_arw_halfPipe_payload_id[3:0]        ), //i
     .io_axi_arw_payload_len   (io_output_arw_halfPipe_payload_len[7:0]       ), //i
     .io_axi_arw_payload_size  (io_output_arw_halfPipe_payload_size[2:0]      ), //i
@@ -1435,7 +1435,7 @@ module CyberPlusWithDdrLcd (
   Axi4SharedArbiter axi_ram_io_axi_arbiter (
     .io_readInputs_0_ar_valid            (io_outputs_0_ar_validPipe_valid                                ), //i
     .io_readInputs_0_ar_ready            (axi_ram_io_axi_arbiter_io_readInputs_0_ar_ready                ), //o
-    .io_readInputs_0_ar_payload_addr     (axi_ram_io_axi_arbiter_io_readInputs_0_ar_payload_addr[14:0]   ), //i
+    .io_readInputs_0_ar_payload_addr     (axi_ram_io_axi_arbiter_io_readInputs_0_ar_payload_addr[15:0]   ), //i
     .io_readInputs_0_ar_payload_id       (_zz_io_readInputs_0_ar_payload_id[2:0]                         ), //i
     .io_readInputs_0_ar_payload_len      (io_outputs_0_ar_validPipe_payload_len[7:0]                     ), //i
     .io_readInputs_0_ar_payload_size     (3'b010                                                         ), //i
@@ -1448,7 +1448,7 @@ module CyberPlusWithDdrLcd (
     .io_readInputs_0_r_payload_last      (axi_ram_io_axi_arbiter_io_readInputs_0_r_payload_last          ), //o
     .io_sharedInputs_0_arw_valid         (io_sharedOutputs_0_arw_validPipe_valid                         ), //i
     .io_sharedInputs_0_arw_ready         (axi_ram_io_axi_arbiter_io_sharedInputs_0_arw_ready             ), //o
-    .io_sharedInputs_0_arw_payload_addr  (axi_ram_io_axi_arbiter_io_sharedInputs_0_arw_payload_addr[14:0]), //i
+    .io_sharedInputs_0_arw_payload_addr  (axi_ram_io_axi_arbiter_io_sharedInputs_0_arw_payload_addr[15:0]), //i
     .io_sharedInputs_0_arw_payload_id    (_zz_io_sharedInputs_0_arw_payload_id[2:0]                      ), //i
     .io_sharedInputs_0_arw_payload_len   (io_sharedOutputs_0_arw_validPipe_payload_len[7:0]              ), //i
     .io_sharedInputs_0_arw_payload_size  (io_sharedOutputs_0_arw_validPipe_payload_size[2:0]             ), //i
@@ -1471,7 +1471,7 @@ module CyberPlusWithDdrLcd (
     .io_sharedInputs_0_r_payload_last    (axi_ram_io_axi_arbiter_io_sharedInputs_0_r_payload_last        ), //o
     .io_output_arw_valid                 (axi_ram_io_axi_arbiter_io_output_arw_valid                     ), //o
     .io_output_arw_ready                 (axi_ram_io_axi_arbiter_io_output_arw_ready                     ), //i
-    .io_output_arw_payload_addr          (axi_ram_io_axi_arbiter_io_output_arw_payload_addr[14:0]        ), //o
+    .io_output_arw_payload_addr          (axi_ram_io_axi_arbiter_io_output_arw_payload_addr[15:0]        ), //o
     .io_output_arw_payload_id            (axi_ram_io_axi_arbiter_io_output_arw_payload_id[3:0]           ), //o
     .io_output_arw_payload_len           (axi_ram_io_axi_arbiter_io_output_arw_payload_len[7:0]          ), //o
     .io_output_arw_payload_size          (axi_ram_io_axi_arbiter_io_output_arw_payload_size[2:0]         ), //o
@@ -1928,9 +1928,9 @@ module CyberPlusWithDdrLcd (
   assign io_outputs_0_ar_validPipe_payload_cache_1 = axi_lcdCtrl_io_axi_decoder_io_outputs_0_ar_payload_cache;
   assign io_outputs_0_ar_validPipe_payload_prot_1 = axi_lcdCtrl_io_axi_decoder_io_outputs_0_ar_payload_prot;
   assign io_outputs_0_ar_validPipe_ready_1 = axi_sdramCtrl_io_axi_arbiter_io_readInputs_1_ar_ready;
-  assign axi_ram_io_axi_arbiter_io_readInputs_0_ar_payload_addr = io_outputs_0_ar_validPipe_payload_addr[14:0];
+  assign axi_ram_io_axi_arbiter_io_readInputs_0_ar_payload_addr = io_outputs_0_ar_validPipe_payload_addr[15:0];
   assign _zz_io_readInputs_0_ar_payload_id[2 : 0] = 3'b000;
-  assign axi_ram_io_axi_arbiter_io_sharedInputs_0_arw_payload_addr = io_sharedOutputs_0_arw_validPipe_payload_addr[14:0];
+  assign axi_ram_io_axi_arbiter_io_sharedInputs_0_arw_payload_addr = io_sharedOutputs_0_arw_validPipe_payload_addr[15:0];
   assign _zz_io_sharedInputs_0_arw_payload_id[2 : 0] = 3'b000;
   assign io_output_arw_halfPipe_fire = (io_output_arw_halfPipe_valid && io_output_arw_halfPipe_ready);
   assign axi_ram_io_axi_arbiter_io_output_arw_ready = (! io_output_arw_rValid);
@@ -2938,7 +2938,7 @@ endmodule
 module Axi4SharedArbiter (
   input  wire          io_readInputs_0_ar_valid,
   output wire          io_readInputs_0_ar_ready,
-  input  wire [14:0]   io_readInputs_0_ar_payload_addr,
+  input  wire [15:0]   io_readInputs_0_ar_payload_addr,
   input  wire [2:0]    io_readInputs_0_ar_payload_id,
   input  wire [7:0]    io_readInputs_0_ar_payload_len,
   input  wire [2:0]    io_readInputs_0_ar_payload_size,
@@ -2951,7 +2951,7 @@ module Axi4SharedArbiter (
   output wire          io_readInputs_0_r_payload_last,
   input  wire          io_sharedInputs_0_arw_valid,
   output wire          io_sharedInputs_0_arw_ready,
-  input  wire [14:0]   io_sharedInputs_0_arw_payload_addr,
+  input  wire [15:0]   io_sharedInputs_0_arw_payload_addr,
   input  wire [2:0]    io_sharedInputs_0_arw_payload_id,
   input  wire [7:0]    io_sharedInputs_0_arw_payload_len,
   input  wire [2:0]    io_sharedInputs_0_arw_payload_size,
@@ -2974,7 +2974,7 @@ module Axi4SharedArbiter (
   output wire          io_sharedInputs_0_r_payload_last,
   output wire          io_output_arw_valid,
   input  wire          io_output_arw_ready,
-  output wire [14:0]   io_output_arw_payload_addr,
+  output wire [15:0]   io_output_arw_payload_addr,
   output wire [3:0]    io_output_arw_payload_id,
   output wire [7:0]    io_output_arw_payload_len,
   output wire [2:0]    io_output_arw_payload_size,
@@ -3004,7 +3004,7 @@ module Axi4SharedArbiter (
   wire                cmdArbiter_io_inputs_0_ready;
   wire                cmdArbiter_io_inputs_1_ready;
   wire                cmdArbiter_io_output_valid;
-  wire       [14:0]   cmdArbiter_io_output_payload_addr;
+  wire       [15:0]   cmdArbiter_io_output_payload_addr;
   wire       [2:0]    cmdArbiter_io_output_payload_id;
   wire       [7:0]    cmdArbiter_io_output_payload_len;
   wire       [2:0]    cmdArbiter_io_output_payload_size;
@@ -3022,7 +3022,7 @@ module Axi4SharedArbiter (
   reg                 _zz_io_output_r_ready;
   wire                inputsCmd_0_valid;
   wire                inputsCmd_0_ready;
-  wire       [14:0]   inputsCmd_0_payload_addr;
+  wire       [15:0]   inputsCmd_0_payload_addr;
   wire       [2:0]    inputsCmd_0_payload_id;
   wire       [7:0]    inputsCmd_0_payload_len;
   wire       [2:0]    inputsCmd_0_payload_size;
@@ -3030,7 +3030,7 @@ module Axi4SharedArbiter (
   wire                inputsCmd_0_payload_write;
   wire                inputsCmd_1_valid;
   wire                inputsCmd_1_ready;
-  wire       [14:0]   inputsCmd_1_payload_addr;
+  wire       [15:0]   inputsCmd_1_payload_addr;
   wire       [2:0]    inputsCmd_1_payload_id;
   wire       [7:0]    inputsCmd_1_payload_len;
   wire       [2:0]    inputsCmd_1_payload_size;
@@ -3038,7 +3038,7 @@ module Axi4SharedArbiter (
   wire                inputsCmd_1_payload_write;
   wire                cmdOutputFork_valid;
   wire                cmdOutputFork_ready;
-  wire       [14:0]   cmdOutputFork_payload_addr;
+  wire       [15:0]   cmdOutputFork_payload_addr;
   wire       [2:0]    cmdOutputFork_payload_id;
   wire       [7:0]    cmdOutputFork_payload_len;
   wire       [2:0]    cmdOutputFork_payload_size;
@@ -3046,7 +3046,7 @@ module Axi4SharedArbiter (
   wire                cmdOutputFork_payload_write;
   wire                cmdRouteFork_valid;
   reg                 cmdRouteFork_ready;
-  wire       [14:0]   cmdRouteFork_payload_addr;
+  wire       [15:0]   cmdRouteFork_payload_addr;
   wire       [2:0]    cmdRouteFork_payload_id;
   wire       [7:0]    cmdRouteFork_payload_len;
   wire       [2:0]    cmdRouteFork_payload_size;
@@ -3062,7 +3062,7 @@ module Axi4SharedArbiter (
   wire                when_Stream_l486;
   reg                 cmdRouteFork_throwWhen_valid;
   wire                cmdRouteFork_throwWhen_ready;
-  wire       [14:0]   cmdRouteFork_throwWhen_payload_addr;
+  wire       [15:0]   cmdRouteFork_throwWhen_payload_addr;
   wire       [2:0]    cmdRouteFork_throwWhen_payload_id;
   wire       [7:0]    cmdRouteFork_throwWhen_payload_len;
   wire       [2:0]    cmdRouteFork_throwWhen_payload_size;
@@ -3087,7 +3087,7 @@ module Axi4SharedArbiter (
   StreamArbiter cmdArbiter (
     .io_inputs_0_valid         (inputsCmd_0_valid                      ), //i
     .io_inputs_0_ready         (cmdArbiter_io_inputs_0_ready           ), //o
-    .io_inputs_0_payload_addr  (inputsCmd_0_payload_addr[14:0]         ), //i
+    .io_inputs_0_payload_addr  (inputsCmd_0_payload_addr[15:0]         ), //i
     .io_inputs_0_payload_id    (inputsCmd_0_payload_id[2:0]            ), //i
     .io_inputs_0_payload_len   (inputsCmd_0_payload_len[7:0]           ), //i
     .io_inputs_0_payload_size  (inputsCmd_0_payload_size[2:0]          ), //i
@@ -3095,7 +3095,7 @@ module Axi4SharedArbiter (
     .io_inputs_0_payload_write (inputsCmd_0_payload_write              ), //i
     .io_inputs_1_valid         (inputsCmd_1_valid                      ), //i
     .io_inputs_1_ready         (cmdArbiter_io_inputs_1_ready           ), //o
-    .io_inputs_1_payload_addr  (inputsCmd_1_payload_addr[14:0]         ), //i
+    .io_inputs_1_payload_addr  (inputsCmd_1_payload_addr[15:0]         ), //i
     .io_inputs_1_payload_id    (inputsCmd_1_payload_id[2:0]            ), //i
     .io_inputs_1_payload_len   (inputsCmd_1_payload_len[7:0]           ), //i
     .io_inputs_1_payload_size  (inputsCmd_1_payload_size[2:0]          ), //i
@@ -3103,7 +3103,7 @@ module Axi4SharedArbiter (
     .io_inputs_1_payload_write (inputsCmd_1_payload_write              ), //i
     .io_output_valid           (cmdArbiter_io_output_valid             ), //o
     .io_output_ready           (cmdArbiter_io_output_ready             ), //i
-    .io_output_payload_addr    (cmdArbiter_io_output_payload_addr[14:0]), //o
+    .io_output_payload_addr    (cmdArbiter_io_output_payload_addr[15:0]), //o
     .io_output_payload_id      (cmdArbiter_io_output_payload_id[2:0]   ), //o
     .io_output_payload_len     (cmdArbiter_io_output_payload_len[7:0]  ), //o
     .io_output_payload_size    (cmdArbiter_io_output_payload_size[2:0] ), //o
@@ -3680,7 +3680,7 @@ module Axi4SharedDecoder (
 
   assign when_Utils_l753 = ((! pendingDataCounter_incrementIt) && pendingDataCounter_decrementIt);
   assign pendingDataCounter_valueNext = (pendingDataCounter_value + pendingDataCounter_finalIncrement);
-  assign decodedCmdSels = {((io_input_arw_payload_addr & (~ 32'h000fffff)) == 32'hf0000000),{((io_input_arw_payload_addr & (~ 32'h07ffffff)) == 32'h40000000),((io_input_arw_payload_addr & (~ 32'h00007fff)) == 32'h80000000)}};
+  assign decodedCmdSels = {((io_input_arw_payload_addr & (~ 32'h000fffff)) == 32'hf0000000),{((io_input_arw_payload_addr & (~ 32'h07ffffff)) == 32'h40000000),((io_input_arw_payload_addr & (~ 32'h0000ffff)) == 32'h80000000)}};
   assign decodedCmdError = (decodedCmdSels == 3'b000);
   assign allowCmd = ((pendingCmdCounter == 3'b000) || ((pendingCmdCounter != 3'b111) && (pendingSels == decodedCmdSels)));
   assign allowData = (pendingDataCounter_value != 3'b000);
@@ -3916,7 +3916,7 @@ module Axi4ReadOnlyDecoder (
 
   assign when_Utils_l753 = ((! pendingCmdCounter_incrementIt) && pendingCmdCounter_decrementIt);
   assign pendingCmdCounter_valueNext = (pendingCmdCounter_value + pendingCmdCounter_finalIncrement);
-  assign decodedCmdSels = {(((io_input_ar_payload_addr & (~ 32'h07ffffff)) == 32'h40000000) && io_input_ar_valid),(((io_input_ar_payload_addr & (~ 32'h00007fff)) == 32'h80000000) && io_input_ar_valid)};
+  assign decodedCmdSels = {(((io_input_ar_payload_addr & (~ 32'h07ffffff)) == 32'h40000000) && io_input_ar_valid),(((io_input_ar_payload_addr & (~ 32'h0000ffff)) == 32'h80000000) && io_input_ar_valid)};
   assign decodedCmdError = (decodedCmdSels == 2'b00);
   assign allowCmd = ((pendingCmdCounter_value == 3'b000) || ((pendingCmdCounter_value != 3'b111) && (pendingSels == decodedCmdSels)));
   assign io_input_ar_ready = (((|(decodedCmdSels & {io_outputs_1_ar_ready,io_outputs_0_ar_ready})) || (decodedCmdError && errorSlave_io_axi_ar_ready)) && allowCmd);
@@ -12319,7 +12319,7 @@ endmodule
 module Axi4Ram (
   input  wire          io_axi_arw_valid,
   output reg           io_axi_arw_ready,
-  input  wire [14:0]   io_axi_arw_payload_addr,
+  input  wire [15:0]   io_axi_arw_payload_addr,
   input  wire [3:0]    io_axi_arw_payload_id,
   input  wire [7:0]    io_axi_arw_payload_len,
   input  wire [2:0]    io_axi_arw_payload_size,
@@ -12365,7 +12365,7 @@ module Axi4Ram (
   reg                 unburstify_result_valid;
   wire                unburstify_result_ready;
   reg                 unburstify_result_payload_last;
-  reg        [14:0]   unburstify_result_payload_fragment_addr;
+  reg        [15:0]   unburstify_result_payload_fragment_addr;
   reg        [3:0]    unburstify_result_payload_fragment_id;
   reg        [2:0]    unburstify_result_payload_fragment_size;
   reg        [1:0]    unburstify_result_payload_fragment_burst;
@@ -12374,15 +12374,15 @@ module Axi4Ram (
   reg                 unburstify_buffer_valid;
   reg        [7:0]    unburstify_buffer_len;
   reg        [7:0]    unburstify_buffer_beat;
-  reg        [14:0]   unburstify_buffer_transaction_addr;
+  reg        [15:0]   unburstify_buffer_transaction_addr;
   reg        [3:0]    unburstify_buffer_transaction_id;
   reg        [2:0]    unburstify_buffer_transaction_size;
   reg        [1:0]    unburstify_buffer_transaction_burst;
   reg                 unburstify_buffer_transaction_write;
   wire                unburstify_buffer_last;
   wire       [1:0]    Axi4Incr_validSize;
-  reg        [14:0]   Axi4Incr_result;
-  wire       [2:0]    Axi4Incr_highCat;
+  reg        [15:0]   Axi4Incr_result;
+  wire       [3:0]    Axi4Incr_highCat;
   wire       [2:0]    Axi4Incr_sizeValue;
   wire       [11:0]   Axi4Incr_alignMask;
   wire       [11:0]   Axi4Incr_base;
@@ -12394,34 +12394,34 @@ module Axi4Ram (
   wire                stage0_valid;
   reg                 stage0_ready;
   wire                stage0_payload_last;
-  wire       [14:0]   stage0_payload_fragment_addr;
+  wire       [15:0]   stage0_payload_fragment_addr;
   wire       [3:0]    stage0_payload_fragment_id;
   wire       [2:0]    stage0_payload_fragment_size;
   wire       [1:0]    stage0_payload_fragment_burst;
   wire                stage0_payload_fragment_write;
-  wire       [12:0]   _zz_io_axi_r_payload_data;
+  wire       [13:0]   _zz_io_axi_r_payload_data;
   wire                stage0_fire;
   wire       [31:0]   _zz_io_axi_r_payload_data_1;
   wire                stage1_valid;
   wire                stage1_ready;
   wire                stage1_payload_last;
-  wire       [14:0]   stage1_payload_fragment_addr;
+  wire       [15:0]   stage1_payload_fragment_addr;
   wire       [3:0]    stage1_payload_fragment_id;
   wire       [2:0]    stage1_payload_fragment_size;
   wire       [1:0]    stage1_payload_fragment_burst;
   wire                stage1_payload_fragment_write;
   reg                 stage0_rValid;
   reg                 stage0_rData_last;
-  reg        [14:0]   stage0_rData_fragment_addr;
+  reg        [15:0]   stage0_rData_fragment_addr;
   reg        [3:0]    stage0_rData_fragment_id;
   reg        [2:0]    stage0_rData_fragment_size;
   reg        [1:0]    stage0_rData_fragment_burst;
   reg                 stage0_rData_fragment_write;
   wire                when_Stream_l399;
-  reg [7:0] ram_symbol0 [0:8191];
-  reg [7:0] ram_symbol1 [0:8191];
-  reg [7:0] ram_symbol2 [0:8191];
-  reg [7:0] ram_symbol3 [0:8191];
+  reg [7:0] ram_symbol0 [0:16383];
+  reg [7:0] ram_symbol1 [0:16383];
+  reg [7:0] ram_symbol2 [0:16383];
+  reg [7:0] ram_symbol3 [0:16383];
   reg [7:0] _zz_ramsymbol_read;
   reg [7:0] _zz_ramsymbol_read_1;
   reg [7:0] _zz_ramsymbol_read_2;
@@ -12489,7 +12489,7 @@ module Axi4Ram (
 
   assign unburstify_buffer_last = (unburstify_buffer_beat == 8'h01);
   assign Axi4Incr_validSize = unburstify_buffer_transaction_size[1 : 0];
-  assign Axi4Incr_highCat = unburstify_buffer_transaction_addr[14 : 12];
+  assign Axi4Incr_highCat = unburstify_buffer_transaction_addr[15 : 12];
   assign Axi4Incr_sizeValue = {(2'b10 == Axi4Incr_validSize),{(2'b01 == Axi4Incr_validSize),(2'b00 == Axi4Incr_validSize)}};
   assign Axi4Incr_alignMask = {10'd0, _zz_Axi4Incr_alignMask};
   assign Axi4Incr_base = (unburstify_buffer_transaction_addr[11 : 0] & (~ Axi4Incr_alignMask));
@@ -12602,7 +12602,7 @@ module Axi4Ram (
   assign stage0_payload_fragment_size = unburstify_result_payload_fragment_size;
   assign stage0_payload_fragment_burst = unburstify_result_payload_fragment_burst;
   assign stage0_payload_fragment_write = unburstify_result_payload_fragment_write;
-  assign _zz_io_axi_r_payload_data = stage0_payload_fragment_addr[14 : 2];
+  assign _zz_io_axi_r_payload_data = stage0_payload_fragment_addr[15 : 2];
   assign stage0_fire = (stage0_valid && stage0_ready);
   assign _zz_io_axi_r_payload_data_1 = io_axi_w_payload_data;
   assign io_axi_r_payload_data = ram_spinal_port0;
@@ -12967,7 +12967,7 @@ endmodule
 module StreamArbiter (
   input  wire          io_inputs_0_valid,
   output wire          io_inputs_0_ready,
-  input  wire [14:0]   io_inputs_0_payload_addr,
+  input  wire [15:0]   io_inputs_0_payload_addr,
   input  wire [2:0]    io_inputs_0_payload_id,
   input  wire [7:0]    io_inputs_0_payload_len,
   input  wire [2:0]    io_inputs_0_payload_size,
@@ -12975,7 +12975,7 @@ module StreamArbiter (
   input  wire          io_inputs_0_payload_write,
   input  wire          io_inputs_1_valid,
   output wire          io_inputs_1_ready,
-  input  wire [14:0]   io_inputs_1_payload_addr,
+  input  wire [15:0]   io_inputs_1_payload_addr,
   input  wire [2:0]    io_inputs_1_payload_id,
   input  wire [7:0]    io_inputs_1_payload_len,
   input  wire [2:0]    io_inputs_1_payload_size,
@@ -12983,7 +12983,7 @@ module StreamArbiter (
   input  wire          io_inputs_1_payload_write,
   output wire          io_output_valid,
   input  wire          io_output_ready,
-  output wire [14:0]   io_output_payload_addr,
+  output wire [15:0]   io_output_payload_addr,
   output wire [2:0]    io_output_payload_id,
   output wire [7:0]    io_output_payload_len,
   output wire [2:0]    io_output_payload_size,
@@ -16316,11 +16316,11 @@ module Apb3Uart (
   reg        [19:0]   clockDivider_counter;
   wire                clockDivider_tick;
   reg                 clockDivider_tickReg;
-  wire                rxneInterrupt;
-  wire                txeInterrupt;
-  wire                tcInterrupt;
-  wire                peInterrupt;
   wire                feInterrupt;
+  wire                rxneInterrupt;
+  wire                tcInterrupt;
+  wire                txeInterrupt;
+  wire                peInterrupt;
   `ifndef SYNTHESIS
   reg [23:0] frame_stop_string;
   reg [31:0] frame_parity_string;
@@ -16484,11 +16484,11 @@ module Apb3Uart (
   assign _zz_frame_stop = _zz_frame_stop_1;
   assign frame_stop = _zz_frame_stop;
   assign clockDivider_tick = (clockDivider_counter == 20'h0);
-  assign rxneInterrupt = (CR1[5] && SR[5]);
-  assign txeInterrupt = (CR1[7] && SR[7]);
-  assign tcInterrupt = (CR1[6] && SR[6]);
-  assign peInterrupt = (CR1[8] && SR[1]);
   assign feInterrupt = (CR1[4] && SR[3]);
+  assign rxneInterrupt = (CR1[5] && SR[5]);
+  assign tcInterrupt = (CR1[6] && SR[6]);
+  assign txeInterrupt = (CR1[7] && SR[7]);
+  assign peInterrupt = (CR1[8] && SR[1]);
   assign io_interrupt = ((((rxneInterrupt || txeInterrupt) || tcInterrupt) || peInterrupt) || feInterrupt);
   always @(*) begin
     txFifo_io_push_valid = 1'b0;
