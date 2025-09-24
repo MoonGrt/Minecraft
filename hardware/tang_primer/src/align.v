@@ -39,8 +39,8 @@ module align #(
     wire                       fifo_wr_full;
     wire                       fifo_rd_empty;
 
-    wire              rd_en;
-    reg               sending;
+    wire                   rd_en;
+    reg                    send;
     reg [$clog2(H_DISP):0] Hcnt;
     reg [$clog2(V_DISP):0] Vcnt;
 
@@ -65,19 +65,19 @@ module align #(
     );
 
     // 读出逻辑
-    assign rd_en = sending & ~fifo_rd_empty; // FIFO不空就一直读
     reg vs;
+    assign rd_en = send & ~fifo_rd_empty; // FIFO不空就一直读
     always @(posedge video_clk or posedge rst) begin
         if (rst) begin
-            vs      <= 1;
-            sending <= 0;
-            Hcnt    <= 0;
-            Vcnt    <= 0;
+            vs   <= 1;
+            send <= 0;
+            Hcnt <= 0;
+            Vcnt <= 0;
         end else begin
             vs <= 0;
-            if (sending) begin
+            if (send) begin
                 if (Hcnt == H_DISP - 1) begin
-                    sending <= 0;
+                    send <= 0;
                     if (Vcnt == V_DISP - 1) begin 
                         vs <= 1;
                         Vcnt <= 0;
@@ -86,7 +86,7 @@ module align #(
                 end
                 else Hcnt <= Hcnt + 1;
             end else if (fifo_wr_count == H_DISP) begin
-                sending <= 1;
+                send <= 1;
                 Hcnt <= 0;
             end
         end

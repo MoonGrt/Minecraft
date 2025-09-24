@@ -218,9 +218,12 @@ module ppl_proc (
             block_next_y_d3 <= 'b0;
             block_next_z_d3 <= 'b0;
         end else begin
-            block_next_x_d3 <= min_flag_d2[0] ? (ray_slope_x_d2[15] ? block_x_d2 : block_x_d2 + 'd1) : block_x_d2;
-            block_next_y_d3 <= min_flag_d2[1] ? (ray_slope_y_d2[15] ? block_y_d2 : block_y_d2 + 'd1) : block_y_d2;
-            block_next_z_d3 <= min_flag_d2[2] ? (ray_slope_z_d2[15] ? block_z_d2 : block_z_d2 + 'd1) : block_z_d2;
+            block_next_x_d3 <= min_flag_d2[0] ? (ray_slope_x_d2[15] ? ((start_pos_x_d2[10:0]) ? block_x_d2 : block_x_d2 - 'd1) : block_x_d2 + 'd1) : block_x_d2;
+            block_next_y_d3 <= min_flag_d2[1] ? (ray_slope_y_d2[15] ? ((start_pos_y_d2[10:0]) ? block_y_d2 : block_y_d2 - 'd1) : block_y_d2 + 'd1) : block_y_d2;
+            block_next_z_d3 <= min_flag_d2[2] ? (ray_slope_z_d2[15] ? ((start_pos_z_d2[10:0]) ? block_z_d2 : block_z_d2 - 'd1) : block_z_d2 + 'd1) : block_z_d2;
+            // block_next_x_d3 <= min_flag_d2[0] ? (ray_slope_x_d2[15] ? block_x_d2 : block_x_d2 + 'd1) : block_x_d2;
+            // block_next_y_d3 <= min_flag_d2[1] ? (ray_slope_y_d2[15] ? block_y_d2 : block_y_d2 + 'd1) : block_y_d2;
+            // block_next_z_d3 <= min_flag_d2[2] ? (ray_slope_z_d2[15] ? block_z_d2 : block_z_d2 + 'd1) : block_z_d2;
         end
     end
 
@@ -276,9 +279,11 @@ module ppl_proc (
                        min_flag_d4[1] ? (ray_slope_y ? 3'd2 : 3'd3) :  // Y
                        min_flag_d4[2] ? (ray_slope_z ? 3'd4 : 3'd5) :  // Z
                        3'd0;  // 默认值
-            block_addr_d4 <= (block_next_x_d3 << 10) + (block_next_y_d3 << 5) + (block_next_z_d3);  // block_next_x * 32 * 32 + block_next_y * 32 + block_next_z;
-            map_border_flag_d4 <= (block_next_x_d3 == 0) || (block_next_x_d3 == 32) || (block_next_y_d3 == 0) || (block_next_y_d3 == 32) ||
-                                    (block_next_z_d3 == 0) || (block_next_z_d3 == 32);
+            // block_next_x * 32 * 32 + block_next_y * 32 + block_next_z;
+            block_addr_d4 <= (block_next_x_d3 << 10) + (block_next_y_d3 << 5) + (block_next_z_d3);
+            map_border_flag_d4 <= (block_next_x_d3 == 0) || (block_next_x_d3 == 32) ||
+                                  (block_next_y_d3 == 0) || (block_next_y_d3 == 32) ||
+                                  (block_next_z_d3 == 0) || (block_next_z_d3 == 32);
             end_pos_x_d4 <= min_flag_d3[0] ? (block_next_x_d3 << 11) :  // 4 + 7
                                 (min_flag_d3[1] ? start_pos_x_d3 + detal_xy : start_pos_x_d3 + detal_xz);
             end_pos_y_d4 <= min_flag_d3[1] ? (block_next_y_d3 << 11) :  // 4 + 7
@@ -291,6 +296,7 @@ module ppl_proc (
 
 
     // Step5
+    reg [ 2:0] face_d5;
     reg [19:0] pixel_addr_d5 = 'b0;
     reg signed [15:0] ray_slope_x_d5 = 'b0;
     reg signed [15:0] ray_slope_y_d5 = 'b0;
@@ -317,6 +323,7 @@ module ppl_proc (
             block_cnt_d5   <= 'b0;
             map_border_flag_d5 <= 'b0;
             block_addr_d5 <= 'b0;
+            face_d5 <= 'b0;
         end else begin
             ray_slope_x_d5 <= ray_slope_x_d4;
             ray_slope_y_d5 <= ray_slope_y_d4;
@@ -328,6 +335,7 @@ module ppl_proc (
             block_cnt_d5 <= block_cnt_d4;
             map_border_flag_d5 <= map_border_flag_d4;
             block_addr_d5 <= block_addr_d4;
+            face_d5 <= face_d4;
         end
     end
     // next
@@ -336,8 +344,8 @@ module ppl_proc (
             texture_x_d5 <= 'b0;
             texture_y_d5 <= 'b0;
         end else begin
-            texture_x_d5 <= min_flag_d4[2] ? end_pos_y_d4[11:8] : (min_flag_d4[1] ? end_pos_x_d4[11:8] : end_pos_x_d4[11:8]);
-            texture_y_d5 <= min_flag_d4[2] ? end_pos_z_d4[11:8] : (min_flag_d4[1] ? end_pos_z_d4[11:8] : end_pos_y_d4[11:8]);
+            texture_x_d5 <= min_flag_d4[2] ? end_pos_y_d4[10:7] : (min_flag_d4[1] ? end_pos_x_d4[10:7] : end_pos_x_d4[10:7]);
+            texture_y_d5 <= min_flag_d4[2] ? end_pos_z_d4[10:7] : (min_flag_d4[1] ? end_pos_z_d4[10:7] : end_pos_y_d4[10:7]);
         end
     end
 
@@ -381,7 +389,7 @@ module ppl_proc (
     wire [4:0] texture_id;
     projection projection (
         .block_id  (block_id),
-        .face      (face_d4),
+        .face      (face_d5),
         .texture_id(texture_id)
     );
     wire [12:0] texture_addr_d6 = texture_x_d5 + (texture_y_d5 << 4) + (texture_id << 8);
