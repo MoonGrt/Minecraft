@@ -39,7 +39,7 @@ module ppl #(
 
     wire prepare_flag;
     assign valid = next_en && ~prepare_flag;
-    wire scanner_stop, scanner_en;
+    wire scanner_stop;
 
     ppl_ctrl #(
         .H_DISP(H_DISP),
@@ -51,7 +51,6 @@ module ppl #(
         .pixel_addr_out(pixel_addr_out),
 
         .prepare_flag(prepare_flag),
-        .scanner_en  (scanner_en),
         .scanner_stop(scanner_stop)
     );
 
@@ -67,8 +66,7 @@ module ppl #(
         .p_angle_x(p_angle_x),
         .p_angle_y(p_angle_y),
 
-        .next_en        (next_en),
-        // .scanner_en     (scanner_en),
+        .next_en        (1),
         .scanner_stop   (scanner_stop),
         .pixel_addr_out (pixel_addr_out),
         .end_pos_x      (end_pos_x),

@@ -48,14 +48,14 @@ module top (
     parameter H_DISP = 480;
     parameter V_DISP = 272;
 
-    reg  [16:0] p_pos_x = 'd16 << 4 << 7;
-    reg  [16:0] p_pos_y = 'd16 << 4 << 7;
-    reg  [16:0] p_pos_z = 'd24 << 4 << 7;
+    reg  [16:0] p_pos_x = 'd33 << 3 << 7;
+    reg  [16:0] p_pos_y = 'd33 << 3 << 7;
+    reg  [16:0] p_pos_z = 'd49 << 3 << 7;
     // reg  [16:0] p_pos_x = 'd170 << 7;
     // reg  [16:0] p_pos_y = 'd170 << 7;
     // reg  [16:0] p_pos_z = 'd280 << 7;
-    reg  [15:0] p_angle_x = 0;
-    reg  [15:0] p_angle_y = 90;
+    reg  [15:0] p_angle_x = 225;
+    reg  [15:0] p_angle_y = 0;
     wire [14:0] write_addr;
     wire [ 4:0] write_data;
     wire        write_en;

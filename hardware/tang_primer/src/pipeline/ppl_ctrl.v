@@ -10,7 +10,6 @@ module ppl_ctrl #(
     input        next_en,
 
     output     prepare_flag,
-    output     scanner_en,
     output reg scanner_stop,
     output     vs
 );
@@ -28,7 +27,6 @@ module ppl_ctrl #(
     reg vs_reg = 'b0;
     wire frame_end = (pixel_addr_out == H_DISP * V_DISP);
     assign prepare_flag = (prepare_state == BEFORE_PREPARE || prepare_state == PREPARING);
-    assign scanner_en   = next_en && ~scanner_stop;
 
     reg [19:0] pixel_cnt = 'b0;
     always @(posedge clk or posedge rst) begin
