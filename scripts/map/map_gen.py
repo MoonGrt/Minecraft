@@ -6,26 +6,26 @@ import opensimplex
 noise = opensimplex.OpenSimplex(seed=233)
 
 # 地形尺寸
-x_size, y_size, z_size = 32, 32, 32
+MAPX, MAPY, MAPZ = 32, 32, 32
 
 def is_coord_valid(x, y, z):
-    if x < 0 or x >= x_size:
+    if x < 0 or x >= MAPX:
         return False
-    if y < 0 or y >= y_size:
+    if y < 0 or y >= MAPY:
         return False
-    if z < 0 or z >= z_size:
+    if z < 0 or z >= MAPZ:
         return False
     return True
 
 # 初始化地形数组
-terrain = np.zeros((x_size, y_size, z_size), dtype=np.uint8)
+terrain = np.zeros((MAPX, MAPY, MAPZ), dtype=np.uint8)
 
 # 定义地表高度
 ground_offset = 8
 
 # 生成地形
-for x in range(x_size):
-    for y in range(y_size):
+for x in range(MAPX):
+    for y in range(MAPY):
         # 计算噪声值
         noise_val = noise.noise2(x / 20, y / 20)
         # 将噪声值转化为高度
@@ -52,8 +52,8 @@ for x in range(x_size):
                 terrain[x][y][z] = 2 # 石头
 
 # 设置基岩
-for x in range(x_size):
-    for y in range(y_size):
+for x in range(MAPX):
+    for y in range(MAPY):
         terrain[x][y][0] = 1 # 基岩
 
 
@@ -61,7 +61,7 @@ for x in range(x_size):
 
 # 打印地形数组
 # 打印地形数组
-def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', bitwidth=4):
+def write_map(terrain, MAPX, MAPY, MAPZ, filetype='coe', datatype='bin', bitwidth=4):
     """通用地图文件输出函数
     terrain: 三维地形数组
     filetype: 'coe' / 'mi' / 'c' / None
@@ -80,9 +80,9 @@ def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', b
     elif filetype == 'mi':  # Gowin MI 文件
         filename = f'output/map.{filetype}'
         if datatype == 'bin':
-            header = f"#File_format=Bin\n#Address_depth={x_size*y_size*z_size}\n#Data_width={bitwidth}"
+            header = f"#File_format=Bin\n#Address_depth={MAPX*MAPY*MAPZ}\n#Data_width={bitwidth}"
         elif datatype == 'hex':
-            header = f"#File_format=Hex\n#Address_depth={x_size*y_size*z_size}\n#Data_width={bitwidth}"
+            header = f"#File_format=Hex\n#Address_depth={MAPX*MAPY*MAPZ}\n#Data_width={bitwidth}"
     elif filetype == 'c':  # C语言数组
         filename = f'output/map.c'
         header = None
@@ -99,24 +99,24 @@ def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', b
         pack_two = (filetype == 'c' and bitwidth == 4)
         if filetype == 'c':
             if pack_two:
-                c_z_size = math.ceil(z_size / 2)  # 打包后长度
-                f.write(f"const uint8_t MAP[{x_size}][{y_size}][{c_z_size}] = {{\n")
+                c_MAPZ = math.ceil(MAPZ / 2)  # 打包后长度
+                f.write(f"const uint8_t MAP[{MAPX}][{MAPY}][{c_MAPZ}] = {{\n")
             else:
                 c_bitwidth = max(8, ((bitwidth + 7) // 8) * 8)
-                f.write(f"const uint{c_bitwidth}_t MAP[{x_size}][{y_size}][{z_size}] = {{\n")
+                f.write(f"const uint{c_bitwidth}_t MAP[{MAPX}][{MAPY}][{MAPZ}] = {{\n")
 
-        for i in range(x_size):
+        for i in range(MAPX):
             if filetype == 'c':
                 f.write("  {\n")
-            for j in range(y_size):
+            for j in range(MAPY):
                 if filetype == 'c':
                     f.write("    { ")
                 if pack_two:
                     # 每两个4bit打包成一个uint8_t
                     packed_bytes = []
-                    for k in range(0, z_size, 2):
+                    for k in range(0, MAPZ, 2):
                         v1 = int(terrain[i, j, k])
-                        v2 = int(terrain[i, j, k+1]) if k+1 < z_size else 0
+                        v2 = int(terrain[i, j, k+1]) if k+1 < MAPZ else 0
                         byte_val = (v2 << 4) | v1
                         if datatype == 'bin':
                             packed_bytes.append(f"0b{byte_val:08b}")
@@ -124,7 +124,7 @@ def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', b
                             packed_bytes.append(f"0x{byte_val:02X}")
                     f.write(", ".join(packed_bytes))
                 else:
-                    for k in range(z_size):
+                    for k in range(MAPZ):
                         v = int(terrain[i, j, k])
                         if datatype == 'bin':
                             val_str = format(v, f'0{bitwidth}b')
@@ -138,14 +138,14 @@ def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', b
                         else:
                             raise ValueError(f"Unsupported datatype: {datatype}")
                         if filetype == 'c':
-                            sep = ", " if k < z_size - 1 else ""
+                            sep = ", " if k < MAPZ - 1 else ""
                             f.write(val_str + sep)
                         else:
                             all_lines.append(val_str)
                 if filetype == 'c':
-                    f.write(" }" + ("," if j < y_size - 1 else "") + "\n")
+                    f.write(" }" + ("," if j < MAPY - 1 else "") + "\n")
             if filetype == 'c':
-                f.write("  }" + ("," if i < x_size - 1 else "") + "\n")
+                f.write("  }" + ("," if i < MAPX - 1 else "") + "\n")
 
         # 写入文件
         if filetype == 'coe':
@@ -159,10 +159,10 @@ def write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', b
             f.write("};\n")
 
 
-write_map(terrain, x_size, y_size, z_size, filetype='coe', datatype='bin', bitwidth=4)
-write_map(terrain, x_size, y_size, z_size, filetype='mi', datatype='hex', bitwidth=4)
-write_map(terrain, x_size, y_size, z_size, filetype=None, datatype='bin', bitwidth=4)
-write_map(terrain, x_size, y_size, z_size, filetype='c', datatype='bin', bitwidth=4)
+write_map(terrain, MAPX, MAPY, MAPZ, filetype='coe', datatype='bin', bitwidth=4)
+write_map(terrain, MAPX, MAPY, MAPZ, filetype='mi', datatype='hex', bitwidth=4)
+write_map(terrain, MAPX, MAPY, MAPZ, filetype=None, datatype='bin', bitwidth=4)
+write_map(terrain, MAPX, MAPY, MAPZ, filetype='c', datatype='bin', bitwidth=4)
 print("Map generation and output files completed!")
 
 
@@ -187,9 +187,9 @@ ax.scatter(X, Y, Z, color='b', s=1)
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
-ax.set_xlim(0, 32)
-ax.set_ylim(0, 32)
-ax.set_zlim(0, 32)
+ax.set_xlim(0, MAPX)
+ax.set_ylim(0, MAPY)
+ax.set_zlim(0, MAPZ)
 # 显示图形
 plt.show()
 

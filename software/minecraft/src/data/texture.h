@@ -419,7 +419,7 @@ enum {
 // 如果你需要更精确地对不同侧使用不同纹理（例如面向玩家的 front），
 // 需要在 block_face_texture 中按方向填写不同的纹理索引。
 static const uint8_t block_face_texture[BLK_CRAFTING_TABLE+1][6] = {
-  /* AIR = 0 */                {0,0,0,0,0,0},
+  /* AIR = 0 */                {0, 0, 0, 0, 0, 0},
   /* BLK_BEDROCK = 1 */        {TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK, TEX_BEDROCK},
   /* BLK_STONE = 2 */          {TEX_STONE, TEX_STONE, TEX_STONE, TEX_STONE, TEX_STONE, TEX_STONE},
   /* BLK_GRASS = 3 */          {TEX_GRASS_TOP, TEX_GRASS_SIDE, TEX_GRASS_SIDE, TEX_GRASS_SIDE, TEX_GRASS_SIDE, TEX_DIRT},

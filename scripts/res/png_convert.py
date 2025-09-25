@@ -36,6 +36,8 @@ TEXTURE_COLLECTIONS = {
     ]
 }
 
+# 转换颜色
+# 支持：ARGB8888, RGB888, RGB565, ARGB1555, ARGB4444, L8, AL44, AL88
 def convert_color(b, g, r, a, colortype):
     """根据 colortype 转换像素值"""
     b, g, r, a = map(int, (b, g, r, a))

@@ -4,40 +4,9 @@
     <Mode>Standard</Mode>
     <AoCore index="0" sample_clock="video_clk" trig_type="0" storage_depth="2048" window_num="1" capture_amount="2048" implementation="0" trigger_pos="32" module_name="top" force_trigger_by_falling_edge="false" capture_init_data_enabled="false">
         <SignalList>
-            <Signal capture_enable="true">off0_syn_de</Signal>
-            <Bus capture_enable="true" name="off0_syn_data[15:0]">
-                <Signal>off0_syn_data[15]</Signal>
-                <Signal>off0_syn_data[14]</Signal>
-                <Signal>off0_syn_data[13]</Signal>
-                <Signal>off0_syn_data[12]</Signal>
-                <Signal>off0_syn_data[11]</Signal>
-                <Signal>off0_syn_data[10]</Signal>
-                <Signal>off0_syn_data[9]</Signal>
-                <Signal>off0_syn_data[8]</Signal>
-                <Signal>off0_syn_data[7]</Signal>
-                <Signal>off0_syn_data[6]</Signal>
-                <Signal>off0_syn_data[5]</Signal>
-                <Signal>off0_syn_data[4]</Signal>
-                <Signal>off0_syn_data[3]</Signal>
-                <Signal>off0_syn_data[2]</Signal>
-                <Signal>off0_syn_data[1]</Signal>
-                <Signal>off0_syn_data[0]</Signal>
-            </Bus>
-            <Signal capture_enable="false">tp0_vs_in</Signal>
-            <Signal capture_enable="false">tp0_de_in</Signal>
-            <Bus capture_enable="false" name="tp0_data_r[7:0]">
-                <Signal>tp0_data_r[7]</Signal>
-                <Signal>tp0_data_r[6]</Signal>
-                <Signal>tp0_data_r[5]</Signal>
-                <Signal>tp0_data_r[4]</Signal>
-                <Signal>tp0_data_r[3]</Signal>
-                <Signal>tp0_data_r[2]</Signal>
-                <Signal>tp0_data_r[1]</Signal>
-                <Signal>tp0_data_r[0]</Signal>
-            </Bus>
-            <Signal capture_enable="false">data_aligned_vs</Signal>
-            <Signal capture_enable="false">data_aligned_valid</Signal>
-            <Bus capture_enable="false" name="data_aligned[15:0]">
+            <Signal capture_enable="true">data_aligned_vs</Signal>
+            <Signal capture_enable="true">data_aligned_valid</Signal>
+            <Bus capture_enable="true" name="data_aligned[15:0]">
                 <Signal>data_aligned[15]</Signal>
                 <Signal>data_aligned[14]</Signal>
                 <Signal>data_aligned[13]</Signal>
@@ -55,6 +24,37 @@
                 <Signal>data_aligned[1]</Signal>
                 <Signal>data_aligned[0]</Signal>
             </Bus>
+            <Signal capture_enable="false">tp0_vs_in</Signal>
+            <Signal capture_enable="false">tp0_de_in</Signal>
+            <Bus capture_enable="false" name="tp0_data_r[7:0]">
+                <Signal>tp0_data_r[7]</Signal>
+                <Signal>tp0_data_r[6]</Signal>
+                <Signal>tp0_data_r[5]</Signal>
+                <Signal>tp0_data_r[4]</Signal>
+                <Signal>tp0_data_r[3]</Signal>
+                <Signal>tp0_data_r[2]</Signal>
+                <Signal>tp0_data_r[1]</Signal>
+                <Signal>tp0_data_r[0]</Signal>
+            </Bus>
+            <Bus capture_enable="false" name="off0_syn_data[15:0]">
+                <Signal>off0_syn_data[15]</Signal>
+                <Signal>off0_syn_data[14]</Signal>
+                <Signal>off0_syn_data[13]</Signal>
+                <Signal>off0_syn_data[12]</Signal>
+                <Signal>off0_syn_data[11]</Signal>
+                <Signal>off0_syn_data[10]</Signal>
+                <Signal>off0_syn_data[9]</Signal>
+                <Signal>off0_syn_data[8]</Signal>
+                <Signal>off0_syn_data[7]</Signal>
+                <Signal>off0_syn_data[6]</Signal>
+                <Signal>off0_syn_data[5]</Signal>
+                <Signal>off0_syn_data[4]</Signal>
+                <Signal>off0_syn_data[3]</Signal>
+                <Signal>off0_syn_data[2]</Signal>
+                <Signal>off0_syn_data[1]</Signal>
+                <Signal>off0_syn_data[0]</Signal>
+            </Bus>
+            <Signal capture_enable="false">off0_syn_de</Signal>
         </SignalList>
         <Triggers>
             <Trigger index="0">
@@ -88,8 +88,8 @@
         </Triggers>
         <MatchUnits>
             <MatchUnit index="0" enabled="0" match_type="1" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="1" value1="0" trigger="0"/>
-            <MatchUnit index="1" enabled="0" match_type="1" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="1" value1="0" trigger="1"/>
-            <MatchUnit index="2" enabled="1" match_type="1" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="1" value1="0" trigger="2"/>
+            <MatchUnit index="1" enabled="1" match_type="1" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="1" value1="0" trigger="1"/>
+            <MatchUnit index="2" enabled="0" match_type="1" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="1" value1="0" trigger="2"/>
             <MatchUnit index="3" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1=""/>
             <MatchUnit index="4" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1=""/>
             <MatchUnit index="5" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1=""/>
@@ -105,8 +105,8 @@
             <MatchUnit index="15" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1=""/>
         </MatchUnits>
         <Expressions type="Static">
-            <Expression>M2</Expression>
+            <Expression>M1</Expression>
         </Expressions>
     </AoCore>
-    <GAO_ID>0110110101101110</GAO_ID>
+    <GAO_ID>1001001111001010</GAO_ID>
 </GAO_CONFIG>

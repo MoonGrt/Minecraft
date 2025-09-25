@@ -34,8 +34,8 @@ module ppl #(
     wire signed [15:0] ray_slope_out_z;
 
     wire        [19:0] pixel_addr;
-    wire [4:0] block_cnt_out, block_cnt;
-    wire next_en;
+    wire        [ 5:0] block_cnt_out, block_cnt;
+    wire               next_en;
 
     wire prepare_flag;
     assign valid = next_en && ~prepare_flag;
@@ -66,7 +66,7 @@ module ppl #(
         .p_angle_x(p_angle_x),
         .p_angle_y(p_angle_y),
 
-        .next_en        (1),
+        .next_en        (next_en),
         .scanner_stop   (scanner_stop),
         .pixel_addr_out (pixel_addr_out),
         .end_pos_x      (end_pos_x),
@@ -95,12 +95,12 @@ module ppl #(
         .start_pos_x(start_pos_x),
         .start_pos_y(start_pos_y),
         .start_pos_z(start_pos_z),
-        // .ray_slope_x(ray_slope_x),
-        // .ray_slope_y(ray_slope_y),
-        // .ray_slope_z(ray_slope_z),
-        .ray_slope_x(-663),
-        .ray_slope_y(374),
-        .ray_slope_z(-651),
+        .ray_slope_x(ray_slope_x),
+        .ray_slope_y(ray_slope_y),
+        .ray_slope_z(ray_slope_z),
+        // .ray_slope_x(663),
+        // .ray_slope_y(375),
+        // .ray_slope_z(-651),
         .pixel_addr (pixel_addr),
         .block_id   (block_id),
         .block_cnt  (block_cnt),
