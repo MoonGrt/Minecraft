@@ -16,16 +16,10 @@
         <File path="src/gowin_rpll/sys_pll.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_sdpb/map_ram.v" type="file.verilog" enable="1"/>
         <File path="src/map.v" type="file.verilog" enable="1"/>
-        <File path="src/pipeline/angle_relative.v" type="file.verilog" enable="1"/>
-        <File path="src/pipeline/angle_to_coord.v" type="file.verilog" enable="1"/>
         <File path="src/pipeline/ppl.v" type="file.verilog" enable="1"/>
         <File path="src/pipeline/ppl_ctrl.v" type="file.verilog" enable="1"/>
         <File path="src/pipeline/ppl_entry.v" type="file.verilog" enable="1"/>
         <File path="src/pipeline/ppl_proc.v" type="file.verilog" enable="1"/>
-        <File path="src/pipeline/projection.v" type="file.verilog" enable="1"/>
-        <File path="src/pipeline/viewport_params.v" type="file.verilog" enable="1"/>
-        <File path="src/pipeline/viewport_scanner.v" type="file.verilog" enable="1"/>
-        <File path="src/sort.v" type="file.verilog" enable="1"/>
         <File path="src/testpattern.v" type="file.verilog" enable="1"/>
         <File path="src/top.v" type="file.verilog" enable="1"/>
         <File path="src/video_frame_buffer/Video_Frame_Buffer_Top.v" type="file.verilog" enable="1"/>
@@ -39,6 +33,6 @@
         <File path="src/video_scaler/streamScaler.v" type="file.verilog" enable="1"/>
         <File path="src/top.cst" type="file.cst" enable="1"/>
         <File path="src/top.sdc" type="file.sdc" enable="1"/>
-        <File path="src/top.rao" type="file.gao" enable="0"/>
+        <File path="src/top.rao" type="file.gao" enable="1"/>
     </FileList>
 </Project>

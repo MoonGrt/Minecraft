@@ -49,7 +49,7 @@ module align #(
         .FIFO_MODE ("Normal"),
         .DATA_WIDTH(16),
         .FIFO_DEPTH(H_DISP+64)
-    ) u_fifo (
+    ) FIFO1 (
         .Reset    (rst),
         .WrClk    (PPL_clk),
         .WrEn     (data_sorted_valid),

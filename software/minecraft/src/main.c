@@ -46,6 +46,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
     int bx = (int)floorf(ox);
     int by = (int)floorf(oy);
     int bz = (int)floorf(oz);
+    printf("Init -> (%d, %d, %d)\n", bx, by, bz);
     // 步进方向
     int stepX = (dx > 0.0f) ? 1 : -1;
     int stepY = (dy > 0.0f) ? 1 : -1;
@@ -58,6 +59,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
     float tMaxX = (stepX > 0) ? ((float)(bx + 1) - ox) * invDx : (ox - (float)bx) * invDx;
     float tMaxY = (stepY > 0) ? ((float)(by + 1) - oy) * invDy : (oy - (float)by) * invDy;
     float tMaxZ = (stepZ > 0) ? ((float)(bz + 1) - oz) * invDz : (oz - (float)bz) * invDz;
+    printf("tMaxX=%f, tMaxY=%f, tMaxZ=%f\n", tMaxX, tMaxY, tMaxZ);
     // DDA 主循环
     for (int i = 0; i < MAX_STEPS; ++i) { // 最大步数保护
         // 在 DDA 中更常用的做法是：先跨格（根据最小 tMax），然后检查进入的方块（bx,by,bz 更新后）
@@ -83,7 +85,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
             tMaxZ += invDz;
             steppedAxis = 3;
         }
-        printf("Step %d, (%d, %d, %d) => \n", i, bx, by, bz);
+        printf("Step %d -> (%d, %d, %d) - Axis: %d\n", i, bx, by, bz, steppedAxis);
 
         // 检查越界或命中
         uint8_t id = 0;
@@ -101,7 +103,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
             // 面内 UV（取小数部分）；当碰到 X 面时，面在 YZ 平面 => 用 y,z
             // u,v 取 0...15
             int u = 0, v = 0;
-            uint8_t face_texidx = 0;
+            uint8_t texidx = 0;
             // 哪一面被命中：注意 stepX>0 时说明我们向 +X 走，进入的是新方块的 -X 面（即 negative X face）
             if (steppedAxis == 1) {
                 // X 面（面所在为 YZ）
@@ -110,16 +112,23 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
                 // 将 f -> [0,15]
                 u = (int)(fy * 16.0f) & 15;
                 v = (int)(fz * 16.0f) & 15;
-                // 选择侧面纹理（我们把所有侧面都映射到 index 1）
-                // 如果未来需要区分四个方向，可以根据 stepX/stepZ/stepY 额外判断
-                face_texidx = block_face_texture[id][1];
+                // 侧面选择
+                if (dx > 0.0f)
+                    texidx = block_face_texture[id][3];
+                else
+                    texidx = block_face_texture[id][2];
             } else if (steppedAxis == 2) {
                 // Y 面（面所在为 XZ）；如果 stepY>0（向上）则是新方块的 -Y 面 => 映射为 top/bottom
                 float fx = hx - floorf(hx);
                 float fz = hz - floorf(hz);
                 u = (int)(fx * 16.0f) & 15;
                 v = (int)(fz * 16.0f) & 15;
-                face_texidx = block_face_texture[id][1]; // 侧面
+                texidx = block_face_texture[id][1]; // 侧面
+                // 侧面选择
+                if (dy > 0.0f)
+                    texidx = block_face_texture[id][4];
+                else
+                    texidx = block_face_texture[id][1];
             } else {
                 // Z 面（面所在为 XY）
                 float fx = hx - floorf(hx);
@@ -128,17 +137,17 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
                 v = (int)(fy * 16.0f) & 15;
                 // 顶面/底面选择
                 if (dz > 0.0f)
-                    // 为简单并匹配常见实现：当 stepY>0（从下向上走，引入的是块的 -Y 面），
+                    // 当 stepY>0（从下向上走，引入的是块的 -Y 面），
                     // 把上面的 top 纹理分配给 stepY<0 的情况（即从上向下命中 top）
-                    // 实际上我们想：如果命中的是块的顶（向下的射线），使用 top；若命中块的底（向上的射线），使用 bottom。
+                    // 如果命中的是块的顶（向下的射线），使用 top；若命中块的底（向上的射线），使用 bottom。
                     // 因此：dy > 0（向上） => 命中的是 block 的 bottom（index5）；dy <0 => hit top (index0).
-                    face_texidx = block_face_texture[id][5]; // bottom
+                    texidx = block_face_texture[id][5]; // bottom
                 else
-                    face_texidx = block_face_texture[id][0]; // top
+                    texidx = block_face_texture[id][0]; // top
             }
             // 取颜色并返回
-            printf("id: %d, face: %d, u: %d, v: %d\n", id, face_texidx, u, v);
-            return get_texture(face_texidx, u, v);
+            printf("id: %d, texidx: %d, u: %d, v: %d\n", id, texidx, u, v);
+            return get_texture(texidx, u, v);
         }
         // 否则继续下一步
     }
@@ -179,7 +188,7 @@ void render_scene(Camera *cam)
             float len = sqrtf(dirx*dirx + diry*diry + dirz*dirz);
             if (len > 0.0f) { dirx /= len; diry /= len; dirz /= len; }
             // 发射射线得到颜色
-            printf("(px, py, pz)(%f, %f, %f) => (dx, dy, dz)(%f, %f, %f)\n", cam->px, cam->py, cam->pz, dirx, diry, dirz);
+            printf("(dx, dy, dz)(%f, %f, %f)\n", dirx, diry, dirz);
             uint16_t color = raycast(cam->px, cam->py, cam->pz, dirx, diry, dirz);
             // 注意 Framebuffer 的索引顺序
             Framebuffer[py][px] = color;
@@ -301,6 +310,13 @@ Camera cam = {
 #define RAD(deg) ((deg) * (float)PI / 180.0f)
 #define DEG(rad) ((rad) * 180.0f / (float)PI)
 const float world_up[3] = {0.0f, 1.0f, 0.0f}; // 世界坐标系的上向量
+void printf_cam(Camera* cam) {
+    printf("Cam.p: px=%f py=%f pz=%f\n", cam->px, cam->py, cam->pz);
+    printf("Cam.d: dx=%f dy=%f dz=%f\n", cam->dx, cam->dy, cam->dz);
+    printf("Cam.u: ux=%f uy=%f uz=%f\n", cam->ux, cam->uy, cam->uz);
+    printf("Cam.v: vx=%f vy=%f vz=%f\n", cam->vx, cam->vy, cam->vz);
+    printf("Cam.fov: %f\n", cam->fov);
+}
 void set_camera_direction(Camera* cam, float radx, float rady) {
     float cosPitch = cosf(rady);
     float sinPitch = sinf(rady);
@@ -310,21 +326,18 @@ void set_camera_direction(Camera* cam, float radx, float rady) {
     cam->dx = sinYaw * cosPitch;
     cam->dy = sinPitch;
     cam->dz = -cosYaw * cosPitch;
-    printf(" -> Cam.d: dx=%f dy=%f dz=%f\n", cam->dx, cam->dy, cam->dz);
     // 右向量
     cam->vx = world_up[1]*cam->dz - world_up[2]*cam->dy;
     cam->vy = world_up[2]*cam->dx - world_up[0]*cam->dz;
     cam->vz = world_up[0]*cam->dy - world_up[1]*cam->dx;
     float right_len = sqrtf(cam->vx*cam->vx + cam->vy*cam->vy + cam->vz*cam->vz);
     cam->vx /= right_len; cam->vy /= right_len; cam->vz /= right_len;
-    printf(" -> Cam.v: vx=%f vy=%f vz=%f\n", cam->vx, cam->vy, cam->vz);
     // 上向量 = forward × right
     cam->ux = cam->dy*cam->vz - cam->dz*cam->vy;
     cam->uy = cam->dz*cam->vx - cam->dx*cam->vz;
     cam->uz = cam->dx*cam->vy - cam->dy*cam->vx;
     float up_len = sqrtf(cam->ux*cam->ux + cam->uy*cam->uy + cam->uz*cam->uz);
     cam->ux /= up_len; cam->uy /= up_len; cam->uz /= up_len;
-    printf(" -> Cam.u: ux=%f uy=%f uz=%f\n", cam->ux, cam->uy, cam->uz);
 }
 
 void main()
@@ -335,6 +348,7 @@ void main()
 
     // Minecraft
     set_camera_direction(&cam, RAD(0), RAD(0));
+    printf_cam(&cam);
 #ifdef MAPGEN
     // 初始化 MAP
     init_test_map();

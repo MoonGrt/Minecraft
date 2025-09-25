@@ -22,9 +22,9 @@ module ppl_entry #(
     input signed [15:0] ray_slope_out_x,
     input signed [15:0] ray_slope_out_y,
     input signed [15:0] ray_slope_out_z,
-    input        [ 4:0] block_cnt_out,
+    input        [ 5:0] block_cnt_out,
 
-    output        [ 4:0] block_cnt,
+    output        [ 5:0] block_cnt,
     output        [15:0] start_pos_x,
     output        [15:0] start_pos_y,
     output        [15:0] start_pos_z,
@@ -75,7 +75,7 @@ module ppl_entry #(
     // Output
     assign start_pos_x = next_en ? (scanner_stop ? 'b0 : p_pos_x) : end_pos_x;
     assign start_pos_y = next_en ? (scanner_stop ? 'b0 : p_pos_y) : end_pos_y;
-    assign start_pos_z = next_en ? (scanner_stop ? ('d20 << 12) : p_pos_z) : end_pos_z;
+    assign start_pos_z = next_en ? (scanner_stop ? ('d20 << 11) : p_pos_z) : end_pos_z;
     assign ray_slope_x = next_en ? (scanner_stop ? 'b0 : vp_origin_x + ray_offset_x) : ray_slope_out_x;
     assign ray_slope_y = next_en ? (scanner_stop ? 'b0 : vp_origin_y + ray_offset_y) : ray_slope_out_y;
     assign ray_slope_z = next_en ? (scanner_stop ? 'b0 : vp_origin_z + ray_offset_z) : ray_slope_out_z;

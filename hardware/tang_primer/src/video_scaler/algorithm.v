@@ -107,7 +107,7 @@ module algorithm #(
         .FIFO_MODE ("Normal"),  //"Normal"; //"ShowAhead"
         .DATA_WIDTH(24),
         .FIFO_DEPTH(1024)
-    ) FIFO (
+    ) FIFO2 (
 
         /*i*/.Reset(~state),  //System Reset
 

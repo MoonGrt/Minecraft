@@ -26,7 +26,7 @@ BLK_CRAFTING_TABLE = 15
 
 # 初始化地图数组
 terrain = np.zeros((MAPX, MAPY, MAPZ), dtype=int)
-ground_height = 8  # 草地高度
+ground_height = 15  # 草地高度
 
 def init_test_map(terrain):
     terrain.fill(0)  # 清空地图
@@ -66,10 +66,10 @@ def init_test_map(terrain):
         for y in range(MAPY):
             terrain[x, y, 0] = BLK_BEDROCK
     # 4. 放几个矿石块作演示
-    terrain[10, 10, 9] = BLK_COAL_ORE
-    terrain[12, 9, 9] = BLK_IRON_ORE
-    terrain[20, 20, 9] = BLK_COAL_BLOCK
-    terrain[21, 20, 9] = BLK_IRON_BLOCK
+    terrain[10, 10, 16] = BLK_COAL_ORE
+    terrain[12,  9, 16] = BLK_IRON_ORE
+    terrain[20, 20, 16] = BLK_COAL_BLOCK
+    terrain[21, 20, 16] = BLK_IRON_BLOCK
 
 
 # 打印地形数组
@@ -188,7 +188,7 @@ ax = fig.add_subplot(111, projection='3d')
 X, Y, Z = [], [], []
 for i in range(32):
     for j in range(32):
-        for k in range(7, 16):
+        for k in range(14, 24):
             if terrain[i, j, k] != 0:
                 X.append(i)
                 Y.append(j)
@@ -198,9 +198,9 @@ ax.scatter(X, Y, Z, color='b', s=1)
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
-ax.set_xlim(0, 32)
-ax.set_ylim(0, 32)
-ax.set_zlim(0, 32)
+ax.set_xlim(0, MAPX)
+ax.set_ylim(0, MAPY)
+ax.set_zlim(0, MAPZ)
 # 显示图形
 plt.show()
 
