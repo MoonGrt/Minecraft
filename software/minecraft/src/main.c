@@ -171,7 +171,7 @@ void render_scene(Camera *cam)
     // 计算视场角度
     float aspect = (float)DISPX / (float)DISPY;
     float fovScale = tanf(cam->fov * 0.5f * (float)PI / 180.0f);
-    // printf("aspect=%f, fovScale=%f\n", aspect, fovScale);
+    printf("aspect=%f, fovScale=%f\n", aspect, fovScale);
     // 每像素产生射线并采样
     for (int py = 0; py < DISPY; ++py) {
         for (int px = 0; px < DISPX; ++px) {
@@ -180,7 +180,7 @@ void render_scene(Camera *cam)
             float v = (1.0f - 2.0f * (py + 0.5f) / (float)DISPY) * fovScale;
             printf("\n");
             printf("(x, y)(%d, %d) => (u, v)(%f, %f)\n", px, py, u, v);
-            // 构造世界方向（未严格正交投影，但足够）
+            // 构造世界方向
             float dirx = cam->dx + u * cam->vx + v * cam->ux;
             float diry = cam->dy + u * cam->vy + v * cam->uy;
             float dirz = cam->dz + u * cam->vz + v * cam->uz;
@@ -188,7 +188,7 @@ void render_scene(Camera *cam)
             float len = sqrtf(dirx*dirx + diry*diry + dirz*dirz);
             if (len > 0.0f) { dirx /= len; diry /= len; dirz /= len; }
             // 发射射线得到颜色
-            printf("(dx, dy, dz)(%f, %f, %f)\n", dirx, diry, dirz);
+            printf("len: %f, (dx, dy, dz)(%f, %f, %f)\n", len, dirx, diry, dirz);
             uint16_t color = raycast(cam->px, cam->py, cam->pz, dirx, diry, dirz);
             // 注意 Framebuffer 的索引顺序
             Framebuffer[py][px] = color;
@@ -309,7 +309,7 @@ Camera cam = {
 
 #define RAD(deg) ((deg) * (float)PI / 180.0f)
 #define DEG(rad) ((rad) * 180.0f / (float)PI)
-const float world_up[3] = {0.0f, 1.0f, 0.0f}; // 世界坐标系的上向量
+const float world_up[3] = {0.0f, 1.0f, 0.0f};  // 世界坐标系的上向量
 void printf_cam(Camera* cam) {
     printf("Cam.p: px=%f py=%f pz=%f\n", cam->px, cam->py, cam->pz);
     printf("Cam.d: dx=%f dy=%f dz=%f\n", cam->dx, cam->dy, cam->dz);

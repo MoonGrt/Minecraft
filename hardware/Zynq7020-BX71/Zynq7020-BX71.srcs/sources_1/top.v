@@ -11,8 +11,8 @@ module top (
     reg  [`POS_X_RADIX-1:0] p_pos_x = 'd470 << 8;
     reg  [`POS_Y_RADIX-1:0] p_pos_y = 'd470 << 8;
     reg  [`POS_Z_RADIX-1:0] p_pos_z = 'd280 << 8;
-    reg  [`ANGLE_RADIX-1:0] p_angle_x = 30;
-    reg  [`ANGLE_RADIX-1:0] p_angle_y = -120;
+    reg  [`ANGLE_RADIX-1:0] p_angle_x = 0;
+    reg  [`ANGLE_RADIX-1:0] p_angle_y = -225;
     wire [  `MAP_ADDR_RADIX-1:0] write_addr;
     wire [`BLOCK_TYPE_RADIX-1:0] write_data;
     wire                         write_en;

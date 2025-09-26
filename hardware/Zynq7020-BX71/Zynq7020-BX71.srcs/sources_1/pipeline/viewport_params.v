@@ -58,7 +58,7 @@ module viewport_params (
             vp_v_z = ((vp_u_x * lookat_rel_y) - (vp_u_y * lookat_rel_x)) / `ANGLE_RADIUS;  // cross product
 
             vp_origin_x = (lookat_rel_x + (-vp_u_x * `H_DISP + vp_v_x * `V_DISP) / 2 / `ANGLE_RADIUS) * `LOOKAT_REL_FAC;
-            vp_origin_y = (lookat_rel_y + (-vp_u_y * 320 + vp_v_y * 240) / 2 / `ANGLE_RADIUS) * `LOOKAT_REL_FAC;
+            vp_origin_y = (lookat_rel_y + (-vp_u_y * `H_DISP + vp_v_y * `V_DISP) / 2 / `ANGLE_RADIUS) * `LOOKAT_REL_FAC;
             vp_origin_z = (lookat_rel_z + (-vp_u_z * `H_DISP + vp_v_z * `V_DISP) / 2 / `ANGLE_RADIUS) * `LOOKAT_REL_FAC;
 
             towards_h_x = lookat_h_rel_x;

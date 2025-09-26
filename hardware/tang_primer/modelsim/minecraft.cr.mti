@@ -38,6 +38,13 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 Top level modules:
 	testpattern
 
+} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module ppl
+
+Top level modules:
+	ppl
+
 } {} {}} G:/VM/share/Minecraft/hardware/tang_primer/modelsim/prim_sim.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/modelsim/prim_sim.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 -- Compiling UDP mux2
@@ -371,12 +378,15 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 Top level modules:
 	ppl_clk
 
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/projection.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/projection.v
+} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl_entry.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl_entry.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module projection
+-- Compiling module ppl_entry
+-- Compiling module viewport_scanner
+-- Compiling module viewport_params
+-- Compiling module angle_to_coord
 
 Top level modules:
-	projection
+	ppl_entry
 
 } {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/FIFO.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/FIFO.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020

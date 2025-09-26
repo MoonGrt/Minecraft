@@ -1,5 +1,12 @@
 `timescale 1ns / 1ps
 
+`define SHIFT 4
+`define ANGLE_RADIUS 225
+`define ANGLE_EIGHTH 158
+`define ANGLE_QUARTER 317  // `define ANGLE_QUARTER ANGLE_EIGHTH * 2 + 1
+`define ANGLE_HALF 634     // `define ANGLE_HALF ANGLE_EIGHTH * 4 + 2
+`define ANGLE_MODULO 1268  // `define ANGLE_MODULO ANGLE_EIGHTH * 8 + 4
+
 module ppl_entry #(
     parameter H_DISP = 1280,
     parameter V_DISP = 720
@@ -68,19 +75,21 @@ module ppl_entry #(
         .vp_v_z     (vp_v_z)
     );
 
-    wire signed [15:0] ray_offset_x = (vp_u_x * fragment_uv_x - vp_v_x * fragment_uv_y) * 2 / 225;
-    wire signed [15:0] ray_offset_y = (vp_u_y * fragment_uv_x - vp_v_y * fragment_uv_y) * 2 / 225;
-    wire signed [15:0] ray_offset_z = (vp_u_z * fragment_uv_x - vp_v_z * fragment_uv_y) * 2 / 225;
+    wire signed [15:0] fragment_offset_x = fragment_uv_x * 2 - H_DISP;
+    wire signed [15:0] fragment_offset_y = -(fragment_uv_y * 2 - V_DISP);
+    wire signed [20:0] ray_offset_x = (vp_v_x * fragment_offset_x + vp_u_x * fragment_offset_y) >>> (`SHIFT + 1);
+    wire signed [20:0] ray_offset_y = (vp_v_y * fragment_offset_x + vp_u_y * fragment_offset_y) >>> (`SHIFT + 1);
+    wire signed [20:0] ray_offset_z = (vp_v_z * fragment_offset_x + vp_u_z * fragment_offset_y) >>> (`SHIFT + 1);
 
     // Output
     assign start_pos_x = next_en ? (scanner_stop ? 'b0 : p_pos_x) : end_pos_x;
     assign start_pos_y = next_en ? (scanner_stop ? 'b0 : p_pos_y) : end_pos_y;
     assign start_pos_z = next_en ? (scanner_stop ? ('d20 << 11) : p_pos_z) : end_pos_z;
-    assign ray_slope_x = next_en ? (scanner_stop ? 'b0 : vp_origin_x + ray_offset_x) : ray_slope_out_x;
-    assign ray_slope_y = next_en ? (scanner_stop ? 'b0 : vp_origin_y + ray_offset_y) : ray_slope_out_y;
-    assign ray_slope_z = next_en ? (scanner_stop ? 'b0 : vp_origin_z + ray_offset_z) : ray_slope_out_z;
+    assign ray_slope_x = next_en ? (scanner_stop ? 'b0 : (vp_origin_x + ray_offset_x)) : ray_slope_out_x;
+    assign ray_slope_y = next_en ? (scanner_stop ? 'b0 : (vp_origin_y + ray_offset_y)) : ray_slope_out_y;
+    assign ray_slope_z = next_en ? (scanner_stop ? 'b0 : (vp_origin_z + ray_offset_z)) : ray_slope_out_z;
     assign pixel_addr  = next_en ? (scanner_stop ? 'b0 : fragment_uv_y * H_DISP + fragment_uv_x) : pixel_addr_out;
-    assign block_cnt = next_en ? (scanner_stop ? 'b0 : 'b0) : block_cnt_out;
+    assign block_cnt   = next_en ? (scanner_stop ? 'b0 : 'b0) : block_cnt_out;
 
 endmodule
 
@@ -134,83 +143,19 @@ module viewport_params #(
     output reg signed [15:0] vp_v_z
 );
 
-    reg signed [15:0] towards_h_x;
-    reg signed [15:0] towards_h_y;
-    wire signed [15:0] lookat_rel_x, lookat_rel_y, lookat_rel_z;
-    wire signed [15:0] lookat_h_rel_x, lookat_h_rel_y;
-
-    angle_relative angle_relatives (
-        .rst           (rst),
-        .angle_x       (p_angle_x),
-        .angle_y       (p_angle_y),
-        .lookat_rel_x  (lookat_rel_x),
-        .lookat_rel_y  (lookat_rel_y),
-        .lookat_rel_z  (lookat_rel_z),
-        .lookat_h_rel_x(lookat_h_rel_x),
-        .lookat_h_rel_y(lookat_h_rel_y)
-    );
-
-    always @(*) begin
-        if (rst) begin
-            vp_u_x = 'b0;
-            vp_u_y = 'b0;
-            vp_u_z = 'b0;
-
-            vp_v_x = 'b0;
-            vp_v_y = 'b0;
-            vp_v_z = 'b0;
-
-            vp_origin_x = 'b0;
-            vp_origin_y = 'b0;
-            vp_origin_z = 'b0;
-
-            towards_h_x = 'b0;
-            towards_h_y = 'b0;
-        end else begin
-            vp_u_x = lookat_h_rel_y;
-            vp_u_y = -lookat_h_rel_x;
-            vp_u_z = 'b0;
-
-            vp_v_x = ((vp_u_y * lookat_rel_z) - (vp_u_z * lookat_rel_y)) / 225;  // cross product
-            vp_v_y = ((vp_u_z * lookat_rel_x) - (vp_u_x * lookat_rel_z)) / 225;  // cross product
-            vp_v_z = ((vp_u_x * lookat_rel_y) - (vp_u_y * lookat_rel_x)) / 225;  // cross product
-
-            vp_origin_x = (lookat_rel_x + (-vp_u_x * H_DISP + vp_v_x * V_DISP) / 2 / 225) * 2;
-            vp_origin_y = (lookat_rel_y + (-vp_u_y * H_DISP + vp_v_y * V_DISP) / 2 / 225) * 2;
-            vp_origin_z = (lookat_rel_z + (-vp_u_z * H_DISP + vp_v_z * V_DISP) / 2 / 225) * 2;
-
-            towards_h_x = lookat_h_rel_x;
-            towards_h_y = lookat_h_rel_y;
-        end
-    end
-
-endmodule
-
-
-module angle_relative (
-    input                     rst,
-    input  wire signed [15:0] angle_x,
-    input  wire signed [15:0] angle_y,
-    output reg signed  [15:0] lookat_rel_x,
-    output reg signed  [15:0] lookat_rel_y,
-    output reg signed  [15:0] lookat_rel_z,
-    output reg signed  [15:0] lookat_h_rel_x,
-    output reg signed  [15:0] lookat_h_rel_y
-);
-
     // Internal signals
+    reg signed [15:0] lookat_rel_x, lookat_rel_y, lookat_rel_z;
     wire signed [15:0] coord_h_x, coord_h_y;
     wire signed [15:0] coord_v_x, coord_v_y;
 
     // Instantiate angle_to_coord module
     angle_to_coord ac_cvt_h (
-        .angle  (angle_x),
+        .angle  (p_angle_x),
         .coord_x(coord_h_x),
         .coord_y(coord_h_y)
     );
-
     angle_to_coord ac_cvt_v (
-        .angle  (angle_y),
+        .angle  (p_angle_y),
         .coord_x(coord_v_x),
         .coord_y(coord_v_y)
     );
@@ -218,17 +163,41 @@ module angle_relative (
     // Calculate lookat_rel and lookat_h_rel
     always @(*) begin
         if (rst) begin
-            lookat_rel_x   = 'b0;
-            lookat_rel_y   = 'b0;
-            lookat_rel_z   = 'b0;
-            lookat_h_rel_x = 'b0;
-            lookat_h_rel_y = 'b0;
+            lookat_rel_x = 'b0;
+            lookat_rel_y = 'b0;
+            lookat_rel_z = 'b0;
         end else begin
-            lookat_rel_x   = coord_h_x * coord_v_x / 'd225;
-            lookat_rel_y   = coord_h_y * coord_v_x / 'd225;
-            lookat_rel_z   = coord_v_y;
-            lookat_h_rel_x = coord_h_x;
-            lookat_h_rel_y = coord_h_y;
+            // lookat_rel_x = coord_h_x * coord_v_x / `ANGLE_RADIUS;
+            // lookat_rel_y = coord_h_y * coord_v_x / `ANGLE_RADIUS;
+            // lookat_rel_z = coord_v_y;
+            lookat_rel_x = coord_v_y;
+            lookat_rel_y = coord_h_y * coord_v_x / `ANGLE_RADIUS;
+            lookat_rel_z = -(coord_h_x * coord_v_x / `ANGLE_RADIUS);
+        end
+    end
+
+    // Calculate vp_u, vp_v, vp_origin, towards_h
+    always @(*) begin
+        if (rst) begin
+            vp_u_x = 'b0;
+            vp_u_y = 'b0;
+            vp_u_z = 'b0;
+            vp_v_x = 'b0;
+            vp_v_y = 'b0;
+            vp_v_z = 'b0;
+            vp_origin_x = 'b0;
+            vp_origin_y = 'b0;
+            vp_origin_z = 'b0;
+        end else begin
+            vp_u_x = coord_h_y;
+            vp_u_y = coord_h_x;
+            vp_u_z =       'b0;
+            vp_v_x = (((vp_u_y * lookat_rel_z) - (vp_u_z * lookat_rel_y)) / `ANGLE_RADIUS);  // cross product
+            vp_v_y = (((vp_u_z * lookat_rel_x) - (vp_u_x * lookat_rel_z)) / `ANGLE_RADIUS);  // cross product
+            vp_v_z = (((vp_u_x * lookat_rel_y) - (vp_u_y * lookat_rel_x)) / `ANGLE_RADIUS);  // cross product
+            vp_origin_x = lookat_rel_x <<< `SHIFT;
+            vp_origin_y = lookat_rel_y <<< `SHIFT;
+            vp_origin_z = lookat_rel_z <<< `SHIFT;
         end
     end
 
@@ -256,20 +225,19 @@ module angle_to_coord (
         x_inverse = 'b0;
         y_inverse = 'b0;
         xy_inverse = 'b0;
-        // ang = angle_abs % 'd1268;
         ang = angle_abs;
 
         if (angle < 0) y_inverse = 'b1;
-        if (ang > 'd634) begin
-            ang       = 'd1268 - ang;
+        if (ang > `ANGLE_HALF) begin
+            ang       = `ANGLE_MODULO - ang;
             y_inverse = 'b1;
         end
-        if (ang > 'd317) begin
-            ang       = 'd634 - ang;
+        if (ang > `ANGLE_QUARTER) begin
+            ang       = `ANGLE_HALF - ang;
             x_inverse = 'b1;
         end
-        if (ang > 'd158) begin
-            ang        = 'd317 - ang;
+        if (ang > `ANGLE_EIGHTH) begin
+            ang        = `ANGLE_QUARTER - ang;
             xy_inverse = 'b1;
         end
         y_mapped = ang;
@@ -344,10 +312,7 @@ module angle_to_coord (
             'd156: x_mapped = 'd161;
             'd157: x_mapped = 'd160;
             'd158: x_mapped = 'd159;
-            default: begin
-                // x_mapped = x_mapped;  // Default case if none of the above conditions are met  // may genernate latch
-                x_mapped = 20'b0;
-            end
+            default: x_mapped = 20'b0;
         endcase
     end
 
