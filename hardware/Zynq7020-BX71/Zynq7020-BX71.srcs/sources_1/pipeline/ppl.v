@@ -57,7 +57,7 @@ module ppl (
         .p_angle_x      (p_angle_x),
         .p_angle_y      (p_angle_y),
 
-        .next_en        (next_en),
+        .next_en        (1),
         // .scanner_en     (scanner_en),
         .scanner_stop   (scanner_stop),
         .pixel_addr_out (pixel_addr_out),

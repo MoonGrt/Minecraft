@@ -14,8 +14,10 @@
 // `define V_FRONT 5
 // `define H_TOTAL 750   // V_DISP + V_FRONT + V_SYNC + V_BACK
 
-`define H_DISP 24
-`define V_DISP 16
+//`define H_DISP 24
+//`define V_DISP 16
+`define H_DISP 480
+`define V_DISP 272
 
 // viewport constants
 `define LOOKAT_REL_FAC 2

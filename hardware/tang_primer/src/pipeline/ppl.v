@@ -49,9 +49,8 @@ module ppl #(
         .rst           (rst),
         .next_en       (next_en),
         .pixel_addr_out(pixel_addr_out),
-
-        .prepare_flag(prepare_flag),
-        .scanner_stop(scanner_stop)
+        .prepare_flag  (prepare_flag),
+        .scanner_stop  (scanner_stop)
     );
 
     ppl_entry #(
@@ -98,9 +97,9 @@ module ppl #(
         .ray_slope_x(ray_slope_x),
         .ray_slope_y(ray_slope_y),
         .ray_slope_z(ray_slope_z),
-        // .ray_slope_x(663),
-        // .ray_slope_y(375),
-        // .ray_slope_z(-651),
+        // .ray_slope_x(6626),
+        // .ray_slope_y(3748),
+        // .ray_slope_z(-6506),
         .pixel_addr (pixel_addr),
         .block_id   (block_id),
         .block_cnt  (block_cnt),
