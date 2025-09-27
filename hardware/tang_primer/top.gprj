@@ -17,7 +17,6 @@
         <File path="src/gowin_sdpb/map_ram.v" type="file.verilog" enable="1"/>
         <File path="src/map.v" type="file.verilog" enable="1"/>
         <File path="src/pipeline/ppl.v" type="file.verilog" enable="1"/>
-        <File path="src/pipeline/ppl_ctrl.v" type="file.verilog" enable="1"/>
         <File path="src/pipeline/ppl_entry.v" type="file.verilog" enable="1"/>
         <File path="src/pipeline/ppl_proc.v" type="file.verilog" enable="1"/>
         <File path="src/testpattern.v" type="file.verilog" enable="1"/>

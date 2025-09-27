@@ -191,7 +191,7 @@ module top (
         .H_DISP(`H_DISP),
         .V_DISP(`V_DISP)
     ) ppl (
-        .clk_ppl  (PPL_clk),
+        .clk      (PPL_clk),
         .rst      (~TMDS_DDR_pll_lock && ~PLL_lock),
         .p_pos_x  (p_pos_x),
         .p_pos_y  (p_pos_y),

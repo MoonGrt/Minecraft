@@ -42,25 +42,19 @@ module top (
 
 
 
-    parameter H_DISP = 32;
-    parameter V_DISP = 24;
+    parameter H_DISP = 16;
+    parameter V_DISP = 12;
     // parameter H_DISP = 480;
     // parameter V_DISP = 272;
 
     reg  [16:0] p_pos_x = 'd33 << 3 << 7;
     reg  [16:0] p_pos_y = 'd33 << 3 << 7;
     reg  [16:0] p_pos_z = 'd62 << 3 << 7;
-    // reg  [16:0] p_pos_x = 'd170 << 7;
-    // reg  [16:0] p_pos_y = 'd170 << 7;
-    // reg  [16:0] p_pos_z = 'd280 << 7;
     reg  [15:0] p_angle_x = -1;
     reg  [15:0] p_angle_y = 0;
-    wire [14:0] write_addr;
-    wire [ 4:0] write_data;
-    wire        write_en;
+
     wire [ 4:0] block_id;
-    wire [31:0] texture_data;
-    wire [23:0] color = texture_data[23:0];
+    wire [15:0] texture_data;
     wire [19:0] pixel_addr_out;
     wire [14:0] block_addr;
     wire [12:0] texture_addr;
@@ -70,7 +64,7 @@ module top (
         .H_DISP(H_DISP),
         .V_DISP(V_DISP)
     ) ppl (
-        .clk_ppl  (PPL_clk),  // PPL_clk
+        .clk      (PPL_clk),  // PPL_clk
         .rst      (~rst_n),
         .p_pos_x  (p_pos_x),
         .p_pos_y  (p_pos_y),
@@ -116,7 +110,7 @@ module top (
     ) align (
         .clk       (PPL_clk),
         .rst       (~rst_n),
-        .data      (color),
+        .data      (texture_data),
         .data_addr (data_addr),
         .data_valid(data_valid),
 
@@ -124,7 +118,5 @@ module top (
         .data_aligned_valid(data_aligned_valid),
         .data_aligned_vs   (data_aligned_vs)
     );
-
-
 
 endmodule

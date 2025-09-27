@@ -4,7 +4,7 @@ module ppl #(
     parameter H_DISP = 1280,
     parameter V_DISP = 720
 ) (
-    input clk_ppl,
+    input clk,
     input rst,
 
     input        [15:0] p_pos_x,
@@ -37,27 +37,22 @@ module ppl #(
     wire        [ 5:0] block_cnt_out, block_cnt;
     wire               next_en;
 
-    wire prepare_flag;
-    assign valid = next_en && ~prepare_flag;
-    wire scanner_stop;
-
-    ppl_ctrl #(
-        .H_DISP(H_DISP),
-        .V_DISP(V_DISP)
-    ) ppl_ctrl (
-        .clk           (clk_ppl),
-        .rst           (rst),
-        .next_en       (next_en),
-        .pixel_addr_out(pixel_addr_out),
-        .prepare_flag  (prepare_flag),
-        .scanner_stop  (scanner_stop)
-    );
+    // discard the first 10 cycles to avoid the first few pixels being black
+    localparam PPL_CYCLES = 5;
+    reg [3:0] ppl_cnt = 'b0;
+    wire discard = ppl_cnt < PPL_CYCLES;
+    assign valid = next_en & ~discard;
+    always @(posedge clk or posedge rst) begin
+        if (rst) ppl_cnt <= 'b0;
+        else if (next_en & discard)
+            ppl_cnt <= ppl_cnt + 1;
+    end
 
     ppl_entry #(
         .H_DISP(H_DISP),
         .V_DISP(V_DISP)
     ) ppl_entry (
-        .clk      (clk_ppl),
+        .clk      (clk),
         .rst      (rst),
         .p_pos_x  (p_pos_x),
         .p_pos_y  (p_pos_y),
@@ -66,7 +61,6 @@ module ppl #(
         .p_angle_y(p_angle_y),
 
         .next_en        (next_en),
-        .scanner_stop   (scanner_stop),
         .pixel_addr_out (pixel_addr_out),
         .end_pos_x      (end_pos_x),
         .end_pos_y      (end_pos_y),
@@ -87,9 +81,8 @@ module ppl #(
     );
 
     ppl_proc ppl_proc (
-        .clk         (clk_ppl),
+        .clk         (clk),
         .rst         (rst),
-        .prepare_flag(prepare_flag),
 
         .start_pos_x(start_pos_x),
         .start_pos_y(start_pos_y),
@@ -100,9 +93,6 @@ module ppl #(
         // .ray_slope_x(6626),
         // .ray_slope_y(3748),
         // .ray_slope_z(-6506),
-        // .ray_slope_x(-3214),
-        // .ray_slope_y(1544),
-        // .ray_slope_z(-3600),
         .pixel_addr (pixel_addr),
         .block_id   (block_id),
         .block_cnt  (block_cnt),
