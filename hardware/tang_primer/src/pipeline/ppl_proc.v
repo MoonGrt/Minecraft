@@ -77,9 +77,9 @@ module ppl_proc (
             edge_y_d1 <= 'b0;
             edge_z_d1 <= 'b0;
         end else begin
-            block_x_d1 <= (block_cnt == 0) && (start_pos_x[10:0] == 0) ? (ray_slope_x[15] ? start_pos_x[15:11] - 1 : start_pos_x[15:11] + 1) : start_pos_x[15:11];
-            block_y_d1 <= (block_cnt == 0) && (start_pos_y[10:0] == 0) ? (ray_slope_y[15] ? start_pos_y[15:11] - 1 : start_pos_y[15:11] + 1) : start_pos_y[15:11];
-            block_z_d1 <= (block_cnt == 0) && (start_pos_z[10:0] == 0) ? (ray_slope_z[15] ? start_pos_z[15:11] - 1 : start_pos_z[15:11] + 1) : start_pos_z[15:11];
+            block_x_d1 <= start_pos_x[15:11];
+            block_y_d1 <= start_pos_y[15:11];
+            block_z_d1 <= start_pos_z[15:11];
             edge_x_d1 <= ray_slope_x[15] ? (start_pos_x[10:0] ? start_pos_x[10:0] : ('d16 << 7)) : (('d16 << 7) - start_pos_x[10:0]);
             edge_y_d1 <= ray_slope_y[15] ? (start_pos_y[10:0] ? start_pos_y[10:0] : ('d16 << 7)) : (('d16 << 7) - start_pos_y[10:0]);
             edge_z_d1 <= ray_slope_z[15] ? (start_pos_z[10:0] ? start_pos_z[10:0] : ('d16 << 7)) : (('d16 << 7) - start_pos_z[10:0]);
@@ -218,11 +218,11 @@ module ppl_proc (
             block_next_y_d3 <= 'b0;
             block_next_z_d3 <= 'b0;
         end else begin
-            block_next_x_d3 <= min_flag_d2[2] ? (ray_slope_x_d2[15] ? block_x_d2 - 'd1 : block_x_d2 + 'd1) :
+            block_next_x_d3 <= min_flag_d2[2] ? (ray_slope_x_d2[15] ? ((start_pos_x_d2[10:0] == 0) && (ray_slope_x_d2[15]) ? block_x_d2 - 'd2 : block_x_d2 - 'd1) : block_x_d2 + 'd1) : 
                                 ((start_pos_x_d2[10:0] == 0) && (ray_slope_x_d2[15]) ? block_x_d2 - 'd1 : block_x_d2);
-            block_next_y_d3 <= min_flag_d2[1] ? (ray_slope_y_d2[15] ? block_y_d2 - 'd1 : block_y_d2 + 'd1) :
+            block_next_y_d3 <= min_flag_d2[1] ? (ray_slope_y_d2[15] ? ((start_pos_y_d2[10:0] == 0) && (ray_slope_y_d2[15]) ? block_y_d2 - 'd2 : block_y_d2 - 'd1) : block_y_d2 + 'd1) :
                                 ((start_pos_y_d2[10:0] == 0) && (ray_slope_y_d2[15]) ? block_y_d2 - 'd1 : block_y_d2);
-            block_next_z_d3 <= min_flag_d2[0] ? (ray_slope_z_d2[15] ? block_z_d2 - 'd1 : block_z_d2 + 'd1) :
+            block_next_z_d3 <= min_flag_d2[0] ? (ray_slope_z_d2[15] ? ((start_pos_z_d2[10:0] == 0) && (ray_slope_z_d2[15]) ? block_z_d2 - 'd2 : block_z_d2 - 'd1) : block_z_d2 + 'd1) :
                                 ((start_pos_z_d2[10:0] == 0) && (ray_slope_z_d2[15]) ? block_z_d2 - 'd1 : block_z_d2);
         end
     end
@@ -276,14 +276,14 @@ module ppl_proc (
         end else begin
             // block_next_x * 32 * 32 + block_next_y * 32 + block_next_z;
             block_addr_d4 <= (block_next_x_d3 << 10) + (block_next_y_d3 << 5) + (block_next_z_d3);
-            map_border_flag_d4 <= (block_next_x_d3 == 0) || (block_next_x_d3 == 32) ||
-                                  (block_next_y_d3 == 0) || (block_next_y_d3 == 32) ||
-                                  (block_next_z_d3 == 0) || (block_next_z_d3 == 32);
-            end_pos_x_d4 <= min_flag_d3[2] ? ((ray_slope_x_d3[15] ? start_pos_x_d3[15:11] : start_pos_x_d3[15:11] + 'd1) << 11) :  // 4 + 7
+            map_border_flag_d4 <= ((start_pos_x_d3[15:11] == 0) && (ray_slope_x_d3[15]) == 1) || ((start_pos_x_d3[15:11] == 32) && (ray_slope_x_d3[15] == 0)) ||
+                                  ((start_pos_y_d3[15:11] == 0) && (ray_slope_y_d3[15]) == 1) || ((start_pos_y_d3[15:11] == 32) && (ray_slope_x_d3[15] == 0)) ||
+                                  ((start_pos_z_d3[15:11] == 0) && (ray_slope_z_d3[15]) == 1) || ((start_pos_z_d3[15:11] == 32) && (ray_slope_x_d3[15] == 0));
+            end_pos_x_d4 <= min_flag_d3[2] ? ((ray_slope_x_d3[15] ? (start_pos_x_d3[10:0] ? start_pos_x_d3[15:11] : start_pos_x_d3[15:11] - 'd1) : start_pos_x_d3[15:11] + 'd1) << 11) :  // 4 + 7
                                 (min_flag_d3[1] ? start_pos_x_d3 + detal_xy : start_pos_x_d3 + detal_xz);
-            end_pos_y_d4 <= min_flag_d3[1] ? ((ray_slope_y_d3[15] ? start_pos_y_d3[15:11] : start_pos_y_d3[15:11] + 'd1) << 11) :  // 4 + 7
+            end_pos_y_d4 <= min_flag_d3[1] ? ((ray_slope_y_d3[15] ? (start_pos_y_d3[10:0] ? start_pos_y_d3[15:11] : start_pos_y_d3[15:11] - 'd1) : start_pos_y_d3[15:11] + 'd1) << 11) :  // 4 + 7
                                 (min_flag_d3[0] ? start_pos_y_d3 + detal_yz : start_pos_y_d3 + detal_yx);
-            end_pos_z_d4 <= min_flag_d3[0] ? ((ray_slope_z_d3[15] ? start_pos_z_d3[15:11] : start_pos_z_d3[15:11] + 'd1) << 11) :  // 4 + 7
+            end_pos_z_d4 <= min_flag_d3[0] ? ((ray_slope_z_d3[15] ? (start_pos_z_d3[10:0] ? start_pos_z_d3[15:11] : start_pos_z_d3[15:11] - 'd1) : start_pos_z_d3[15:11] + 'd1) << 11) :  // 4 + 7
                                 (min_flag_d3[2] ? start_pos_z_d3 + detal_zx : start_pos_z_d3 + detal_zy);
         end
     end
@@ -418,6 +418,5 @@ module ppl_proc (
     assign end_pos_z       = prepare_flag ? 'b0 : end_pos_z_d6;
     assign block_cnt_out   = prepare_flag ? 'b0 : block_cnt_d6;
     assign next_en         = prepare_flag ? 'b1 : (block_id || map_border_flag_d6 || (block_cnt_d6 > 52));
-    // assign next_en         = prepare_flag ? 'b1 : (block_id || map_border_flag_d6);
 
 endmodule

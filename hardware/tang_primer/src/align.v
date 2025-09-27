@@ -4,8 +4,7 @@ module align #(
     parameter N = 16,
     parameter DLY = 10
 ) (
-    input      PPL_clk,
-    input      video_clk,
+    input      clk,
     input wire rst,
 
     input wire [15:0] data,
@@ -22,7 +21,7 @@ module align #(
     sort #(
         .N(N)
     ) sort (
-        .clk(PPL_clk),
+        .clk(clk),
         .rst(rst),
 
         .data      (data),
@@ -51,12 +50,12 @@ module align #(
         .FIFO_DEPTH(H_DISP+64)
     ) FIFO1 (
         .Reset    (rst),
-        .WrClk    (PPL_clk),
+        .WrClk    (clk),
         .WrEn     (data_sorted_valid),
         .WrDNum   (fifo_wr_count),
         .WrFull   (fifo_wr_full),
         .WrData   (data_sorted),
-        .RdClk    (video_clk),
+        .RdClk    (clk),
         .RdEn     (rd_en),
         .RdDNum   (fifo_rd_count),
         .RdEmpty  (fifo_rd_empty),
@@ -67,7 +66,7 @@ module align #(
     // 读出逻辑
     reg vs;
     assign rd_en = send & ~fifo_rd_empty; // FIFO不空就一直读
-    always @(posedge video_clk or posedge rst) begin
+    always @(posedge clk or posedge rst) begin
         if (rst) begin
             vs   <= 1;
             send <= 0;
@@ -94,7 +93,7 @@ module align #(
 
     // vs delay
     reg [DLY:0] rst_dly = {(DLY + 1) {1'b0}};
-    always @(posedge video_clk) rst_dly <= {vs, rst_dly[DLY:1]};
+    always @(posedge clk) rst_dly <= {vs, rst_dly[DLY:1]};
     assign data_aligned_vs = rst_dly[0];
 
 endmodule
