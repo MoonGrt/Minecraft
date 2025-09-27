@@ -3,7 +3,6 @@
 module ppl_proc (
     input clk,
     input rst,
-    input prepare_flag,
 
     input        [15:0] start_pos_x,
     input        [15:0] start_pos_y,
@@ -408,15 +407,15 @@ module ppl_proc (
     wire [12:0] texture_addr_d6 = block_id ? texture_x_d6 + (texture_y_d6 << 4) + (texture_id << 8) : 0;
 
 
-    assign pixel_addr_out  = prepare_flag ? 'b0 : pixel_addr_d6;
-    assign ray_slope_out_x = prepare_flag ? 'b0 : ray_slope_x_d6;
-    assign ray_slope_out_y = prepare_flag ? 'b0 : ray_slope_y_d6;
-    assign ray_slope_out_z = prepare_flag ? 'b0 : ray_slope_z_d6;
-    assign texture_addr    = prepare_flag ? 'b0 : texture_addr_d6;
-    assign end_pos_x       = prepare_flag ? 'b0 : end_pos_x_d6;
-    assign end_pos_y       = prepare_flag ? 'b0 : end_pos_y_d6;
-    assign end_pos_z       = prepare_flag ? 'b0 : end_pos_z_d6;
-    assign block_cnt_out   = prepare_flag ? 'b0 : block_cnt_d6;
-    assign next_en         = prepare_flag ? 'b1 : (block_id || map_border_flag_d6 || (block_cnt_d6 > 52));
+    assign pixel_addr_out  = pixel_addr_d6;
+    assign ray_slope_out_x = ray_slope_x_d6;
+    assign ray_slope_out_y = ray_slope_y_d6;
+    assign ray_slope_out_z = ray_slope_z_d6;
+    assign texture_addr    = texture_addr_d6;
+    assign end_pos_x       = end_pos_x_d6;
+    assign end_pos_y       = end_pos_y_d6;
+    assign end_pos_z       = end_pos_z_d6;
+    assign block_cnt_out   = block_cnt_d6;
+    assign next_en         = (block_id || map_border_flag_d6 || (block_cnt_d6 > 52));
 
 endmodule
