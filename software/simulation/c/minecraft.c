@@ -42,7 +42,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
     int bx = (int)floorf(ox);
     int by = (int)floorf(oy);
     int bz = (int)floorf(oz);
-    // printf("Init -> (%d, %d, %d)\n", bx, by, bz);
+    printf("Init -> (%d, %d, %d)\n", bx, by, bz);
     // 步进方向
     int stepX = (dx > 0.0f) ? 1 : -1;
     int stepY = (dy > 0.0f) ? 1 : -1;
@@ -55,7 +55,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
     float tMaxX = (stepX > 0) ? ((float)(bx + 1) - ox) * invDx : (ox - (float)bx) * invDx;
     float tMaxY = (stepY > 0) ? ((float)(by + 1) - oy) * invDy : (oy - (float)by) * invDy;
     float tMaxZ = (stepZ > 0) ? ((float)(bz + 1) - oz) * invDz : (oz - (float)bz) * invDz;
-    // printf("tMaxX=%f, tMaxY=%f, tMaxZ=%f\n", tMaxX, tMaxY, tMaxZ);
+    printf("tMaxX=%f, tMaxY=%f, tMaxZ=%f\n", tMaxX, tMaxY, tMaxZ);
     // DDA 主循环
     for (int i = 0; i < MAX_STEPS; ++i) { // 最大步数保护
         // 在 DDA 中更常用的做法是：先跨格（根据最小 tMax），然后检查进入的方块（bx,by,bz 更新后）
@@ -81,7 +81,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
             tMaxZ += invDz;
             steppedAxis = 3;
         }
-        // printf("Step %d -> (%d, %d, %d) - Axis: %d\n", i, bx, by, bz, steppedAxis);
+        printf("Step %d -> (%d, %d, %d) - Axis: %d\n", i, bx, by, bz, steppedAxis);
 
         // 检查越界或命中
         uint8_t id = 0;
@@ -89,7 +89,6 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
             id = get_block(bx, by, bz);
         else
             // 越界当作空气（不命中），直接返回背景色
-            // printf("Ray out of bounds at (%d, %d, %d)\n", bx, by, bz);
             return 0x0000;
         if (id != 0) {
             // 发生命中：计算交点坐标
@@ -142,7 +141,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
                     texidx = block_face_texture[id][0]; // top
             }
             // 取颜色并返回
-            // printf("id: %d, texidx: %d, u: %d, v: %d\n", id, texidx, u, v);
+            printf("id: %d, texidx: %d, u: %d, v: %d\n", id, texidx, u, v);
             return get_texture(texidx, u, v);
         }
         // 否则继续下一步
@@ -175,13 +174,15 @@ void set_camera_direction(Camera* cam, float radx, float rady) {
     cam->vx = world_up[1]*cam->dz - world_up[2]*cam->dy;
     cam->vy = world_up[2]*cam->dx - world_up[0]*cam->dz;
     cam->vz = world_up[0]*cam->dy - world_up[1]*cam->dx;
-    float right_len = sqrtf(cam->vx*cam->vx + cam->vy*cam->vy + cam->vz*cam->vz);
-    if (right_len > 0.0f) { cam->vx /= right_len; cam->vy /= right_len; cam->vz /= right_len; }
+    // 归一化方向 - 可选
+    // float right_len = sqrtf(cam->vx*cam->vx + cam->vy*cam->vy + cam->vz*cam->vz);
+    // if (right_len > 0.0f) { cam->vx /= right_len; cam->vy /= right_len; cam->vz /= right_len; }
     cam->ux = cam->dy*cam->vz - cam->dz*cam->vy;
     cam->uy = cam->dz*cam->vx - cam->dx*cam->vz;
     cam->uz = cam->dx*cam->vy - cam->dy*cam->vx;
-    float up_len = sqrtf(cam->ux*cam->ux + cam->uy*cam->uy + cam->uz*cam->uz);
-    if (up_len > 0.0f) { cam->ux /= up_len; cam->uy /= up_len; cam->uz /= up_len; }
+    // 归一化方向 - 可选
+    // float up_len = sqrtf(cam->ux*cam->ux + cam->uy*cam->uy + cam->uz*cam->uz);
+    // if (up_len > 0.0f) { cam->ux /= up_len; cam->uy /= up_len; cam->uz /= up_len; }
 }
 
 void render_scene(Camera *cam)
@@ -197,22 +198,22 @@ void render_scene(Camera *cam)
             float u = (2.0f * (px + 0.5f) / (float)DISPX - 1.0f) * aspect * fovScale;
             float v = (1.0f - 2.0f * (py + 0.5f) / (float)DISPY) * fovScale;
             // printf("\n");
-            // printf("(x, y)(%d, %d) => (u, v)(%f, %f)\n", px, py, u, v);
+            printf("(x, y)(%d, %d) => (u, v)(%f, %f)\n", px, py, u, v);
             // 构造世界方向
             float dirx = cam->dx + u * cam->vx + v * cam->ux;
             float diry = cam->dy + u * cam->vy + v * cam->uy;
             float dirz = cam->dz + u * cam->vz + v * cam->uz;
             // 归一化方向
-            float len = sqrtf(dirx*dirx + diry*diry + dirz*dirz);
-            if (len > 0.0f) { dirx /= len; diry /= len; dirz /= len; }
+            // float len = sqrtf(dirx*dirx + diry*diry + dirz*dirz);
+            // if (len > 0.0f) { dirx /= len; diry /= len; dirz /= len; }
             // 发射射线得到颜色
-            // printf("len: %f, (dx, dy, dz)(%f, %f, %f)\n", len, dirx, diry, dirz);
+            printf("(dx, dy, dz)(%f, %f, %f)\n", dirx, diry, dirz);
             uint16_t color = raycast(cam->px, cam->py, cam->pz, dirx, diry, dirz);
             // 注意 Framebuffer 的索引顺序
             Framebuffer[py][px] = color;
-            // printf("x=%d, y=%d, addr=%x, color=%x\n", px, py, &Framebuffer[py][px], color);
-            // if (px == 5)
-            //     return;
+            printf("x=%d, y=%d, addr=%x, color=%x\n", px, py, &Framebuffer[py][px], color);
+            if (px == 5)
+                return;
         }
     }
 }
@@ -320,8 +321,12 @@ int main(void) {
     };
     set_camera_direction(&cam, 0.0f, 0.0f);
 
-    printf("Rendering %dx%d, map %dx%dx%d\n", DISPX, DISPY, MAPX, MAPY, MAPZ);
-    render_scene(&cam);
-    topng(); // 保存 framebuffer 到 PNG 文件
+    // printf("Rendering %dx%d, map %dx%dx%d\n", DISPX, DISPY, MAPX, MAPY, MAPZ);
+    // render_scene(&cam);
+    // topng(); // 保存 framebuffer 到 PNG 文件
+
+    printf("\nRaycasting...\n");
+    printf("color=%x\n", raycast(cam.px, cam.py, cam.pz, -0.0224, 0.0153, -0.3600));
+
     return 0;
 }

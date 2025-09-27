@@ -236,8 +236,7 @@ module top (
         .V_DISP(`V_DISP),
         .N     (16)
     ) align (
-        .PPL_clk   (PPL_clk),
-        .video_clk (video_clk),
+        .clk       (PPL_clk),
         .rst       (~TMDS_DDR_pll_lock && ~PLL_lock),
         .data      (texture_data),
         .data_addr (data_addr),
@@ -398,7 +397,7 @@ module top (
         // .I_vin0_data     ({algorithm_data[23:19], algorithm_data[15:10], algorithm_data[7:3]}),
 
         // minecraft
-        .I_vin0_clk      (video_clk),
+        .I_vin0_clk      (PPL_clk),
         .I_vin0_vs_n     (~data_aligned_vs), // 只接收负极性
         .I_vin0_de       (data_aligned_valid),
         .I_vin0_data     (data_aligned),
