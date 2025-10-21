@@ -42,10 +42,10 @@ module top (
 
 
 
-    parameter H_DISP = 16;
-    parameter V_DISP = 12;
-    // parameter H_DISP = 480;
-    // parameter V_DISP = 272;
+    // parameter H_DISP = 16;
+    // parameter V_DISP = 12;
+    parameter H_DISP = 480;
+    parameter V_DISP = 272;
 
     reg  [16:0] p_pos_x = 'd33 << 3 << 7;
     reg  [16:0] p_pos_y = 'd33 << 3 << 7;
