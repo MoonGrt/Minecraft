@@ -11,20 +11,20 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <a href="https://github.com/MoonGrt/FPGA-Minecraft">
+    <a href="https://github.com/MoonGrt/Minecraft">
     <img src="Document/images/logo.png" alt="Logo" width="80" height="80">
     </a>
-<h3 align="center">FPGA-Minecraft</h3>
+<h3 align="center">Minecraft</h3>
     <p align="center">
     该FPGA项目旨在完全通过硬件实现《我的世界》游戏。玩家可在游戏中放置与破坏方块、移动及飞行。
     <br />
-    <a href="https://github.com/MoonGrt/FPGA-Minecraft"><strong>浏览文档 »</strong></a>
+    <a href="https://github.com/MoonGrt/Minecraft"><strong>浏览文档 »</strong></a>
     <br />
-    <a href="https://github.com/MoonGrt/FPGA-Minecraft">查看 Demo</a>
+    <a href="https://github.com/MoonGrt/Minecraft">查看 Demo</a>
     ·
-    <a href="https://github.com/MoonGrt/FPGA-Minecraft/issues">反馈 Bug</a>
+    <a href="https://github.com/MoonGrt/Minecraft/issues">反馈 Bug</a>
     ·
-    <a href="https://github.com/MoonGrt/FPGA-Minecraft/issues">请求新功能</a>
+    <a href="https://github.com/MoonGrt/Minecraft/issues">请求新功能</a>
     </p>
 </div>
 
@@ -94,6 +94,24 @@
 <p align="right">(<a href="#top">top</a>)</p>
 
 
+<!-- 路线图 -->
+## 路线图
+
+- [ ] Ray Tracing
+  - Software:
+    - PC-C simulation; Visualization of ray tracings in MATLAB;
+    - Software rendering on an RISC-V SoC running on an FPGA
+  - Hardware: Bresenham's Line Algorithm
+    - Gowin FPGA implementation
+    - TODO: NvBoard implementation
+- [ ] Rasterization
+  - TODO:
+
+到 [open issues](https://github.com/MoonGrt/Minecraft/issues) 页查看所有请求的功能 （以及已知的问题）。
+
+<p align="right">(<a href="#top">顶部</a>)</p>
+
+
 
 <!-- 贡献 -->
 ## 贡献
@@ -123,7 +141,7 @@
 ## 联系我们
 
 MoonGrt - 1561145394@qq.com
-Project Link: [MoonGrt/FPGA-Minecraft](https://github.com/MoonGrt/FPGA-Minecraft)
+Project Link: [MoonGrt/Minecraft](https://github.com/MoonGrt/Minecraft)
 
 <p align="right">(<a href="#top">top</a>)</p>
 
@@ -147,14 +165,14 @@ Project Link: [MoonGrt/FPGA-Minecraft](https://github.com/MoonGrt/FPGA-Minecraft
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/MoonGrt/FPGA-Minecraft.svg?style=for-the-badge
-[contributors-url]: https://github.com/MoonGrt/FPGA-Minecraft/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/MoonGrt/FPGA-Minecraft.svg?style=for-the-badge
-[forks-url]: https://github.com/MoonGrt/FPGA-Minecraft/network/members
-[stars-shield]: https://img.shields.io/github/stars/MoonGrt/FPGA-Minecraft.svg?style=for-the-badge
-[stars-url]: https://github.com/MoonGrt/FPGA-Minecraft/stargazers
-[issues-shield]: https://img.shields.io/github/issues/MoonGrt/FPGA-Minecraft.svg?style=for-the-badge
-[issues-url]: https://github.com/MoonGrt/FPGA-Minecraft/issues
-[license-shield]: https://img.shields.io/github/license/MoonGrt/FPGA-Minecraft.svg?style=for-the-badge
-[license-url]: https://github.com/MoonGrt/FPGA-Minecraft/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/MoonGrt/Minecraft.svg?style=for-the-badge
+[contributors-url]: https://github.com/MoonGrt/Minecraft/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/MoonGrt/Minecraft.svg?style=for-the-badge
+[forks-url]: https://github.com/MoonGrt/Minecraft/network/members
+[stars-shield]: https://img.shields.io/github/stars/MoonGrt/Minecraft.svg?style=for-the-badge
+[stars-url]: https://github.com/MoonGrt/Minecraft/stargazers
+[issues-shield]: https://img.shields.io/github/issues/MoonGrt/Minecraft.svg?style=for-the-badge
+[issues-url]: https://github.com/MoonGrt/Minecraft/issues
+[license-shield]: https://img.shields.io/github/license/MoonGrt/Minecraft.svg?style=for-the-badge
+[license-url]: https://github.com/MoonGrt/Minecraft/blob/master/LICENSE
 

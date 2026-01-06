@@ -11,20 +11,20 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <a href="https://github.com/MoonGrt/FPGA-Minecraft">
+    <a href="https://github.com/MoonGrt/Minecraft">
     <img src="Document/images/logo.png" alt="Logo" width="80" height="80">
     </a>
-<h3 align="center">FPGA-Minecraft</h3>
+<h3 align="center">Minecraft</h3>
     <p align="center">
     This FPGA project involves the development of a Minecraft game entirely in hardware. The game enables players to place and break blocks, move, and fly. It utilizes a rendering pipeline to calculate the color of each pixel, ultimately displaying the generated frames on an HDMI screen. This hardware-based approach ensures efficient real-time rendering and interaction within the game environment.
     <br />
-    <a href="https://github.com/MoonGrt/FPGA-Minecraft"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/MoonGrt/Minecraft"><strong>Explore the docs »</strong></a>
     <br />
-    <a href="https://github.com/MoonGrt/FPGA-Minecraft">View Demo</a>
+    <a href="https://github.com/MoonGrt/Minecraft">View Demo</a>
     ·
-    <a href="https://github.com/MoonGrt/FPGA-Minecraft/issues">Report Bug</a>
+    <a href="https://github.com/MoonGrt/Minecraft/issues">Report Bug</a>
     ·
-    <a href="https://github.com/MoonGrt/FPGA-Minecraft/issues">Request Feature</a>
+    <a href="https://github.com/MoonGrt/Minecraft/issues">Request Feature</a>
     </p>
 </div>
 
@@ -106,6 +106,23 @@ This FPGA project involves the development of a Minecraft game entirely in hardw
 <p align="right">(<a href="#top">top</a>)</p>
 
 
+<!-- ROADMAP -->
+## Roadmap
+
+- [ ] Ray Tracing
+  - Software:
+    - PC-C simulation; Visualization of ray tracings in MATLAB;
+    - Software rendering on an RISC-V SoC running on an FPGA
+  - Hardware: Bresenham's Line Algorithm
+    - Gowin FPGA implementation
+    - TODO: NvBoard implementation
+- [ ] Rasterization
+  - TODO:
+
+See the [open issues](https://github.com/MoonGrt/Minecraft/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -157,14 +174,14 @@ Project Link: [MoonGrt](https://github.com/MoonGrt/)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/MoonGrt/FPGA-Minecraft.svg?style=for-the-badge
-[contributors-url]: https://github.com/MoonGrt/FPGA-Minecraft/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/MoonGrt/FPGA-Minecraft.svg?style=for-the-badge
-[forks-url]: https://github.com/MoonGrt/FPGA-Minecraft/network/members
-[stars-shield]: https://img.shields.io/github/stars/MoonGrt/FPGA-Minecraft.svg?style=for-the-badge
-[stars-url]: https://github.com/MoonGrt/FPGA-Minecraft/stargazers
-[issues-shield]: https://img.shields.io/github/issues/MoonGrt/FPGA-Minecraft.svg?style=for-the-badge
-[issues-url]: https://github.com/MoonGrt/FPGA-Minecraft/issues
-[license-shield]: https://img.shields.io/github/license/MoonGrt/FPGA-Minecraft.svg?style=for-the-badge
-[license-url]: https://github.com/MoonGrt/FPGA-Minecraft/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/MoonGrt/Minecraft.svg?style=for-the-badge
+[contributors-url]: https://github.com/MoonGrt/Minecraft/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/MoonGrt/Minecraft.svg?style=for-the-badge
+[forks-url]: https://github.com/MoonGrt/Minecraft/network/members
+[stars-shield]: https://img.shields.io/github/stars/MoonGrt/Minecraft.svg?style=for-the-badge
+[stars-url]: https://github.com/MoonGrt/Minecraft/stargazers
+[issues-shield]: https://img.shields.io/github/issues/MoonGrt/Minecraft.svg?style=for-the-badge
+[issues-url]: https://github.com/MoonGrt/Minecraft/issues
+[license-shield]: https://img.shields.io/github/license/MoonGrt/Minecraft.svg?style=for-the-badge
+[license-url]: https://github.com/MoonGrt/Minecraft/blob/master/LICENSE
 

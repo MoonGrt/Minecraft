@@ -387,6 +387,13 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 Top level modules:
 	ppl_entry
 
+} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl_proc.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl_proc.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module ppl_proc
+
+Top level modules:
+	ppl_proc
+
 } {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/FIFO.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/FIFO.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 -- Compiling module FIFO
@@ -396,12 +403,5 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 
 Top level modules:
 	FIFO
-
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl_proc.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl_proc.v
-Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module ppl_proc
-
-Top level modules:
-	ppl_proc
 
 } {} {}}

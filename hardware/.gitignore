@@ -8,3 +8,5 @@
 *vivado*
 *.Xil/
 work/
+*.do
+*wlft*
