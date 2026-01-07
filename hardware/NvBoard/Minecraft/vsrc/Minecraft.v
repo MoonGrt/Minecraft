@@ -122,35 +122,34 @@ module Minecraft (
 
     //--------------------------
     // 输出 Minecraft
-    wire       minecraft_vs;
-    wire       minecraft_hs;
-    wire       minecraft_de;
-    wire [7:0] minecraft_r;
-    wire [7:0] minecraft_g;
-    wire [7:0] minecraft_b;
-    vga vga(
-        .clk (clk ),
-        .rstn(rstn),
-                                //                 // 480x272     800x600   // 1024x768  // 1280x720  // 1920x1080
-        .I_h_total (12'd800),  // hor total time  // 12'd523  // 12'd1056  // 12'd1344  // 12'd1650  // 12'd2200
-        .I_h_sync  (12'd41),   // hor sync time   // 12'd41   // 12'd128   // 12'd136   // 12'd40    // 12'd44
-        .I_h_bporch(12'd2),    // hor back porch  // 12'd2    // 12'd88    // 12'd160   // 12'd220   // 12'd148
-        .I_h_res   (12'd640),  // hor resolution  // 12'd480  // 12'd800   // 12'd1024  // 12'd1280  // 12'd1920
-        .I_v_total (12'd525),  // ver total time  // 12'd284  // 12'd628   // 12'd806   // 12'd750   // 12'd1125
-        .I_v_sync  (12'd10),   // ver sync time   // 12'd10   // 12'd4     // 12'd6     // 12'd5     // 12'd5
-        .I_v_bporch(12'd2),    // ver back porch  // 12'd2    // 12'd23    // 12'd29    // 12'd20    // 12'd36
-        .I_v_res   (12'd480),  // ver resolution  // 12'd272  // 12'd600   // 12'd768   // 12'd720   // 12'd1080
+    wire        minecraft_vs;
+    wire        minecraft_hs;
+    wire        minecraft_de;
+    wire [15:0] minecraft_data;
+    wire [ 7:0] minecraft_r = {minecraft_data[15:11], 3'b0}; // 红色分量
+    wire [ 7:0] minecraft_g = {minecraft_data[10:5], 2'b0}; // 绿色分量
+    wire [ 7:0] minecraft_b = {minecraft_data[4:0], 3'b0}; // 蓝色分量
 
-        // 像素点坐标
-        .pixel(pixel_data),
-        .addr (pixel_addr),
-        // RGB LCD接口
-        .vs(minecraft_vs),
-        .hs(minecraft_hs),
-        .de(minecraft_de),
-        .r (minecraft_r),
-        .g (minecraft_g),
-        .b (minecraft_b)
+    vga vga(
+    .clk(clk),
+    .rst(rst),
+
+    .hsync (12'd96),
+    .hback (12'd114),
+    .hdisp (12'd784),
+    .htotal(12'd800),
+    .vsync (12'd2),
+    .vback (12'd35),
+    .vdisp (12'd515),
+    .vtotal(12'd525),
+
+    .pixel(pixel_data),
+    .addr (pixel_addr),
+
+    .vs  (minecraft_vs),
+    .hs  (minecraft_hs),
+    .de  (minecraft_de),
+    .data(minecraft_data)
     );
 
     //--------------------------
