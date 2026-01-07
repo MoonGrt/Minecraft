@@ -1,5 +1,5 @@
 #include <nvboard.h>
-#include <Vtop.h>
+#include <VMinecraft.h>
 
 static TOP_NAME dut;
 
