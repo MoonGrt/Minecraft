@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+icon = """<svg t="1767789791085" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6210" width="200" height="200"><path d="M512 85.333333c235.605333 0 426.666667 169.728 426.666667 379.264a237.141333 237.141333 0 0 1-237.056 237.013334h-83.882667c-39.338667 0-71.125333 31.786667-71.125333 71.125333 0 18.005333 7.125333 34.602667 18.005333 46.933333 11.392 12.8 18.517333 29.397333 18.517333 47.872C583.125333 906.922667 550.4 938.666667 512 938.666667 276.394667 938.666667 85.333333 747.605333 85.333333 512S276.394667 85.333333 512 85.333333zM320 512a64 64 0 1 0 0-128 64 64 0 0 0 0 128z m384 0a64 64 0 1 0 0-128 64 64 0 0 0 0 128zM512 384a64 64 0 1 0 0-128 64 64 0 0 0 0 128z" fill="#000000" p-id="6211"></path></svg>"""
+
 """
 PyQt5 Color Viewer
 - 改进布局：使用 GroupBox、FormLayout 和更清晰的分区
@@ -12,7 +15,9 @@ from PyQt5.QtWidgets import (
     QLabel, QLineEdit, QComboBox, QPushButton, QMessageBox, QGroupBox,
     QFrame, QSizePolicy, QColorDialog, QSpacerItem
 )
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QIcon, QPixmap, QPainter
+from PyQt5.QtSvg import QSvgRenderer
+from PyQt5.QtCore import Qt, QTimer, QByteArray
 import sys, re
 
 FORMATS = [
@@ -149,6 +154,9 @@ class ColorViewer(QWidget):
         self.setWindowTitle("Color Viewer — Multiple Pixel Formats")
         self.resize(600, 300)
 
+        # 设置应用图标为SVG图标
+        self.setWindowIcon(self.create_svg_icon(icon))
+
         # Input group
         input_group = QGroupBox("Color Input")
 
@@ -229,6 +237,22 @@ class ColorViewer(QWidget):
 
         # initial
         self.update_preview()
+
+    def create_svg_icon(self, svg_string):
+        """将SVG字符串转换为QIcon"""
+        # 将 SVG 代码转换为 QByteArray
+        svg_byte_array = QByteArray(icon.encode('utf-8'))
+        # 使用 QSvgRenderer 渲染 SVG 数据
+        renderer = QSvgRenderer(svg_byte_array)
+        # 创建一个 QPixmap 用于渲染
+        pixmap = QPixmap(32, 32)  # 设置图标的尺寸
+        pixmap.fill(Qt.transparent)  # 填充透明背景
+        # 使用 QPainter 将 SVG 渲染到 QPixmap 上
+        painter = QPainter(pixmap)
+        renderer.render(painter)
+        painter.end()
+        # 使用QPixmap创建QIcon并返回
+        return QIcon(pixmap)
 
     def open_color_dialog(self):
         c = QColorDialog.getColor(parent=self, options=QColorDialog.ShowAlphaChannel)
