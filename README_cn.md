@@ -59,30 +59,33 @@
 └─ Project
   ├─ LICENSE
   ├─ README.md
+  ├─ README_cn.md
   ├─ /Algorithm/
   │ ├─ sight_line.m
   │ └─ /GUI/
   │   └─ sight_line.mlapp
   ├─ /Document/
-  ├─ /Project/
-  │ ├─ /minecraft/
+  ├─ /hardware/
+  │ ├─ readme.md
+  │ ├─ /NvBoard/
+  │ │ └─ readme.md
+  │ ├─ /tang_primer/
   │ │ ├─ top.gprj
-  │ │ └─ top.gprj.user
-  │ └─ /minecraft_moon/
-  │   ├─ minecraft_moon.xpr
-  │   ├─ minecraft_moon1.zip
-  │   └─ /minecraft_moon.srcs/
-  │     ├─ /sim_1/
-  │     │ ├─ tb_sort.v
-  │     │ └─ tb_top.v
-  │     └─ /sources_1/
-  └─ /Tool/
-    ├─ CircleMapping.py
-    ├─ coe_to_mi.py
-    ├─ map_gen.py
-    ├─ output.mi
-    ├─ png_to_mi.py
-    └─ xy_map.mi
+  │ │ └─ /src/
+  │ └─ /Zynq7020-BX71/
+  ├─ /scripts/
+  └─ /software/
+    ├─ readme.md
+    ├─ /minecraft/
+    ├─ /riscv/
+    │ ├─ top.gprj
+    │ └─ /src/
+    └─ /simulation/
+      ├─ /c/
+      │ └─ minecraft.c
+      └─ /python/
+        └─ minecraft.py
+
 ```
 
 

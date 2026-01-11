@@ -59,30 +59,32 @@
 └─ Project
   ├─ LICENSE
   ├─ README.md
+  ├─ README_cn.md
   ├─ /Algorithm/
   │ ├─ sight_line.m
   │ └─ /GUI/
   │   └─ sight_line.mlapp
   ├─ /Document/
-  ├─ /Project/
-  │ ├─ /minecraft/
+  ├─ /hardware/
+  │ ├─ readme.md
+  │ ├─ /NvBoard/
+  │ │ └─ readme.md
+  │ ├─ /tang_primer/
   │ │ ├─ top.gprj
-  │ │ └─ top.gprj.user
-  │ └─ /minecraft_moon/
-  │   ├─ minecraft_moon.xpr
-  │   ├─ minecraft_moon1.zip
-  │   └─ /minecraft_moon.srcs/
-  │     ├─ /sim_1/
-  │     │ ├─ tb_sort.v
-  │     │ └─ tb_top.v
-  │     └─ /sources_1/
-  └─ /Tool/
-    ├─ CircleMapping.py
-    ├─ coe_to_mi.py
-    ├─ map_gen.py
-    ├─ output.mi
-    ├─ png_to_mi.py
-    └─ xy_map.mi
+  │ │ └─ /src/
+  │ └─ /Zynq7020-BX71/
+  ├─ /scripts/
+  └─ /software/
+    ├─ readme.md
+    ├─ /minecraft/
+    ├─ /riscv/
+    │ ├─ top.gprj
+    │ └─ /src/
+    └─ /simulation/
+      ├─ /c/
+      │ └─ minecraft.c
+      └─ /python/
+        └─ minecraft.py
 
 ```
 
@@ -98,6 +100,10 @@
 ![Frame_render-Hardware](Document/Frame_render-Hardware.jpg)
 
 > Hardware rendering pipeline, about 2fps.
+
+![Nvboard](Document/Nvboard.png)
+
+> Virtual FPGA Board (NvBoard) rendering pipeline.
 
 This FPGA project involves the development of a Minecraft game entirely in hardware. The game enables players to place and break blocks, move, and fly. It utilizes a rendering pipeline to calculate the color of each pixel, ultimately displaying the generated frames on an HDMI screen. This hardware-based approach ensures efficient real-time rendering and interaction within the game environment.
 
