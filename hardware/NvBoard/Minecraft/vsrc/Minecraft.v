@@ -1,5 +1,9 @@
 `define H_DISP 640
 `define V_DISP 480
+// `define H_DISP 480
+// `define V_DISP 272
+// `define H_DISP 30
+// `define V_DISP 20
 
 // `define TEST
 `define MINECRAFT
@@ -97,6 +101,17 @@ module Minecraft (
     wire [15:0] pixel_data;
     wire [18:0] pixel_addr;
 
+    /* 根据 x 坐标生成彩条 */
+    // assign pixel_data =
+    //     ((pixel_addr % `H_DISP) < `H_DISP / 8 * 1) ? 16'hFFFF : // White
+    //     ((pixel_addr % `H_DISP) < `H_DISP / 8 * 2) ? 16'hFFE0 : // Yellow
+    //     ((pixel_addr % `H_DISP) < `H_DISP / 8 * 3) ? 16'h07FF : // Cyan
+    //     ((pixel_addr % `H_DISP) < `H_DISP / 8 * 4) ? 16'h07E0 : // Green
+    //     ((pixel_addr % `H_DISP) < `H_DISP / 8 * 5) ? 16'hF81F : // Magenta
+    //     ((pixel_addr % `H_DISP) < `H_DISP / 8 * 6) ? 16'hF800 : // Red
+    //     ((pixel_addr % `H_DISP) < `H_DISP / 8 * 7) ? 16'h001F : // Blue
+    //                                                  16'h0000 ; // Black
+
     parameter DP = `H_DISP * `V_DISP;
     parameter DW = 16;
     parameter AW = $clog2(DP);
@@ -135,7 +150,7 @@ module Minecraft (
     .rst(rst),
 
     .hsync (12'd96),
-    .hback (12'd114),
+    .hback (12'd144),
     .hdisp (12'd784),
     .htotal(12'd800),
     .vsync (12'd2),

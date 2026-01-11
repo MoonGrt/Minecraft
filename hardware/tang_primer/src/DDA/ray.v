@@ -401,7 +401,7 @@ module ray (
     // 声明 ROM
     reg [$clog2(TEXTURE_NUM)-1:0] face_idx_mem [0:BLOCK_NUM*FACE_NUM-1];
     // 初始化 ROM
-    initial $readmemh("G:/VM/share/Minecraft/scripts/res/output/txt_idx.hex", face_idx_mem);
+    initial $readmemh("D:/Project/FPAG/Project/Minecraft/Minecraft/scripts/res/output/txt_idx.hex", face_idx_mem);
     // 组合逻辑直接读取
     always @(*) texture_id = face_idx_mem[face_idx];
     wire [12:0] texture_addr_d6 = block_id ? texture_x_d6 + (texture_y_d6 << 4) + (texture_id << 8) : 0;

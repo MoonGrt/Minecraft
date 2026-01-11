@@ -1,44 +1,46 @@
-G:/VM/share/Minecraft/hardware/tang_primer/modelsim/top.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/modelsim/top.v
+D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/pipeline/ppl_proc.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/pipeline/ppl_proc.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module ppl_proc
+
+Top level modules:
+	ppl_proc
+
+} {} {}} D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/modelsim/top.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/modelsim/top.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 -- Compiling module top
 
 Top level modules:
 	top
 
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_rpll/TMDS_rPLL.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_rpll/TMDS_rPLL.v
+} {} {}} D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/gowin_rpll/TMDS_rPLL.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/gowin_rpll/TMDS_rPLL.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 -- Compiling module TMDS_rPLL
 
 Top level modules:
 	TMDS_rPLL
 
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_prom/texture_rom.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_prom/texture_rom.v
+} {} {}} D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/gowin_prom/texture_rom.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/gowin_prom/texture_rom.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 -- Compiling module texture_rom
 
 Top level modules:
 	texture_rom
-Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module texture_rom
 
-Top level modules:
-	texture_rom
-
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/testpattern.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/testpattern.v
-Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module testpattern
-
-Top level modules:
-	testpattern
-
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl.v
+} {} {}} D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/pipeline/ppl.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/pipeline/ppl.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 -- Compiling module ppl
 
 Top level modules:
 	ppl
 
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/modelsim/prim_sim.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/modelsim/prim_sim.v
+} {} {}} D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/modelsim/tb_top.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/modelsim/tb_top.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module tb_top
+
+Top level modules:
+	tb_top
+
+} {} {}} D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/modelsim/prim_sim.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/modelsim/prim_sim.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 -- Compiling UDP mux2
 -- Compiling module MUX2
@@ -334,67 +336,7 @@ Top level modules:
 	MIPI_IBUF
 	I3C_IOBUF
 
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/modelsim/tb_top.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/modelsim/tb_top.v
-Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module tb_top
-
-Top level modules:
-	tb_top
-
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/align.v {2 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/align.v
-Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
-** Warning: (vlog-6) -- Waiting for lock by "MoonGrt@DESKTOP-MOONGRT, pid = 25328
-". Lockfile is "G:/VM/share/Minecraft/hardware/tang_primer/modelsim/work/_lock".
--- Compiling module align
--- Compiling module sort
-
-Top level modules:
-	align
--- Compiling module align
--- Compiling module sort
-
-Top level modules:
-	align
-
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/map.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/map.v
-Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module map
-
-Top level modules:
-	map
-
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_sdpb/map_ram.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_sdpb/map_ram.v
-Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module map_ram
-
-Top level modules:
-	map_ram
-
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_rpll/ppl_clk.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_rpll/ppl_clk.v
-Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module ppl_clk
-
-Top level modules:
-	ppl_clk
-
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl_entry.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl_entry.v
-Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module ppl_entry
--- Compiling module viewport_scanner
--- Compiling module viewport_params
--- Compiling module angle_to_coord
-
-Top level modules:
-	ppl_entry
-
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl_proc.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/pipeline/ppl_proc.v
-Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module ppl_proc
-
-Top level modules:
-	ppl_proc
-
-} {} {}} G:/VM/share/Minecraft/hardware/tang_primer/src/FIFO.v {1 {vlog -work work -vopt -stats=none G:/VM/share/Minecraft/hardware/tang_primer/src/FIFO.v
+} {} {}} D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/video_scaler/FIFO.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/video_scaler/FIFO.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 -- Compiling module FIFO
 -- Compiling module FifoAddrCnt
@@ -403,5 +345,37 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 
 Top level modules:
 	FIFO
+
+} {} {}} D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/align.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/align.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module align
+-- Compiling module sort
+
+Top level modules:
+	align
+
+} {} {}} D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/map.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/map.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module map
+
+Top level modules:
+	map
+
+} {} {}} D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/gowin_sdpb/map_ram.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/gowin_sdpb/map_ram.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module map_ram
+
+Top level modules:
+	map_ram
+
+} {} {}} D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/pipeline/ppl_entry.v {1 {vlog -work work -vopt -stats=none D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/pipeline/ppl_entry.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module ppl_entry
+-- Compiling module viewport_scanner
+-- Compiling module viewport_params
+-- Compiling module angle_to_coord
+
+Top level modules:
+	ppl_entry
 
 } {} {}}

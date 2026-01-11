@@ -26,17 +26,20 @@ int main(int argc, char** argv) {
     tfp->open("build/wave.fst");
 
     // ===== 复位 =====
+    printf("Resetting...\n");
     top->rst = 1;
     tick(top, tfp);
     top->rst = 0;
 
     // ===== 主仿真 =====
     // VGA 一帧大约 640*480 = 307,200 像素时钟
-    for (int i = 0; i < 1000; i++) {
+    printf("Starting simulation...\n");
+    for (int i = 0; i < 100000; i++) {
         tick(top, tfp);
     }
 
     // ===== 结束 =====
+    printf("Simulation done!\n");
     tfp->close();
     delete top;
     return 0;

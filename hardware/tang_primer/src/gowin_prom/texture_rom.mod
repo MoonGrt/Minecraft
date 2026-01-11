@@ -7,7 +7,7 @@
 
 -mod_name texture_rom
 -file_name texture_rom
--path G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_prom/
+-path D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/gowin_prom/
 -type RAM_ROM
 -file_type vlg
 -pROM true
@@ -15,4 +15,4 @@
 -width 16
 -read_mode bypass
 -reset_mode sync
--init_file G:\VM\share\Minecraft\scripts\res\output\textures.mi
+-init_file D:\Project\FPAG\Project\Minecraft\Minecraft\scripts\res\output\textures.mi

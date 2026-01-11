@@ -37,7 +37,7 @@ module map (
         .clkb (clk),
         .rstb (rst),
         .ceb  ('b1),
-        .wrb  ('b1),
+        .wrb  ('b0),
         .addrb(block_addr),
         .dinb (),
         .doutb(block_id)

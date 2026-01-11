@@ -7,7 +7,7 @@
 
 -mod_name map_ram
 -file_name map_ram
--path G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_sdpb/
+-path D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/gowin_sdpb/
 -type RAM_SDP
 -file_type vlg
 -bram_b true
@@ -17,5 +17,5 @@
 -width_1 4
 -read_mode bypass
 -reset_mode sync
--init_file G:/VM/share/Minecraft/scripts/map/output/map_test.mi
+-init_file D:/Project/FPAG/Project/Minecraft/Minecraft/scripts/map/output/map_test.mi
 -init_match port_A

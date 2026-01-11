@@ -45,6 +45,8 @@
     );
 */
 
+`define SYNCHRONOUS
+
 module DPRAM #(
     parameter INIT_FILE = "init.hex",
     parameter DP = 512,
@@ -57,7 +59,11 @@ module DPRAM #(
     input  wire          wra,
     input  wire [AW-1:0] addra,
     input  wire [DW-1:0] dina,
+`ifdef SYNCHRONOUS
     output reg  [DW-1:0] douta,
+`else
+    output wire [DW-1:0] douta,
+`endif
 
     input  wire          clkb,
     input  wire          rstb,
@@ -65,7 +71,11 @@ module DPRAM #(
     input  wire          wrb,
     input  wire [AW-1:0] addrb,
     input  wire [DW-1:0] dinb,
+`ifdef SYNCHRONOUS
     output reg  [DW-1:0] doutb
+`else
+    output wire [DW-1:0] doutb
+`endif
 );
 
     // Memory declaration
@@ -86,19 +96,39 @@ module DPRAM #(
 
     // Port A logic
     wire CLKA = cea ? clka : 1'b0;
+`ifdef SYNCHRONOUS
+    // Synchronous read logic
     always @(posedge CLKA) begin
         if (rsta) douta <= {DW{1'b0}};
         else if (wra) ram[addra] <= dina;
         else douta <= ram[addra];
     end
+`else
+    // Asynchronous read logic
+    assign douta = ram[addra];
+    // assign douta = rsta ? 'b0 : ram[addra];
+    always @(posedge CLKA) begin
+        if (wra) ram[addra] <= dina;
+    end
+`endif
 
     // Port B logic
     wire CLKB = ceb ? clkb : 1'b0;
+`ifdef SYNCHRONOUS
+    // Synchronous read logic
     always @(posedge CLKB) begin
         if (rstb) doutb <= {DW{1'b0}};
         else if (wrb) ram[addrb] <= dinb;
         else doutb <= ram[addrb];
     end
+`else
+    // Asynchronous read logic
+    assign doutb = ram[addrb];
+    // assign doutb = rstb ? 'b0 : ram[addrb];
+    always @(posedge CLKB) begin
+        if (wrb) ram[addrb] <= dinb;
+    end
+`endif
 
 endmodule
 
@@ -132,6 +162,8 @@ endmodule
     );
 */
 
+`define SYNCHRONOUS
+
 module ROM #(
     parameter INIT_FILE = "init.hex",
     parameter DP = 512,
@@ -142,7 +174,11 @@ module ROM #(
     input  wire          rst,
     input  wire          ce,
     input  wire [AW-1:0] addr,
+`ifdef SYNCHRONOUS
     output reg  [DW-1:0] dout
+`else
+    output wire [DW-1:0] dout
+`endif
 );
 
     // Memory declaration
@@ -166,6 +202,7 @@ module ROM #(
     // Clock enable gating（保持与 DPRAM 一致）
     wire CLK = ce ? clk : 1'b0;
 
+`ifdef SYNCHRONOUS
     // Synchronous read logic
     always @(posedge CLK) begin
         if (rst)
@@ -173,5 +210,9 @@ module ROM #(
         else
             dout <= rom[addr];
     end
+`else
+    // Asynchronous read logic
+    assign dout = rom[addr];
+`endif
 
 endmodule

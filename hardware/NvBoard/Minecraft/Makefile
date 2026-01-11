@@ -57,7 +57,7 @@ run: $(BIN)
 sim: $(BIN_SIM)
 	@$^
 
-wave: $(BIN_SIM)
+wave: sim
 	gtkwave $(WAVE_FILE)
 
 clean:

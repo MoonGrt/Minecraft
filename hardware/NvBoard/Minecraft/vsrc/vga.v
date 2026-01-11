@@ -27,24 +27,20 @@ module vga (
     wire [11:0] y;
     wire        hen;
     wire        ven;
-    assign addr = y * hdisp + x;
+    assign addr = y * (hdisp - hback) + x;
 
-    assign hen = ((hback <= hCnt) && (hCnt < hdisp));
-    assign ven = ((vback <= vCnt) && (vCnt < vdisp));
-    assign data = pixel;
-    assign vs = (vCnt <= vsync);
-    assign hs = (hCnt <= hsync);
-    assign de = (hen && ven);
-    assign x = de ? (hCnt - hback) : 12'd0;
-    assign y = de ? (vCnt - vback) : 12'd0;
+    assign hen = ((hback < hCnt) && (hCnt <= hdisp));
+    assign ven = ((vback < vCnt) && (vCnt <= vdisp));
+    assign x = de ? (hCnt - hback - 'b1) : 12'd0;
+    assign y = de ? (vCnt - vback - 'b1) : 12'd0;
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             hCnt <= 12'h0;
             vCnt <= 12'h0;
         end else begin
-        if (hCnt == htotal) begin
+        if (hCnt == htotal -'b1) begin
             hCnt <= 12'h0;
-            if (vCnt == vtotal) begin
+            if (vCnt == vtotal -'b1) begin
                 vCnt <= 12'h0;
             end else begin
                 vCnt <= (vCnt + 12'h001);
@@ -54,5 +50,23 @@ module vga (
         end
         end
     end
+
+    assign vs = (vCnt <= vsync);
+    assign hs = (hCnt <= hsync);
+    assign de = (hen && ven);
+    assign data = pixel;
+    // always @(posedge clk or posedge rst) begin
+    //     if (rst) begin
+    //         vs <= 'b0;
+    //         hs <= 'b0;
+    //         de <= 'b0;
+    //         // data <= 'b0;
+    //     end else begin
+    //         vs <= (vCnt < vsync);
+    //         hs <= (hCnt < hsync);
+    //         de <= (hen && ven);
+    //         // data <= pixel;
+    //     end
+    // end
 
 endmodule

@@ -9,7 +9,7 @@ version=1.0
 [Config]
 DEPTH=5120
 LANG=0
-MEM_FILE=G:\\VM\\share\\Minecraft\\scripts\\res\\output\\textures.mi
+MEM_FILE=D:\\Project\\FPAG\\Project\\Minecraft\\Minecraft\\scripts\\res\\output\\textures.mi
 READ=0
 RESET_MODE=true
 WIDTH=16
