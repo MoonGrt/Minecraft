@@ -5,8 +5,8 @@
 // `define H_DISP 30
 // `define V_DISP 20
 
-// `define TEST
 `define MINECRAFT
+`define PPL
 
 module Minecraft (
     input clk,
@@ -24,7 +24,7 @@ module Minecraft (
     wire rstn = ~rst;
 
     // 5 + 4 + 7 = 16
-    reg  [15:0] p_pos_x = 'd33 << 3 << 7;
+    reg  [15:0] p_pos_x = 'd39 << 3 << 7;
     reg  [15:0] p_pos_y = 'd33 << 3 << 7;
     reg  [15:0] p_pos_z = 'd62 << 3 << 7;
     reg  [15:0] p_angle_x = -1;
@@ -37,10 +37,18 @@ module Minecraft (
     wire [14:0] block_addr;
     wire [12:0] texture_addr;
     wire valid;
+
+`ifdef PPL
     ppl #(
         .H_DISP(`H_DISP),
         .V_DISP(`V_DISP)
     ) ppl (
+`else
+    dda #(
+        .H_DISP(`H_DISP),
+        .V_DISP(`V_DISP)
+    ) dda (
+`endif
         .clk      (clk),
         .rst      (rst),
         .p_pos_x  (p_pos_x),
@@ -203,18 +211,17 @@ module Minecraft (
     );
 
     //==============================================================================
-`ifdef TEST
-    assign {vga_r, vga_g, vga_b} = {test_r, test_g, test_b};  // {r,g,b}
-    assign vga_vs = test_vs;
-    assign vga_hs = test_hs;
-    assign vga_de = test_de;
-    assign vga_clk = clk;
-`endif
 `ifdef MINECRAFT
     assign {vga_r, vga_g, vga_b} = {minecraft_r, minecraft_g, minecraft_b};  // {r,g,b}
     assign vga_vs = minecraft_vs;
     assign vga_hs = minecraft_hs;
     assign vga_de = minecraft_de;
+    assign vga_clk = clk;
+`else
+    assign {vga_r, vga_g, vga_b} = {test_r, test_g, test_b};  // {r,g,b}
+    assign vga_vs = test_vs;
+    assign vga_hs = test_hs;
+    assign vga_de = test_de;
     assign vga_clk = clk;
 `endif
 

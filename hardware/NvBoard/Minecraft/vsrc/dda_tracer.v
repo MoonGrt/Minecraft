@@ -1,23 +1,23 @@
 `timescale 1ns / 1ps
 
-module ppl_proc (
+module dda_tracer (
     input clk,
     input rst,
 
     input        [15:0] start_pos_x,
     input        [15:0] start_pos_y,
     input        [15:0] start_pos_z,
-    input signed [13:0] ray_slope_x,
-    input signed [13:0] ray_slope_y,
-    input signed [13:0] ray_slope_z,
+    input signed [15:0] ray_slope_x,
+    input signed [15:0] ray_slope_y,
+    input signed [15:0] ray_slope_z,
     input        [19:0] pixel_addr,
     input        [ 3:0] block_id,
     input        [ 5:0] block_cnt,
 
     output        [ 5:0] block_cnt_out,
-    output signed [13:0] ray_slope_out_x,
-    output signed [13:0] ray_slope_out_y,
-    output signed [13:0] ray_slope_out_z,
+    output signed [15:0] ray_slope_out_x,
+    output signed [15:0] ray_slope_out_y,
+    output signed [15:0] ray_slope_out_z,
     output        [15:0] end_pos_x,
     output        [15:0] end_pos_y,
     output        [15:0] end_pos_z,
@@ -31,9 +31,9 @@ module ppl_proc (
 
     // Step 1
     reg        [19:0] pixel_addr_d1 = 'b0;
-    reg signed [13:0] ray_slope_x_d1 = 'b0;
-    reg signed [13:0] ray_slope_y_d1 = 'b0;
-    reg signed [13:0] ray_slope_z_d1 = 'b0;
+    reg signed [15:0] ray_slope_x_d1 = 'b0;
+    reg signed [15:0] ray_slope_y_d1 = 'b0;
+    reg signed [15:0] ray_slope_z_d1 = 'b0;
     reg signed [ 4:0] block_x_d1 = 'b0;
     reg signed [ 4:0] block_y_d1 = 'b0;
     reg signed [ 4:0] block_z_d1 = 'b0;
@@ -79,9 +79,9 @@ module ppl_proc (
             block_x_d1 <= start_pos_x[15:11];
             block_y_d1 <= start_pos_y[15:11];
             block_z_d1 <= start_pos_z[15:11];
-            edge_x_d1 <= ray_slope_x[13] ? (start_pos_x[10:0] ? start_pos_x[10:0] : ('d16 << 7)) : (('d16 << 7) - start_pos_x[10:0]);
-            edge_y_d1 <= ray_slope_y[13] ? (start_pos_y[10:0] ? start_pos_y[10:0] : ('d16 << 7)) : (('d16 << 7) - start_pos_y[10:0]);
-            edge_z_d1 <= ray_slope_z[13] ? (start_pos_z[10:0] ? start_pos_z[10:0] : ('d16 << 7)) : (('d16 << 7) - start_pos_z[10:0]);
+            edge_x_d1 <= ray_slope_x[15] ? (start_pos_x[10:0] ? start_pos_x[10:0] : ('d16 << 7)) : (('d16 << 7) - start_pos_x[10:0]);
+            edge_y_d1 <= ray_slope_y[15] ? (start_pos_y[10:0] ? start_pos_y[10:0] : ('d16 << 7)) : (('d16 << 7) - start_pos_y[10:0]);
+            edge_z_d1 <= ray_slope_z[15] ? (start_pos_z[10:0] ? start_pos_z[10:0] : ('d16 << 7)) : (('d16 << 7) - start_pos_z[10:0]);
         end
     end
 
@@ -89,9 +89,9 @@ module ppl_proc (
 
     // Step 2
     reg [19:0] pixel_addr_d2 = 'b0;
-    reg signed [13:0] ray_slope_x_d2 = 'b0;
-    reg signed [13:0] ray_slope_y_d2 = 'b0;
-    reg signed [13:0] ray_slope_z_d2 = 'b0;
+    reg signed [15:0] ray_slope_x_d2 = 'b0;
+    reg signed [15:0] ray_slope_y_d2 = 'b0;
+    reg signed [15:0] ray_slope_z_d2 = 'b0;
     reg signed [4:0] block_x_d2 = 'b0;
     reg signed [4:0] block_y_d2 = 'b0;
     reg signed [4:0] block_z_d2 = 'b0;
@@ -101,12 +101,12 @@ module ppl_proc (
     reg [ 5:0] block_cnt_d2 = 'b0;
     reg [ 2:0] min_flag_d2 = 'b0;  // x, y, z
     reg [19:0] min = 'b0;
-    wire signed [13:0] ray_slope_x_abs = ray_slope_x_d1[13] ? -ray_slope_x_d1 : ray_slope_x_d1;
-    wire signed [13:0] ray_slope_y_abs = ray_slope_y_d1[13] ? -ray_slope_y_d1 : ray_slope_y_d1;
-    wire signed [13:0] ray_slope_z_abs = ray_slope_z_d1[13] ? -ray_slope_z_d1 : ray_slope_z_d1;
-    reg signed [20:0] div_edge_x_d2 = 'b0;
-    reg signed [20:0] div_edge_y_d2 = 'b0;
-    reg signed [20:0] div_edge_z_d2 = 'b0;
+    wire signed [15:0] ray_slope_x_abs = ray_slope_x_d1[15] ? -ray_slope_x_d1 : ray_slope_x_d1;
+    wire signed [15:0] ray_slope_y_abs = ray_slope_y_d1[15] ? -ray_slope_y_d1 : ray_slope_y_d1;
+    wire signed [15:0] ray_slope_z_abs = ray_slope_z_d1[15] ? -ray_slope_z_d1 : ray_slope_z_d1;
+    reg signed [15:0] div_edge_x_d2 = 'b0;
+    reg signed [15:0] div_edge_y_d2 = 'b0;
+    reg signed [15:0] div_edge_z_d2 = 'b0;
     // last
     always @(posedge clk or posedge rst) begin
         if (rst) begin
@@ -156,9 +156,9 @@ module ppl_proc (
             div_edge_y_d2 <= 'b0;
             div_edge_z_d2 <= 'b0;
         end else begin
-            div_edge_x_d2 <= ray_slope_x_d1 ? (edge_x_d1 << 6) / (ray_slope_x_abs >> 3) : 'hffff;
-            div_edge_y_d2 <= ray_slope_y_d1 ? (edge_y_d1 << 6) / (ray_slope_y_abs >> 3) : 'hffff;
-            div_edge_z_d2 <= ray_slope_z_d1 ? (edge_z_d1 << 6) / (ray_slope_z_abs >> 3) : 'hffff;
+            div_edge_x_d2 <= ray_slope_x_d1 ? (edge_x_d1 << 9) / ray_slope_x_abs : 'hffff;
+            div_edge_y_d2 <= ray_slope_y_d1 ? (edge_y_d1 << 9) / ray_slope_y_abs : 'hffff;
+            div_edge_z_d2 <= ray_slope_z_d1 ? (edge_z_d1 << 9) / ray_slope_z_abs : 'hffff;
         end
     end
 
@@ -166,9 +166,9 @@ module ppl_proc (
 
     // Step 3
     reg [19:0] pixel_addr_d3 = 'b0;
-    reg signed [13:0] ray_slope_x_d3 = 'b0;
-    reg signed [13:0] ray_slope_y_d3 = 'b0;
-    reg signed [13:0] ray_slope_z_d3 = 'b0;
+    reg signed [15:0] ray_slope_x_d3 = 'b0;
+    reg signed [15:0] ray_slope_y_d3 = 'b0;
+    reg signed [15:0] ray_slope_z_d3 = 'b0;
     reg [15:0] start_pos_x_d3 = 'b0;
     reg [15:0] start_pos_y_d3 = 'b0;
     reg [15:0] start_pos_z_d3 = 'b0;
@@ -217,12 +217,12 @@ module ppl_proc (
             block_next_y_d3 <= 'b0;
             block_next_z_d3 <= 'b0;
         end else begin
-            block_next_x_d3 <= min_flag_d2[2] ? (ray_slope_x_d2[13] ? ((start_pos_x_d2[10:0] == 0) && (ray_slope_x_d2[13]) ? block_x_d2 - 'd2 : block_x_d2 - 'd1) : block_x_d2 + 'd1) : 
-                                ((start_pos_x_d2[10:0] == 0) && (ray_slope_x_d2[13]) ? block_x_d2 - 'd1 : block_x_d2);
-            block_next_y_d3 <= min_flag_d2[1] ? (ray_slope_y_d2[13] ? ((start_pos_y_d2[10:0] == 0) && (ray_slope_y_d2[13]) ? block_y_d2 - 'd2 : block_y_d2 - 'd1) : block_y_d2 + 'd1) :
-                                ((start_pos_y_d2[10:0] == 0) && (ray_slope_y_d2[13]) ? block_y_d2 - 'd1 : block_y_d2);
-            block_next_z_d3 <= min_flag_d2[0] ? (ray_slope_z_d2[13] ? ((start_pos_z_d2[10:0] == 0) && (ray_slope_z_d2[13]) ? block_z_d2 - 'd2 : block_z_d2 - 'd1) : block_z_d2 + 'd1) :
-                                ((start_pos_z_d2[10:0] == 0) && (ray_slope_z_d2[13]) ? block_z_d2 - 'd1 : block_z_d2);
+            block_next_x_d3 <= min_flag_d2[2] ? (ray_slope_x_d2[15] ? ((start_pos_x_d2[10:0] == 0) && (ray_slope_x_d2[15]) ? block_x_d2 - 'd2 : block_x_d2 - 'd1) : block_x_d2 + 'd1) : 
+                                ((start_pos_x_d2[10:0] == 0) && (ray_slope_x_d2[15]) ? block_x_d2 - 'd1 : block_x_d2);
+            block_next_y_d3 <= min_flag_d2[1] ? (ray_slope_y_d2[15] ? ((start_pos_y_d2[10:0] == 0) && (ray_slope_y_d2[15]) ? block_y_d2 - 'd2 : block_y_d2 - 'd1) : block_y_d2 + 'd1) :
+                                ((start_pos_y_d2[10:0] == 0) && (ray_slope_y_d2[15]) ? block_y_d2 - 'd1 : block_y_d2);
+            block_next_z_d3 <= min_flag_d2[0] ? (ray_slope_z_d2[15] ? ((start_pos_z_d2[10:0] == 0) && (ray_slope_z_d2[15]) ? block_z_d2 - 'd2 : block_z_d2 - 'd1) : block_z_d2 + 'd1) :
+                                ((start_pos_z_d2[10:0] == 0) && (ray_slope_z_d2[15]) ? block_z_d2 - 'd1 : block_z_d2);
         end
     end
 
@@ -230,20 +230,20 @@ module ppl_proc (
 
     // Step4
     reg [19:0] pixel_addr_d4 = 'b0;
-    reg signed [13:0] ray_slope_x_d4 = 'b0;
-    reg signed [13:0] ray_slope_y_d4 = 'b0;
-    reg signed [13:0] ray_slope_z_d4 = 'b0;
+    reg signed [15:0] ray_slope_x_d4 = 'b0;
+    reg signed [15:0] ray_slope_y_d4 = 'b0;
+    reg signed [15:0] ray_slope_z_d4 = 'b0;
     reg [ 5:0] block_cnt_d4 = 'b0;
-    reg [ 2:0] min_flag_d4  = 'b0;  // x, y, z
+    reg [ 2:0] min_flag_d4 = 'b0;  // x, y, z
     reg [15:0] end_pos_x_d4 = 'b0;
     reg [15:0] end_pos_y_d4 = 'b0;
     reg [15:0] end_pos_z_d4 = 'b0;
-    wire signed [20:0] detal_xy = (ray_slope_x_d3 * $signed(div_edge_y_d3)) >>> 9;
-    wire signed [20:0] detal_xz = (ray_slope_x_d3 * $signed(div_edge_z_d3)) >>> 9;
-    wire signed [20:0] detal_yz = (ray_slope_y_d3 * $signed(div_edge_z_d3)) >>> 9;
-    wire signed [20:0] detal_yx = (ray_slope_y_d3 * $signed(div_edge_x_d3)) >>> 9;
-    wire signed [20:0] detal_zx = (ray_slope_z_d3 * $signed(div_edge_x_d3)) >>> 9;
-    wire signed [20:0] detal_zy = (ray_slope_z_d3 * $signed(div_edge_y_d3)) >>> 9;
+    wire signed [31:0] detal_xy = (ray_slope_x_d3 * $signed(div_edge_y_d3)) >>> 9;
+    wire signed [31:0] detal_xz = (ray_slope_x_d3 * $signed(div_edge_z_d3)) >>> 9;
+    wire signed [31:0] detal_yz = (ray_slope_y_d3 * $signed(div_edge_z_d3)) >>> 9;
+    wire signed [31:0] detal_yx = (ray_slope_y_d3 * $signed(div_edge_x_d3)) >>> 9;
+    wire signed [31:0] detal_zx = (ray_slope_z_d3 * $signed(div_edge_x_d3)) >>> 9;
+    wire signed [31:0] detal_zy = (ray_slope_z_d3 * $signed(div_edge_y_d3)) >>> 9;
     reg map_border_flag_d4;
     reg [14:0] block_addr_d4;
     // last
@@ -275,14 +275,14 @@ module ppl_proc (
         end else begin
             // block_next_x * 32 * 32 + block_next_y * 32 + block_next_z;
             block_addr_d4 <= (block_next_x_d3 << 10) + (block_next_y_d3 << 5) + (block_next_z_d3);
-            map_border_flag_d4 <= ((start_pos_x_d3[15:11] == 0) && (ray_slope_x_d3[13]) == 1) || ((start_pos_x_d3[15:11] == 32) && (ray_slope_x_d3[13] == 0)) ||
-                                  ((start_pos_y_d3[15:11] == 0) && (ray_slope_y_d3[13]) == 1) || ((start_pos_y_d3[15:11] == 32) && (ray_slope_x_d3[13] == 0)) ||
-                                  ((start_pos_z_d3[15:11] == 0) && (ray_slope_z_d3[13]) == 1) || ((start_pos_z_d3[15:11] == 32) && (ray_slope_x_d3[13] == 0));
-            end_pos_x_d4 <= min_flag_d3[2] ? ((ray_slope_x_d3[13] ? (start_pos_x_d3[10:0] ? start_pos_x_d3[15:11] : start_pos_x_d3[15:11] - 'd1) : start_pos_x_d3[15:11] + 'd1) << 11) :  // 4 + 7
+            map_border_flag_d4 <= ((start_pos_x_d3[15:11] == 0) && (ray_slope_x_d3[15]) == 1) || ((start_pos_x_d3[15:11] == 32) && (ray_slope_x_d3[15] == 0)) ||
+                                  ((start_pos_y_d3[15:11] == 0) && (ray_slope_y_d3[15]) == 1) || ((start_pos_y_d3[15:11] == 32) && (ray_slope_x_d3[15] == 0)) ||
+                                  ((start_pos_z_d3[15:11] == 0) && (ray_slope_z_d3[15]) == 1) || ((start_pos_z_d3[15:11] == 32) && (ray_slope_x_d3[15] == 0));
+            end_pos_x_d4 <= min_flag_d3[2] ? ((ray_slope_x_d3[15] ? (start_pos_x_d3[10:0] ? start_pos_x_d3[15:11] : start_pos_x_d3[15:11] - 'd1) : start_pos_x_d3[15:11] + 'd1) << 11) :  // 4 + 7
                                 (min_flag_d3[1] ? start_pos_x_d3 + detal_xy : start_pos_x_d3 + detal_xz);
-            end_pos_y_d4 <= min_flag_d3[1] ? ((ray_slope_y_d3[13] ? (start_pos_y_d3[10:0] ? start_pos_y_d3[15:11] : start_pos_y_d3[15:11] - 'd1) : start_pos_y_d3[15:11] + 'd1) << 11) :  // 4 + 7
+            end_pos_y_d4 <= min_flag_d3[1] ? ((ray_slope_y_d3[15] ? (start_pos_y_d3[10:0] ? start_pos_y_d3[15:11] : start_pos_y_d3[15:11] - 'd1) : start_pos_y_d3[15:11] + 'd1) << 11) :  // 4 + 7
                                 (min_flag_d3[0] ? start_pos_y_d3 + detal_yz : start_pos_y_d3 + detal_yx);
-            end_pos_z_d4 <= min_flag_d3[0] ? ((ray_slope_z_d3[13] ? (start_pos_z_d3[10:0] ? start_pos_z_d3[15:11] : start_pos_z_d3[15:11] - 'd1) : start_pos_z_d3[15:11] + 'd1) << 11) :  // 4 + 7
+            end_pos_z_d4 <= min_flag_d3[0] ? ((ray_slope_z_d3[15] ? (start_pos_z_d3[10:0] ? start_pos_z_d3[15:11] : start_pos_z_d3[15:11] - 'd1) : start_pos_z_d3[15:11] + 'd1) << 11) :  // 4 + 7
                                 (min_flag_d3[2] ? start_pos_z_d3 + detal_zx : start_pos_z_d3 + detal_zy);
         end
     end
@@ -292,9 +292,9 @@ module ppl_proc (
     // Step5
     reg [ 2:0] face_d5;
     reg [19:0] pixel_addr_d5 = 'b0;
-    reg signed [13:0] ray_slope_x_d5 = 'b0;
-    reg signed [13:0] ray_slope_y_d5 = 'b0;
-    reg signed [13:0] ray_slope_z_d5 = 'b0;
+    reg signed [15:0] ray_slope_x_d5 = 'b0;
+    reg signed [15:0] ray_slope_y_d5 = 'b0;
+    reg signed [15:0] ray_slope_z_d5 = 'b0;
     reg        [15:0] end_pos_x_d5 = 'b0;
     reg        [15:0] end_pos_y_d5 = 'b0;
     reg        [15:0] end_pos_z_d5 = 'b0;
@@ -351,9 +351,9 @@ module ppl_proc (
     // Step6
     reg        [ 2:0] face_d6 = 'b0;
     reg        [19:0] pixel_addr_d6 = 'b0;
-    reg signed [13:0] ray_slope_x_d6 = 'b0;
-    reg signed [13:0] ray_slope_y_d6 = 'b0;
-    reg signed [13:0] ray_slope_z_d6 = 'b0;
+    reg signed [15:0] ray_slope_x_d6 = 'b0;
+    reg signed [15:0] ray_slope_y_d6 = 'b0;
+    reg signed [15:0] ray_slope_z_d6 = 'b0;
     reg        [15:0] end_pos_x_d6 = 'b0;
     reg        [15:0] end_pos_y_d6 = 'b0;
     reg        [15:0] end_pos_z_d6 = 'b0;
@@ -401,7 +401,7 @@ module ppl_proc (
     // 声明 ROM
     reg [$clog2(TEXTURE_NUM)-1:0] face_idx_mem [0:BLOCK_NUM*FACE_NUM-1];
     // 初始化 ROM
-    initial $readmemh("D:/Project/FPAG/Project/Minecraft/Minecraft/scripts/res/output/txt_idx.hex", face_idx_mem);
+    initial $readmemb("./vsrc/txtidx.bin", face_idx_mem);
     // 组合逻辑直接读取
     always @(*) texture_id = face_idx_mem[face_idx];
     wire [12:0] texture_addr_d6 = block_id ? texture_x_d6 + (texture_y_d6 << 4) + (texture_id << 8) : 0;

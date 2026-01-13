@@ -7,6 +7,8 @@
 `define ANGLE_HALF 634     // `define ANGLE_HALF ANGLE_EIGHTH * 4 + 2
 `define ANGLE_MODULO 1268  // `define ANGLE_MODULO ANGLE_EIGHTH * 8 + 4
 
+/* verilator lint_off WIDTH */
+
 module ppl_entry #(
     parameter H_DISP = 1280,
     parameter V_DISP = 720
@@ -25,18 +27,18 @@ module ppl_entry #(
     input        [15:0] end_pos_x,
     input        [15:0] end_pos_y,
     input        [15:0] end_pos_z,
-    input signed [15:0] ray_slope_out_x,
-    input signed [15:0] ray_slope_out_y,
-    input signed [15:0] ray_slope_out_z,
+    input signed [13:0] ray_slope_out_x,
+    input signed [13:0] ray_slope_out_y,
+    input signed [13:0] ray_slope_out_z,
     input        [ 5:0] block_cnt_out,
 
     output        [ 5:0] block_cnt,
     output        [15:0] start_pos_x,
     output        [15:0] start_pos_y,
     output        [15:0] start_pos_z,
-    output signed [15:0] ray_slope_x,
-    output signed [15:0] ray_slope_y,
-    output signed [15:0] ray_slope_z,
+    output signed [13:0] ray_slope_x,
+    output signed [13:0] ray_slope_y,
+    output signed [13:0] ray_slope_z,
     output        [19:0] pixel_addr
 );
 
@@ -76,9 +78,9 @@ module ppl_entry #(
 
     wire signed [15:0] fragment_offset_x = fragment_uv_x * 2 - H_DISP;
     wire signed [15:0] fragment_offset_y = -(fragment_uv_y * 2 - V_DISP);
-    wire signed [20:0] ray_offset_x = (vp_v_x * fragment_offset_x + vp_u_x * fragment_offset_y) >>> (`SHIFT + 1);
-    wire signed [20:0] ray_offset_y = (vp_v_y * fragment_offset_x + vp_u_y * fragment_offset_y) >>> (`SHIFT + 1);
-    wire signed [20:0] ray_offset_z = (vp_v_z * fragment_offset_x + vp_u_z * fragment_offset_y) >>> (`SHIFT + 1);
+    wire signed [17:0] ray_offset_x = (vp_v_x * fragment_offset_x + vp_u_x * fragment_offset_y) >>> (`SHIFT + 1);
+    wire signed [17:0] ray_offset_y = (vp_v_y * fragment_offset_x + vp_u_y * fragment_offset_y) >>> (`SHIFT + 1);
+    wire signed [17:0] ray_offset_z = (vp_v_z * fragment_offset_x + vp_u_z * fragment_offset_y) >>> (`SHIFT + 1);
 
     // Output
     assign start_pos_x = next_en ? p_pos_x : end_pos_x;
@@ -308,8 +310,10 @@ module angle_to_coord (
             'd156: x_mapped = 'd161;
             'd157: x_mapped = 'd160;
             'd158: x_mapped = 'd159;
-            default: x_mapped = 20'b0;
+            default: x_mapped = 'b0;
         endcase
     end
 
 endmodule
+
+/* verilator lint_on WIDTH */

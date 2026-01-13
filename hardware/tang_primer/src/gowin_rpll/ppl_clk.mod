@@ -7,17 +7,17 @@
 
 -mod_name ppl_clk
 -file_name ppl_clk
--path G:/VM/share/Minecraft/hardware/tang_primer/src/gowin_rpll/
+-path D:/Project/FPAG/Project/Minecraft/Minecraft/hardware/tang_primer/src/gowin_rpll/
 -type PLL
 -rPll true
 -file_type vlg
 -dev_type GW2A-18C
 -dyn_idiv_sel false
--idiv_sel 3
+-idiv_sel 9
 -dyn_fbdiv_sel false
--fbdiv_sel 1
+-fbdiv_sel 4
 -dyn_odiv_sel false
--odiv_sel 64
+-odiv_sel 48
 -dyn_da_en true
 -rst_sig false
 -rst_sig_p false
