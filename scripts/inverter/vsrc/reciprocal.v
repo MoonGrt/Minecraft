@@ -2,15 +2,15 @@
 // 使用 LUT + 1 次牛顿迭代实现 1/x
 // LUT 从外部 .mem 文件加载
 module reciprocal #(
-    parameter ADDR_BITS = 8,       // LUT 地址位数
-    parameter X_FRAC    = 13,      // 输入小数位
-    parameter Y_FRAC    = 16,      // 输出小数位
-    parameter WIDTH     = 16       // 输出总宽度
+    parameter ADDR_BITS = 8,   // LUT 地址位数
+    parameter X_FRAC    = 13,  // 输入小数位
+    parameter Y_FRAC    = 16,  // 输出小数位
+    parameter WIDTH     = 16   // 输出总宽度
 )(
     input  wire              clk,
     input  wire              rst,
     input  wire              in_valid,
-    input  wire [X_FRAC+ADDR_BITS-1:0] x,  // 定点数输入
+    input  wire [X_FRAC+ADDR_BITS-1:0] x,
     output reg               out_valid,
     output reg [WIDTH-1:0]   y
 );

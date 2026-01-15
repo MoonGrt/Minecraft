@@ -1,9 +1,7 @@
 #include <verilated.h>
 #include <verilated_vcd_c.h>
-
 #include "Vreciprocal.h"
-
-#include <iostream>
+#include <cstdio>
 #include <cmath>
 
 static vluint64_t sim_time = 0;
@@ -52,7 +50,7 @@ int main(int argc, char **argv) {
     const int X_FRAC = 13;
     const int Y_FRAC = 16;
 
-    for (int i = 1; i < 256; i++) {
+    for (int i = 1; i < 32; i++) {
         double x = (double)i / 16.0;
         uint16_t x_fixed = double_to_fixed(x, X_FRAC);
 
@@ -85,12 +83,7 @@ int main(int argc, char **argv) {
 
         double err = y - y_ref;
 
-        // std::cout
-        //     << "x=" << x
-        //     << " y=" << y
-        //     << " ref=" << y_ref
-        //     << " err=" << err
-        //     << std::endl;
+        printf("x=%.4f y=%f ref=%f err=%f\n", x, y, y_ref, err);
 
         dut->in_valid = 0;
     }
@@ -102,6 +95,6 @@ int main(int argc, char **argv) {
     delete tfp;
     delete dut;
 
-    std::cout << "Simulation done, waveform saved to wave.vcd\n";
+    printf("Simulation done, waveform saved to wave.vcd\n");
     return 0;
 }

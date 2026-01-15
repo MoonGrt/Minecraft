@@ -33,7 +33,7 @@ def analyze(
         if x == 0:
             continue
 
-        # LUT 初值（等价 fpga_craft）
+        # LUT 初值
         y = 1.0 / x
 
         # Newton refinement
