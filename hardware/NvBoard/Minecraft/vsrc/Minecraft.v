@@ -39,16 +39,14 @@ module Minecraft (
     wire valid;
 
 `ifdef PPL
-    ppl #(
+    ppl 
+`else
+    dda
+`endif
+    #(
         .H_DISP(`H_DISP),
         .V_DISP(`V_DISP)
     ) ppl (
-`else
-    dda #(
-        .H_DISP(`H_DISP),
-        .V_DISP(`V_DISP)
-    ) dda (
-`endif
         .clk      (clk),
         .rst      (rst),
         .p_pos_x  (p_pos_x),

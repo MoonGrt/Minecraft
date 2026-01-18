@@ -16,34 +16,34 @@ module ppl_entry #(
     input clk,
     input rst,
 
-    input        [15:0] p_pos_x,
-    input        [15:0] p_pos_y,
-    input        [15:0] p_pos_z,
-    input signed [15:0] p_angle_x,
-    input signed [15:0] p_angle_y,
+    input [15:0] p_pos_x,
+    input [15:0] p_pos_y,
+    input [15:0] p_pos_z,
+    input [15:0] p_angle_x,
+    input [15:0] p_angle_y,
 
-    input               next_en,
-    input        [19:0] pixel_addr_out,
-    input        [15:0] end_pos_x,
-    input        [15:0] end_pos_y,
-    input        [15:0] end_pos_z,
-    input signed [13:0] ray_slope_out_x,
-    input signed [13:0] ray_slope_out_y,
-    input signed [13:0] ray_slope_out_z,
-    input        [ 5:0] block_cnt_out,
+    input        next_en,
+    input [19:0] pixel_addr_out,
+    input [15:0] end_pos_x,
+    input [15:0] end_pos_y,
+    input [15:0] end_pos_z,
+    input [13:0] ray_slope_out_x,
+    input [13:0] ray_slope_out_y,
+    input [13:0] ray_slope_out_z,
+    input [ 5:0] block_cnt_out,
 
-    output        [ 5:0] block_cnt,
-    output        [15:0] start_pos_x,
-    output        [15:0] start_pos_y,
-    output        [15:0] start_pos_z,
-    output signed [13:0] ray_slope_x,
-    output signed [13:0] ray_slope_y,
-    output signed [13:0] ray_slope_z,
-    output        [19:0] pixel_addr
+    output [ 5:0] block_cnt,
+    output [15:0] start_pos_x,
+    output [15:0] start_pos_y,
+    output [15:0] start_pos_z,
+    output [13:0] ray_slope_x,
+    output [13:0] ray_slope_y,
+    output [13:0] ray_slope_z,
+    output [19:0] pixel_addr
 );
 
-    wire signed [15:0] fragment_uv_x, fragment_uv_y;
-    wire signed [15:0] vp_origin_x, vp_origin_y, vp_origin_z;
+    wire [11:0] frame_x, frame_y;
+    wire [15:0] vp_origin_x, vp_origin_y, vp_origin_z;
     wire signed [15:0] vp_u_x, vp_u_y, vp_u_z;
     wire signed [15:0] vp_v_x, vp_v_y, vp_v_z;
 
@@ -51,11 +51,11 @@ module ppl_entry #(
         .H_DISP(H_DISP),
         .V_DISP(V_DISP)
     ) viewport_scanner (
-        .clk          (clk),
-        .rst          (rst),
-        .enable       (next_en),
-        .fragment_uv_x(fragment_uv_x),
-        .fragment_uv_y(fragment_uv_y)
+        .clk    (clk),
+        .rst    (rst),
+        .enable (next_en),
+        .frame_x(frame_x),
+        .frame_y(frame_y)
     );
 
     viewport_params #(
@@ -76,8 +76,8 @@ module ppl_entry #(
         .vp_v_z     (vp_v_z)
     );
 
-    wire signed [15:0] fragment_offset_x = fragment_uv_x * 2 - H_DISP;
-    wire signed [15:0] fragment_offset_y = -(fragment_uv_y * 2 - V_DISP);
+    wire signed [12:0] fragment_offset_x = frame_x * 2 - H_DISP;
+    wire signed [12:0] fragment_offset_y = -(frame_y * 2 - V_DISP);
     wire signed [17:0] ray_offset_x = (vp_v_x * fragment_offset_x + vp_u_x * fragment_offset_y) >>> (`SHIFT + 1);
     wire signed [17:0] ray_offset_y = (vp_v_y * fragment_offset_x + vp_u_y * fragment_offset_y) >>> (`SHIFT + 1);
     wire signed [17:0] ray_offset_z = (vp_v_z * fragment_offset_x + vp_u_z * fragment_offset_y) >>> (`SHIFT + 1);
@@ -89,7 +89,7 @@ module ppl_entry #(
     assign ray_slope_x = next_en ? vp_origin_x + ray_offset_x : ray_slope_out_x;
     assign ray_slope_y = next_en ? vp_origin_y + ray_offset_y : ray_slope_out_y;
     assign ray_slope_z = next_en ? vp_origin_z + ray_offset_z : ray_slope_out_z;
-    assign pixel_addr  = next_en ? fragment_uv_y * H_DISP + fragment_uv_x : pixel_addr_out;
+    assign pixel_addr  = next_en ? frame_y * H_DISP + frame_x : pixel_addr_out;
     assign block_cnt   = next_en ? 'b0 : block_cnt_out;
 
 endmodule
@@ -102,25 +102,25 @@ module viewport_scanner #(
     input         clk,
     input         rst,
     input         enable,
-    output [15:0] fragment_uv_x,
-    output [15:0] fragment_uv_y
+    output [11:0] frame_x,
+    output [11:0] frame_y
 );
 
     //  one-cycle
-    reg [15:0] h_cnt_reg = 'b0;
-    reg [15:0] v_cnt_reg = 'b0;
+    reg [11:0] h_cnt_reg = 'b0;
+    reg [11:0] v_cnt_reg = 'b0;
     always @(posedge clk) begin
         if (rst) begin
             h_cnt_reg <= 'b0;
             v_cnt_reg <= 'b0;
         end else if (enable) begin
-            h_cnt_reg <= (h_cnt_reg == (H_DISP - 1)) ? 0 : (h_cnt_reg + 'd1);
-            v_cnt_reg <= (h_cnt_reg != (H_DISP - 1)) ? v_cnt_reg : (v_cnt_reg == (V_DISP - 1)) ? 'd0 : (v_cnt_reg + 1);
+            h_cnt_reg <= (h_cnt_reg == (H_DISP - 'd1)) ? 0 : (h_cnt_reg + 'd1);
+            v_cnt_reg <= (h_cnt_reg != (H_DISP - 'd1)) ? v_cnt_reg : (v_cnt_reg == (V_DISP - 'd1)) ? 'd0 : (v_cnt_reg + 'd1);
         end
     end
 
-    assign fragment_uv_x = h_cnt_reg;
-    assign fragment_uv_y = v_cnt_reg;
+    assign frame_x = h_cnt_reg;
+    assign frame_y = v_cnt_reg;
 
 endmodule
 
@@ -129,25 +129,25 @@ module viewport_params #(
     parameter H_DISP = 1280,
     parameter V_DISP = 720
 ) (
-    input wire               rst,
-    input wire signed [15:0] p_angle_x,
-    input wire signed [15:0] p_angle_y,
+    input        rst,
+    input [15:0] p_angle_x,
+    input [15:0] p_angle_y,
 
-    output reg signed [15:0] vp_origin_x,
-    output reg signed [15:0] vp_origin_y,
-    output reg signed [15:0] vp_origin_z,
-    output reg signed [15:0] vp_u_x,
-    output reg signed [15:0] vp_u_y,
-    output reg signed [15:0] vp_u_z,
-    output reg signed [15:0] vp_v_x,
-    output reg signed [15:0] vp_v_y,
-    output reg signed [15:0] vp_v_z
+    output reg [15:0] vp_origin_x,
+    output reg [15:0] vp_origin_y,
+    output reg [15:0] vp_origin_z,
+    output reg [15:0] vp_u_x,
+    output reg [15:0] vp_u_y,
+    output reg [15:0] vp_u_z,
+    output reg [15:0] vp_v_x,
+    output reg [15:0] vp_v_y,
+    output reg [15:0] vp_v_z
 );
 
     // Internal signals
-    reg signed [15:0] lookat_rel_x, lookat_rel_y, lookat_rel_z;
-    wire signed [15:0] coord_h_x, coord_h_y;
-    wire signed [15:0] coord_v_x, coord_v_y;
+    reg  [15:0] lookat_rel_x, lookat_rel_y, lookat_rel_z;
+    wire [15:0] coord_h_x, coord_h_y;
+    wire [15:0] coord_v_x, coord_v_y;
 
     // Instantiate angle_to_coord module
     angle_to_coord ac_cvt_h (
@@ -169,8 +169,8 @@ module viewport_params #(
             lookat_rel_z = 'b0;
         end else begin
             lookat_rel_x = coord_v_y;
-            lookat_rel_y = coord_h_y * coord_v_x / `ANGLE_RADIUS;
-            lookat_rel_z = -(coord_h_x * coord_v_x / `ANGLE_RADIUS);
+            lookat_rel_y = $signed(coord_h_y) * $signed(coord_v_x) / `ANGLE_RADIUS;
+            lookat_rel_z = -($signed(coord_h_x) * $signed(coord_v_x) / `ANGLE_RADIUS);
         end
     end
 
@@ -190,9 +190,9 @@ module viewport_params #(
             vp_u_x = coord_h_y;
             vp_u_y = coord_h_x;
             vp_u_z =       'b0;
-            vp_v_x = (((vp_u_y * lookat_rel_z) - (vp_u_z * lookat_rel_y)) / `ANGLE_RADIUS);  // cross product
-            vp_v_y = (((vp_u_z * lookat_rel_x) - (vp_u_x * lookat_rel_z)) / `ANGLE_RADIUS);  // cross product
-            vp_v_z = (((vp_u_x * lookat_rel_y) - (vp_u_y * lookat_rel_x)) / `ANGLE_RADIUS);  // cross product
+            vp_v_x = ((($signed(vp_u_y) * $signed(lookat_rel_z)) - ($signed(vp_u_z) * $signed(lookat_rel_y))) / `ANGLE_RADIUS);  // cross product
+            vp_v_y = ((($signed(vp_u_z) * $signed(lookat_rel_x)) - ($signed(vp_u_x) * $signed(lookat_rel_z))) / `ANGLE_RADIUS);  // cross product
+            vp_v_z = ((($signed(vp_u_x) * $signed(lookat_rel_y)) - ($signed(vp_u_y) * $signed(lookat_rel_x))) / `ANGLE_RADIUS);  // cross product
             vp_origin_x = lookat_rel_x <<< `SHIFT;
             vp_origin_y = lookat_rel_y <<< `SHIFT;
             vp_origin_z = lookat_rel_z <<< `SHIFT;
@@ -203,29 +203,28 @@ endmodule
 
 
 module angle_to_coord (
-    input  wire signed [15:0] angle,
-    output wire signed [15:0] coord_x,
-    output wire signed [15:0] coord_y
+    input  [15:0] angle,
+    output [15:0] coord_x,
+    output [15:0] coord_y
 );
 
-    reg x_inverse, y_inverse, xy_inverse;
-    reg [15:0] x_mapped, y_mapped;
+    reg         x_inverse, y_inverse, xy_inverse;
+    reg  [15:0] x_mapped, y_mapped;
+    reg  [14:0] ang;
     wire [15:0] coord_rev_x, coord_rev_y;
-    wire signed [15:0] angle_abs = (angle < 0) ? -angle : angle;
-    reg signed  [15:0] ang;
 
-    assign coord_rev_x = (xy_inverse == 'b0) ? x_mapped : y_mapped;
-    assign coord_rev_y = (xy_inverse == 'b0) ? y_mapped : x_mapped;
-    assign coord_x     = (x_inverse == 'b0) ? coord_rev_x : -coord_rev_x;
-    assign coord_y     = (y_inverse == 'b0) ? coord_rev_y : -coord_rev_y;
+    assign coord_rev_x = (xy_inverse) ? y_mapped : x_mapped;
+    assign coord_rev_y = (xy_inverse) ? x_mapped : y_mapped;
+    assign coord_x     = (x_inverse) ? -coord_rev_x : coord_rev_x;
+    assign coord_y     = (y_inverse) ? -coord_rev_y : coord_rev_y;
 
     always @(*) begin
         x_inverse = 'b0;
         y_inverse = 'b0;
         xy_inverse = 'b0;
-        ang = angle_abs;
+        ang = angle[15] ? (~angle[14:0] + 15'b1) : angle[14:0];
 
-        if (angle < 0) y_inverse = 'b1;
+        if (angle[15]) y_inverse = 'b1;
         if (ang > `ANGLE_HALF) begin
             ang       = `ANGLE_MODULO - ang;
             y_inverse = 'b1;

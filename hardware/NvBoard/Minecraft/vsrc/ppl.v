@@ -7,12 +7,12 @@ module ppl #(
     input clk,
     input rst,
 
-    input        [15:0] p_pos_x,
-    input        [15:0] p_pos_y,
-    input        [15:0] p_pos_z,
-    input signed [15:0] p_angle_x,
-    input signed [15:0] p_angle_y,
-    input        [ 3:0] block_id,
+    input [15:0] p_pos_x,
+    input [15:0] p_pos_y,
+    input [15:0] p_pos_z,
+    input [15:0] p_angle_x,
+    input [15:0] p_angle_y,
+    input [ 3:0] block_id,
 
     output        valid,
     output [19:0] pixel_addr_out,
@@ -20,22 +20,22 @@ module ppl #(
     output [12:0] texture_addr
 );
 
-    wire        [15:0] end_pos_x;
-    wire        [15:0] end_pos_y;
-    wire        [15:0] end_pos_z;
-    wire        [15:0] start_pos_x;
-    wire        [15:0] start_pos_y;
-    wire        [15:0] start_pos_z;
-    wire signed [13:0] ray_slope_x;
-    wire signed [13:0] ray_slope_y;
-    wire signed [13:0] ray_slope_z;
-    wire signed [13:0] ray_slope_out_x;
-    wire signed [13:0] ray_slope_out_y;
-    wire signed [13:0] ray_slope_out_z;
+    wire [15:0] end_pos_x;
+    wire [15:0] end_pos_y;
+    wire [15:0] end_pos_z;
+    wire [15:0] start_pos_x;
+    wire [15:0] start_pos_y;
+    wire [15:0] start_pos_z;
+    wire [13:0] ray_slope_x;
+    wire [13:0] ray_slope_y;
+    wire [13:0] ray_slope_z;
+    wire [13:0] ray_slope_out_x;
+    wire [13:0] ray_slope_out_y;
+    wire [13:0] ray_slope_out_z;
 
-    wire        [19:0] pixel_addr;
-    wire        [ 5:0] block_cnt_out, block_cnt;
-    wire               next_en;
+    wire [19:0] pixel_addr;
+    wire [ 5:0] block_cnt_out, block_cnt;
+    wire        next_en;
 
     // discard the first 10 cycles to avoid the first few pixels being black
     localparam PPL_CYCLES = 5;

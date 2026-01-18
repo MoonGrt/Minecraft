@@ -26,12 +26,12 @@ module dda #(
     wire        [15:0] start_pos_x;
     wire        [15:0] start_pos_y;
     wire        [15:0] start_pos_z;
-    wire signed [15:0] ray_slope_x;
-    wire signed [15:0] ray_slope_y;
-    wire signed [15:0] ray_slope_z;
-    wire signed [15:0] ray_slope_out_x;
-    wire signed [15:0] ray_slope_out_y;
-    wire signed [15:0] ray_slope_out_z;
+    wire signed [13:0] ray_slope_x;
+    wire signed [13:0] ray_slope_y;
+    wire signed [13:0] ray_slope_z;
+    wire signed [13:0] ray_slope_out_x;
+    wire signed [13:0] ray_slope_out_y;
+    wire signed [13:0] ray_slope_out_z;
 
     wire        [19:0] pixel_addr;
     wire        [ 5:0] block_cnt_out, block_cnt;
@@ -48,10 +48,10 @@ module dda #(
             ppl_cnt <= ppl_cnt + 1;
     end
 
-    dda_emitter #(
+    ppl_entry #(
         .H_DISP(H_DISP),
         .V_DISP(V_DISP)
-    ) dda_emitter (
+    ) ppl_entry (
         .clk      (clk),
         .rst      (rst),
         .p_pos_x  (p_pos_x),
@@ -80,7 +80,7 @@ module dda #(
         .pixel_addr   (pixel_addr)
     );
 
-    dda_tracer dda_tracer (
+    ppl_proc ppl_proc (
         .clk         (clk),
         .rst         (rst),
 
