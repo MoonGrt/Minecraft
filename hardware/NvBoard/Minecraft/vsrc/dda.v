@@ -48,10 +48,10 @@ module dda #(
             ppl_cnt <= ppl_cnt + 1;
     end
 
-    ppl_entry #(
+    dda_emitter #(
         .H_DISP(H_DISP),
         .V_DISP(V_DISP)
-    ) ppl_entry (
+    ) dda_emitter (
         .clk      (clk),
         .rst      (rst),
         .p_pos_x  (p_pos_x),
@@ -80,7 +80,7 @@ module dda #(
         .pixel_addr   (pixel_addr)
     );
 
-    ppl_proc ppl_proc (
+    dda_tracer dda_tracer (
         .clk         (clk),
         .rst         (rst),
 
