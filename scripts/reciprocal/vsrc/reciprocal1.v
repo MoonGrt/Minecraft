@@ -1,7 +1,7 @@
 // reciprocal.v
 // 使用 LUT + 1 次牛顿迭代实现 1/x
 // LUT 从外部 .mem 文件加载
-module reciprocal #(
+module reciprocal1 #(
     parameter ADDR_BITS = 8,   // LUT 地址位数
     parameter X_FRAC    = 13,  // 输入小数位
     parameter Y_FRAC    = 16,  // 输出小数位

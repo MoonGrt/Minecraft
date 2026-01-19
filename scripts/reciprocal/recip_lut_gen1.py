@@ -63,7 +63,7 @@ def main():
     ap.add_argument("--y-frac", type=int, default=16)
     ap.add_argument("--width", type=int, default=16)
     ap.add_argument("--format", choices=["mem", "coe"], default="mem")
-    ap.add_argument("--out", default="recip_lut")
+    ap.add_argument("--out", default="build/recip_lut")
     args = ap.parse_args()
 
     lut = gen_lut(args.addr_bits, args.x_int, args.x_frac, args.y_int, args.y_frac)[0]

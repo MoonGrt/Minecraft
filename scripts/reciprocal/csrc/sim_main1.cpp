@@ -1,6 +1,6 @@
 #include <verilated.h>
 #include <verilated_vcd_c.h>
-#include "Vreciprocal.h"
+#include "Vreciprocal1.h"
 #include <cstdio>
 #include <cmath>
 
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     // ===============================
     // Instantiate DUT
     // ===============================
-    Vreciprocal *dut = new Vreciprocal;
+    Vreciprocal1 *dut = new Vreciprocal1;
 
     // ===============================
     // Enable tracing

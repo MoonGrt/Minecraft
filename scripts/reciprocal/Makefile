@@ -1,13 +1,13 @@
 # =====================================================
 # User configurable parameters
 # =====================================================
-
-TOP         := reciprocal
+VERSION     := 2
+TOP         := reciprocal$(VERSION)
 
 # Source directories
 VSRCS 		:= $(shell find $(abspath ./vsrc) -name "*.v")
-CSRCS 		:= $(abspath ./csrc/sim_main.cpp) $(SRC_AUTO_BIND)
-PY_LUT_GEN  := recip_lut_gen.py
+CSRCS 		:= $(abspath ./csrc/sim_main$(VERSION).cpp) $(SRC_AUTO_BIND)
+PY_LUT_GEN  := recip_lut_gen$(VERSION).py
 
 # LUT parameters
 ADDR_BITS   := 8
@@ -50,13 +50,7 @@ $(BUILD_DIR):
 
 $(LUT_FILE): $(PY_LUT_GEN) | $(BUILD_DIR)
 	@echo "==> Generating reciprocal LUT (.mem)"
-	$(PYTHON) $(PY_LUT_GEN) \
-		--addr-bits $(ADDR_BITS) \
-		--x-frac $(X_FRAC) \
-		--y-frac $(Y_FRAC) \
-		--width $(WIDTH) \
-		--format mem \
-		--out $(BUILD_DIR)/$(LUT_NAME)
+	$(PYTHON) $(PY_LUT_GEN)
 
 # =====================================================
 # Step 2: build Verilator model
