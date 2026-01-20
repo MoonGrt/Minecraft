@@ -4,7 +4,8 @@ import math
 
 ADDR_BITS = 8
 DATA_BITS = 16
-FRAC_BITS = 15
+# FRAC_BITS = 15
+FRAC_BITS = 12
 
 DEPTH = 1 << ADDR_BITS
 
