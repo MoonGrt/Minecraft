@@ -4,11 +4,10 @@ module reciprocal2 (
     output reg  [15:0] y    // Q4.12
 );
 
-    // ----------------------------
-    // MSB priority encoder
-    // ----------------------------
+    // =========================================================
+    // 1. MSB priority encoder
+    // =========================================================
     reg [4:0] msb_index;
-    reg [4:0] shift;
 
     always @(*) begin
         casez (x)
@@ -32,26 +31,50 @@ module reciprocal2 (
         endcase
     end
 
-    // 规格化：最高位 → bit11
+    // =========================================================
+    // 2. signed shift calculation
+    //    目标：最高 1 → bit11
+    // =========================================================
+    reg signed [5:0] shift;
+
     always @(*) begin
         if (x == 0)
             shift = 0;
         else
-            shift = 11 - msb_index;
+            shift = 11 - msb_index;  // signed!
     end
 
-    wire [15:0] m    = x << shift;      // Q4.12, 0.5~1
-    wire [7:0]  addr = m[11:4];          // 8bit LUT index
+    // =========================================================
+    // 3. normalization (left OR right shift)
+    // =========================================================
+    wire [15:0] m = shift >= 0 ? (x << shift) : (x >> (-shift));
 
-    // ----------------------------
-    // LUT
-    // ----------------------------
+    // m ∈ [0.5, 1.0)  // 映射 m=0.5→0, m≈1→255
+    wire [15:0] temp_addr = (m - 16'h0800) >> 4;
+    wire [7:0]  addr      = temp_addr[7:0];
+
+    // =========================================================
+    // 4. LUT : 1/m (Q4.12)
+    // =========================================================
     reg [15:0] lut [0:255];
     initial $readmemh("./build/recip_lut.mem", lut);
 
-    // ----------------------------
-    // Output
-    // ----------------------------
-    always @(posedge clk) y <= lut[addr] >> shift;
+    // =========================================================
+    // 5. denormalization
+    //    y = (1/m) * 2^shift
+    // =========================================================
+    wire [31:0] temp = (shift >= 0) ? ({16'b0, lut[addr]} << shift) : ({16'b0, lut[addr]} >> (-shift));;
+
+    always @(posedge clk) begin
+        if (x == 0) begin
+            y <= 16'hFFFF;  // 饱和
+        end else begin            
+            // 简单截断
+            // y <= temp[15:0];
+            // 饱和输出
+            if (temp >= 16'hFFFF) y <= 16'hFFFF;
+            else y <= temp[15:0];
+        end
+    end
 
 endmodule

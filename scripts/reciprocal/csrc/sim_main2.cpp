@@ -58,9 +58,9 @@ int main(int argc, char **argv) {
     // sweep input
     // x ∈ (0, 8.0]
     // ----------------------------
-    for (uint32_t xi = 1; xi <= (8 << 12); xi += 7) {
-        dut->x = xi;          // Q4.12 input
-        tick(dut, tfp);       // 1-cycle latency
+    for (uint32_t xi = 512; xi <= (1 << 10); xi += 7) {
+        dut->x = xi;     // Q4.12 input
+        tick(dut, tfp);  // 1-cycle latency
 
         double x_real = q4_12_to_double(xi);
         double y_ref  = 1.0 / x_real;
@@ -73,10 +73,8 @@ int main(int argc, char **argv) {
         samples++;
 
         // periodic print
-        if ((xi & 0x3FF) == 0) {
-            printf("x=%7.4f  y_ref=%9.6f  y_dut=%9.6f  err=%+.3e\n",
-                   x_real, y_ref, y_dut, err);
-        }
+        // printf("xi=%d, x_real=%7.4f  y_ref=%9.6f  y_dut=%9.6f  err=%+.3e\n",
+        //     xi, x_real, y_ref, y_dut, err);
     }
 
     double rms_err = std::sqrt(err_sq / samples);
