@@ -48,7 +48,7 @@ module Minecraft (
         .V_DISP(`V_DISP)
     ) ppl (
         .clk      (clk),
-        .rst      (rst),
+        .rst      (rst | data_aligned_vs),
         .p_pos_x  (p_pos_x),
         .p_pos_y  (p_pos_y),
         .p_pos_z  (p_pos_z),
@@ -67,7 +67,7 @@ module Minecraft (
     wire [15:0] texture_data;
     map map (
         .clk(clk),
-        .rst(rst),
+        .rst(rst | data_aligned_vs),
 
         .write_addr  ('b0),
         .write_data  ('b0),
@@ -93,7 +93,7 @@ module Minecraft (
         .N     (16)
     ) align (
         .clk       (clk),
-        .rst       (rst),
+        .rst       (rst | data_aligned_vs),
         .data      (texture_data),
         .data_addr (data_addr),
         .data_valid(data_valid),

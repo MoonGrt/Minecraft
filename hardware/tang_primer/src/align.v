@@ -3,7 +3,7 @@ module align #(
     parameter V_DISP = 720,
     parameter N = 16,
     parameter DLY = 64,
-    parameter VS_WIDTH = 8 // 帧同步信号宽度，不能太低，不然 Gowin Video Frame Buffer IP 会有问题
+    parameter VS_WIDTH = 63 // 帧同步信号宽度，不能太低，不然 Gowin Video Frame Buffer IP 会有问题
 ) (
     input      clk,
     input wire rst,

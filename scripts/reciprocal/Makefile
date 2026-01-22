@@ -1,7 +1,7 @@
 # =====================================================
 # User configurable parameters
 # =====================================================
-VERSION     := 2
+VERSION     := 3
 TOP         := reciprocal$(VERSION)
 
 # Source directories

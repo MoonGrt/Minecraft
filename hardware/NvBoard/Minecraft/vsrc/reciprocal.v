@@ -1,4 +1,4 @@
-module reciprocal2 (
+module reciprocal (
     input  wire        clk,
     input  wire [15:0] x,  // Q4.12
     output reg  [15:0] y   // Q4.12
@@ -57,7 +57,7 @@ module reciprocal2 (
     // 4. LUT : 1/m (Q4.12)
     // =========================================================
     reg [15:0] lut [0:255];
-    initial $readmemh("./build/recip_lut.mem", lut);
+    initial $readmemh("./vsrc//recip_lut.mem", lut);
 
     // =========================================================
     // 5. denormalization

@@ -8,6 +8,7 @@
         <File path="src/align.v" type="file.verilog" enable="1"/>
         <File path="src/ddr3_memory_interface/DDR3MI.v" type="file.verilog" enable="1"/>
         <File path="src/dvi_tx/DVI_TX_Top.v" type="file.verilog" enable="1"/>
+        <File path="src/gowin_prom/div_lut.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_prom/texture_rom.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/TMDS_rPLL.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/lcd_pll.v" type="file.verilog" enable="1"/>

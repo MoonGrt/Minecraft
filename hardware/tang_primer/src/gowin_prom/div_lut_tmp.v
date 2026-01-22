@@ -5,15 +5,18 @@
 //Part Number: GW2A-LV18PG256C8/I7
 //Device: GW2A-18
 //Device Version: C
-//Created Time: Thu Jan 22 21:44:59 2026
+//Created Time: Thu Jan 22 21:38:31 2026
 
 //Change the instance name and port connections to the signal names
 //--------Copy here to design--------
 
-    ppl_clk your_instance_name(
-        .clkout(clkout), //output clkout
-        .lock(lock), //output lock
-        .clkin(clkin) //input clkin
+    div_lut your_instance_name(
+        .dout(dout), //output [23:0] dout
+        .clk(clk), //input clk
+        .oce(oce), //input oce
+        .ce(ce), //input ce
+        .reset(reset), //input reset
+        .ad(ad) //input [9:0] ad
     );
 
 //--------Copy end-------------------
