@@ -127,11 +127,11 @@ module Minecraft (
         .AW (AW)
     ) framebuffer (
         /* 写端：视频输入 */
-        .video_clk  (clk),
-        .video_rst  (rst),
-        .video_data (data_aligned),
-        .video_de   (data_aligned_valid),
-        .video_vs   (data_aligned_vs),
+        .video_clk (clk),
+        .video_rst (rst),
+        .video_data(data_aligned),
+        .video_de  (data_aligned_valid),
+        .video_vs  (data_aligned_vs),
 
         /* 读端：像素读取 */
         .pixel_clk  (clk),
@@ -152,8 +152,9 @@ module Minecraft (
     wire [ 7:0] minecraft_b = {minecraft_data[4:0], 3'b0}; // 蓝色分量
 
     vga vga(
-    .clk(clk),
-    .rst(rst),
+    .clk     (clk),
+    .rst     (rst),
+    .frame_vs(data_aligned_vs),
 
     .hsync (12'd96),
     .hback (12'd144),
