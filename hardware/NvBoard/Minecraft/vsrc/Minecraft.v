@@ -141,20 +141,16 @@ module Minecraft (
         .pixel_data (pixel_data)
     );
 
-    //--------------------------
-    // 输出 Minecraft
-    wire        minecraft_vs;
-    wire        minecraft_hs;
-    wire        minecraft_de;
-    wire [15:0] minecraft_data;
-    wire [ 7:0] minecraft_r = {minecraft_data[15:11], 3'b0}; // 红色分量
-    wire [ 7:0] minecraft_g = {minecraft_data[10:5], 2'b0}; // 绿色分量
-    wire [ 7:0] minecraft_b = {minecraft_data[4:0], 3'b0}; // 蓝色分量
+    //==============================================================================
+    // 输出 vga
+    wire        vs;
+    wire        hs;
+    wire        de;
+    wire [15:0] data;
 
     vga vga(
     .clk     (clk),
     .rst     (rst),
-    .frame_vs(data_aligned_vs),
 
     .hsync (12'd96),
     .hback (12'd144),
@@ -168,10 +164,35 @@ module Minecraft (
     .pixel(pixel_data),
     .addr (pixel_addr),
 
-    .vs  (minecraft_vs),
-    .hs  (minecraft_hs),
-    .de  (minecraft_de),
-    .data(minecraft_data)
+    .hs  (hs),
+    .vs  (vs),
+    .de  (de),
+    .data(data)
+    );
+
+    // char
+    wire        minecraft_vs;
+    wire        minecraft_hs;
+    wire        minecraft_de;
+    wire [15:0] minecraft_data;
+    wire [ 7:0] minecraft_r = {minecraft_data[15:11], 3'b0}; // 红色分量
+    wire [ 7:0] minecraft_g = {minecraft_data[10:5], 2'b0}; // 绿色分量
+    wire [ 7:0] minecraft_b = {minecraft_data[4:0], 3'b0}; // 蓝色分量
+    char #(
+        .HDISP(`H_DISP),
+        .VDISP(`V_DISP))
+    char (
+        .clk      (clk),
+        .rst      (rst),
+        .frame_vs(data_aligned_vs),
+        .pre_hs   (hs),
+        .pre_vs   (vs),
+        .pre_de   (de),
+        .pre_data (data),
+        .post_hs  (minecraft_hs),
+        .post_vs  (minecraft_vs),
+        .post_de  (minecraft_de),
+        .post_data(minecraft_data)
     );
 
     //--------------------------
@@ -208,6 +229,7 @@ module Minecraft (
         .O_data_g  (test_g),
         .O_data_b  (test_b)
     );
+
 
     //==============================================================================
 `ifdef MINECRAFT

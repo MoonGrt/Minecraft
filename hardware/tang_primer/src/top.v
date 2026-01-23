@@ -1,6 +1,8 @@
 // `define HDMI // 1280x720@60Hz
 `define LCD // 480x272@60Hz
 
+`define FPSSTR // 显示 FPS 字符串
+
 `ifdef HDMI
     `define H_DISP 1280
     `define V_DISP 720
@@ -192,7 +194,7 @@ module top (
         .V_DISP(`V_DISP)
     ) ppl (
         .clk      (PPL_clk),
-        .rst      ((~TMDS_DDR_pll_lock && ~PLL_lock) || data_aligned_vs),
+        .rst      (~TMDS_DDR_pll_lock && ~PLL_lock),
         .p_pos_x  (p_pos_x),
         .p_pos_y  (p_pos_y),
         .p_pos_z  (p_pos_z),
@@ -211,7 +213,7 @@ module top (
     wire [15:0] texture_data;
     map map (
         .clk(PPL_clk),
-        .rst((~TMDS_DDR_pll_lock && ~PLL_lock) || data_aligned_vs),
+        .rst(~TMDS_DDR_pll_lock && ~PLL_lock),
 
         .write_addr  ('b0),
         .write_data  ('b0),
@@ -237,7 +239,7 @@ module top (
         .N     (16)
     ) align (
         .clk       (PPL_clk),
-        .rst       ((~TMDS_DDR_pll_lock && ~PLL_lock) || data_aligned_vs),
+        .rst       (~TMDS_DDR_pll_lock && ~PLL_lock),
         .data      (texture_data),
         .data_addr (data_addr),
         .data_valid(data_valid),
@@ -488,6 +490,34 @@ module top (
         .IO_ddr_dqs_n       (ddr_dqs_n)
     );
 
+`ifdef FPSSTR
+    // char
+    wire        minecraft_vs;
+    wire        minecraft_hs;
+    wire        minecraft_de;
+    wire [15:0] minecraft_data;
+    wire [ 7:0] minecraft_r = {minecraft_data[15:11], 3'b0}; // 红色分量
+    wire [ 7:0] minecraft_g = {minecraft_data[10:5], 2'b0}; // 绿色分量
+    wire [ 7:0] minecraft_b = {minecraft_data[4:0], 3'b0}; // 蓝色分量
+    char #(
+        .HDISP(`H_DISP),
+        .VDISP(`V_DISP))
+    char (
+        .clk      (clk),
+        .rst      (rst),
+        .frame_vs(data_aligned_vs),
+        .pre_hs   (Pout_hs_dn[4]),
+        .pre_vs   (Pout_vs_dn[4]),
+        .pre_de   (Pout_de_dn[4]),
+        .pre_data (off0_syn_data),
+        .post_hs  (minecraft_hs),
+        .post_vs  (minecraft_vs),
+        .post_de  (minecraft_de),
+        .post_data(minecraft_data)
+    );
+`endif
+
+// Output
 `ifdef HDMI
     //==============================================================================
     wire [4:0] lcd_r, lcd_b;
@@ -516,16 +546,22 @@ module top (
     );
 `elsif LCD
     //==============================================================================
-    assign {lcd_r, lcd_g, lcd_b} = off0_syn_data;  // {r,g,b}
-    assign lcd_vs = Pout_vs_dn[4];  // syn_off0_vs;
-    assign lcd_hs = Pout_hs_dn[4];  // syn_off0_hs;
-    assign lcd_de = Pout_de_dn[4];  // off0_syn_de;
     assign lcd_clk = video_clk;
-    // assign {lcd_r, lcd_g, lcd_b} = {tp0_data_r[7:3], tp0_data_g[7:2], tp0_data_b[7:3]};  // {r,g,b}
-    // assign lcd_vs = tp0_vs_in;
+`ifdef FPSSTR
+    assign lcd_hs = minecraft_hs;
+    assign lcd_vs = minecraft_vs;
+    assign lcd_de = minecraft_de;
+    assign {lcd_r, lcd_g, lcd_b} = minecraft_data;  // {r,g,b}
+`else
+    assign lcd_hs = Pout_hs_dn[4];  // syn_off0_hs;
+    assign lcd_vs = Pout_vs_dn[4];  // syn_off0_vs;
+    assign lcd_de = Pout_de_dn[4];  // off0_syn_de;
+    assign {lcd_r, lcd_g, lcd_b} = off0_syn_data;  // {r,g,b}
+`endif
     // assign lcd_hs = tp0_hs_in;
+    // assign lcd_vs = tp0_vs_in;
     // assign lcd_de = tp0_de_in;
-    // assign lcd_clk = video_clk;
+    // assign {lcd_r, lcd_g, lcd_b} = {tp0_data_r[7:3], tp0_data_g[7:2], tp0_data_b[7:3]};  // {r,g,b}
 `endif
 
 endmodule
