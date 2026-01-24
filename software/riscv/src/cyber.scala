@@ -115,21 +115,21 @@ object CyberPlusWithDdrLcdConfig {
             mhartid = null,
             misaExtensionsInit = 66,
             misaAccess = CsrAccess.NONE,
-            mtvecAccess = CsrAccess.NONE,
+            mtvecAccess = CsrAccess.READ_WRITE,
             mtvecInit = 0x80000020L,
             mepcAccess = CsrAccess.READ_WRITE,
             mscratchGen = false,
             mcauseAccess = CsrAccess.READ_ONLY,
             mbadaddrAccess = CsrAccess.READ_ONLY,
-            mcycleAccess = CsrAccess.NONE,
+            mcycleAccess = CsrAccess.READ_ONLY,
             minstretAccess = CsrAccess.NONE,
-            ecallGen = false,
+            ecallGen = true,
             wfiGenAsWait = false,
             ucycleAccess = CsrAccess.NONE,
             uinstretAccess = CsrAccess.NONE
           )
         ),
-        new YamlPlugin("cpu0.yaml")
+        new YamlPlugin("rtl/CyberPlusWithDdrLcd.yaml")
       )
     )
     config
@@ -318,7 +318,7 @@ class CyberPlusWithDdrLcd(config: CyberPlusWithDdrLcdConfig) extends Component {
       uartCtrl.io.uarts(1).txd ## // 18
       False ## // 17
       uartCtrl.io.uarts(0).txd ## // 16
-      timCtrl.io.tim_ch ## // 8 - 15: 定时器通道
+      timCtrl.io.ch ## // 8 - 15: 定时器通道
       B(0, 8 bits) // 0 - 7: 保留空位
 
     uartCtrl.io.uarts(0).rxd := afioCtrl.io.device.write(17)
@@ -359,8 +359,6 @@ class CyberPlusWithDdrLcd(config: CyberPlusWithDdrLcdConfig) extends Component {
     if (interruptCount > 0) {
       val externalBits = Reg(Bits(interruptCount bits)) init(0)
       externalBits(0) := uartInterrupt
-      externalBits(1) := timerInterrupt
-      externalBits(2) := systickInterrupt
       externalBits(3) := extiInterrupt
       externalBits(4) := i2cInterrupt
       externalBits(15) := spiInterrupt
@@ -380,7 +378,7 @@ class CyberPlusWithDdrLcd(config: CyberPlusWithDdrLcdConfig) extends Component {
         case plugin: DBusCachedPlugin => dBus = plugin.dBus.toAxi4Shared(true)
         case plugin: CsrPlugin => {
           plugin.externalInterrupt := externalInterrupt
-          plugin.timerInterrupt := timerInterrupt
+          plugin.timerInterrupt := timerInterrupt | systickInterrupt
         }
         case plugin: DebugPlugin =>
           jtagClockDomain {
@@ -457,11 +455,11 @@ object CyberPlusWithDdrLcd {
       InOutWrapper(
         new CyberPlusWithDdrLcd(
           CyberPlusWithDdrLcdConfig.default.copy(
-            memFile = "test/software/cyberplus/build/demo.hex",
-            memFileType = "rawhex"
-            // memFile = "test/software/cyberplus/build/mem/demo.bin",
+            // memFile = "test/software/bare/cyberpluswithddr/build/demo.hex",
+            // memFileType = "rawhex"
+            // memFile = "test/software/bare/cyberpluswithddr/build/mem/demo.bin",
             // memFileType = "bin"
-            // memFile = "test/software/cyberplus/build/mem/demo.hex",
+            // memFile = "test/software/bare/cyberpluswithddr/build/mem/demo.hex",
             // memFileType = "hex"
           )
         )

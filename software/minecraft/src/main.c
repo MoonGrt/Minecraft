@@ -4,6 +4,9 @@
 #include "texture.h"
 #include "lcd.h"
 
+#define DEMO_LCD
+#define FPS_STR
+
 void demo_USART(void);
 void demo_DVTC(void);
 
@@ -46,7 +49,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
     int bx = (int)floorf(ox);
     int by = (int)floorf(oy);
     int bz = (int)floorf(oz);
-    printf("Init -> (%d, %d, %d)\n", bx, by, bz);
+    // printf("Init -> (%d, %d, %d)\n", bx, by, bz);
     // 步进方向
     int stepX = (dx > 0.0f) ? 1 : -1;
     int stepY = (dy > 0.0f) ? 1 : -1;
@@ -59,7 +62,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
     float tMaxX = (stepX > 0) ? ((float)(bx + 1) - ox) * invDx : (ox - (float)bx) * invDx;
     float tMaxY = (stepY > 0) ? ((float)(by + 1) - oy) * invDy : (oy - (float)by) * invDy;
     float tMaxZ = (stepZ > 0) ? ((float)(bz + 1) - oz) * invDz : (oz - (float)bz) * invDz;
-    printf("tMaxX=%f, tMaxY=%f, tMaxZ=%f\n", tMaxX, tMaxY, tMaxZ);
+    // printf("tMaxX=%f, tMaxY=%f, tMaxZ=%f\n", tMaxX, tMaxY, tMaxZ);
     // DDA 主循环
     for (int i = 0; i < MAX_STEPS; ++i) { // 最大步数保护
         // 在 DDA 中更常用的做法是：先跨格（根据最小 tMax），然后检查进入的方块（bx,by,bz 更新后）
@@ -85,7 +88,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
             tMaxZ += invDz;
             steppedAxis = 3;
         }
-        printf("Step %d -> (%d, %d, %d) - Axis: %d\n", i, bx, by, bz, steppedAxis);
+        // printf("Step %d -> (%d, %d, %d) - Axis: %d\n", i, bx, by, bz, steppedAxis);
 
         // 检查越界或命中
         uint8_t id = 0;
@@ -146,7 +149,7 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
                     texidx = block_face_texture[id][0]; // top
             }
             // 取颜色并返回
-            printf("id: %d, texidx: %d, u: %d, v: %d\n", id, texidx, u, v);
+            // printf("id: %d, texidx: %d, u: %d, v: %d\n", id, texidx, u, v);
             return get_texture(texidx, u, v);
         }
         // 否则继续下一步
@@ -166,20 +169,21 @@ typedef struct {
 } Camera;
 
 // 渲染入口：只负责计算结果写入 Framebuffer
+void fps_str_mask(int x, int y, unsigned int color);
 void render_scene(Camera *cam)
 {
     // 计算视场角度
     float aspect = (float)DISPX / (float)DISPY;
     float fovScale = tanf(cam->fov * 0.5f * (float)PI / 180.0f);
-    printf("aspect=%f, fovScale=%f\n", aspect, fovScale);
+    // printf("aspect=%f, fovScale=%f\n", aspect, fovScale);
     // 每像素产生射线并采样
     for (int py = 0; py < DISPY; ++py) {
         for (int px = 0; px < DISPX; ++px) {
             // 屏幕归一化坐标
             float u = (2.0f * (px + 0.5f) / (float)DISPX - 1.0f) * aspect * fovScale;
             float v = (1.0f - 2.0f * (py + 0.5f) / (float)DISPY) * fovScale;
-            printf("\n");
-            printf("(x, y)(%d, %d) => (u, v)(%f, %f)\n", px, py, u, v);
+            // printf("\n");
+            // printf("(x, y)(%d, %d) => (u, v)(%f, %f)\n", px, py, u, v);
             // 构造世界方向
             float dirx = cam->dx + u * cam->vx + v * cam->ux;
             float diry = cam->dy + u * cam->vy + v * cam->uy;
@@ -188,13 +192,13 @@ void render_scene(Camera *cam)
             float len = sqrtf(dirx*dirx + diry*diry + dirz*dirz);
             if (len > 0.0f) { dirx /= len; diry /= len; dirz /= len; }
             // 发射射线得到颜色
-            printf("len: %f, (dx, dy, dz)(%f, %f, %f)\n", len, dirx, diry, dirz);
+            // printf("len: %f, (dx, dy, dz)(%f, %f, %f)\n", len, dirx, diry, dirz);
             uint16_t color = raycast(cam->px, cam->py, cam->pz, dirx, diry, dirz);
-            // 注意 Framebuffer 的索引顺序
-            Framebuffer[py][px] = color;
-            printf("x=%d, y=%d, addr=%x, color=%x\n", px, py, &Framebuffer[py][px], color);
-            if (px == 5)
-                return;
+            // 注意 Framebuffer 的索引顺序  // mask 用于 FPS 字符显示
+            fps_str_mask(px, py, color);
+            // printf("x=%d, y=%d, addr=%x, color=%x\n", px, py, &Framebuffer[py][px], color);
+            // if (px == 5)
+            //     return;
         }
     }
 }
@@ -340,6 +344,11 @@ void set_camera_direction(Camera* cam, float radx, float rady) {
     cam->ux /= up_len; cam->uy /= up_len; cam->uz /= up_len;
 }
 
+#ifdef FPS_STR
+void timer_test(void);
+void fps_calculate(Camera *cam);
+#endif
+
 void main()
 {
     delay_init();
@@ -354,6 +363,11 @@ void main()
     init_test_map();
     printf("Init MAP Completed...\n");
 #endif
+
+#ifdef FPS_STR
+    // timer_test();
+    fps_calculate(&cam);
+#else
     // 渲染场景
     render_scene(&cam);
     printf("Frame Rendering Once\n");
@@ -363,6 +377,7 @@ void main()
     //     render_scene(&cam);
     //     printf("Frame rendering once\n");
     // }
+#endif
 }
 
 uint8_t Serial_RxData; // 定义串口接收的数据变量
@@ -375,20 +390,11 @@ void irqCallback()
         USART_SendData(USART1, Serial_RxData); // 回显
         switch (Serial_RxData)
         {
-            case 'w': // 前
-                cam.px += STEP;
-                break;
-            case 's': // 后
-                cam.px -= STEP;
-                break;
-            case 'a': // 左
-                cam.pz += STEP;
-                break;
-            case 'd': // 右
-                cam.pz -= STEP;
-                break;
-            default:
-                return; // 非 wasd 不处理
+            case 'w': cam.px += STEP; break;  // 前
+            case 's': cam.px -= STEP; break;  // 后
+            case 'a': cam.pz += STEP; break;  // 左
+            case 'd': cam.pz -= STEP; break;  // 右
+            default: return; // 非 wasd 不处理
         }
         printf(" -> Cam pos: x=%d y=%d z=%d\n", (int)cam.px, (int)cam.py, (int)cam.pz);
     }
@@ -431,7 +437,7 @@ void demo_USART(void)
 
 #ifdef CYBER_DVTC
 
-#define DEMO_LCD
+
 #ifdef DEMO_HDMI
 
 void demo_hdmi(void)
@@ -474,6 +480,194 @@ void demo_DVTC(void)
 #ifdef DEMO_LCD
     demo_lcd();
 #endif
+}
+
+#endif
+
+#ifdef FPS_STR
+
+#define FRAME_NUM 1
+#define CPU_FREQ  50000000ULL  // Hz
+
+#define CHAR_WIDTH 16
+#define CHAR_HEIGHT 32
+#define CHARS 15   // 字符库数量
+#define SCREEN_W 640
+#define SCREEN_H 480
+#define STRLEN 10
+
+uint32_t frame_cnt = 0;
+uint64_t cycle_start = 0;
+float fps = 0.0f;
+float time = 0.0f;
+char fps_str[10] = {0,0,0,0,0,0,0,0,0,0};
+
+// 读取 CPU cycle 计数器
+static inline uint64_t read_cycle(void)
+{
+    uint32_t hi, lo;
+    asm volatile ("csrr %0, mcycleh" : "=r"(hi));
+    asm volatile ("csrr %0, mcycle"  : "=r"(lo));
+    return ((uint64_t)hi << 32) | lo;
+}
+
+// 映射字符到 font index
+int charmap(char c) {
+    if(c >= '0' && c <= '9') return c - '0';
+    if(c == 'F') return 10;
+    if(c == 'P') return 11;
+    if(c == 'S') return 12;
+    if(c == ':') return 13;
+    if(c == '.') return 14;
+    return -1;
+}
+
+// 绘制字符到 framebuffer
+/* 字模库，宽16像素，高32像素 */
+const uint16_t CHAR_32_16[CHARS][CHAR_HEIGHT] = {
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x03C0,0x0620,0x0C30,0x1818,0x1818,0x1808,0x300C,0x300C,0x300C,0x300C,0x300C,0x300C,0x300C,0x300C,0x300C,0x300C,0x1808,0x1818,0x1818,0x0C30,0x0620,0x03C0,0x0000,0x0000,0x0000,0x0000,  // '0'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0080,0x0180,0x1F80,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x0180,0x03C0,0x1FF8,0x0000,0x0000,0x0000,0x0000,  // '1'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x07E0,0x0838,0x1018,0x200C,0x200C,0x300C,0x300C,0x000C,0x0018,0x0018,0x0030,0x0060,0x00C0,0x0180,0x0300,0x0200,0x0404,0x0804,0x1004,0x200C,0x3FF8,0x3FF8,0x0000,0x0000,0x0000,0x0000,  // '2'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x07C0,0x1860,0x3030,0x3018,0x3018,0x3018,0x0018,0x0018,0x0030,0x0060,0x03C0,0x0070,0x0018,0x0008,0x000C,0x000C,0x300C,0x300C,0x3008,0x3018,0x1830,0x07C0,0x0000,0x0000,0x0000,0x0000,  // '3'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0060,0x0060,0x00E0,0x00E0,0x0160,0x0160,0x0260,0x0460,0x0460,0x0860,0x0860,0x1060,0x3060,0x2060,0x4060,0x7FFC,0x0060,0x0060,0x0060,0x0060,0x0060,0x03FC,0x0000,0x0000,0x0000,0x0000,  // '4'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0FFC,0x0FFC,0x1000,0x1000,0x1000,0x1000,0x1000,0x1000,0x13E0,0x1430,0x1818,0x1008,0x000C,0x000C,0x000C,0x000C,0x300C,0x300C,0x2018,0x2018,0x1830,0x07C0,0x0000,0x0000,0x0000,0x0000,  // '5'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x01E0,0x0618,0x0C18,0x0818,0x1800,0x1000,0x1000,0x3000,0x33E0,0x3470,0x3818,0x3808,0x300C,0x300C,0x300C,0x300C,0x300C,0x180C,0x1808,0x0C18,0x0E30,0x03E0,0x0000,0x0000,0x0000,0x0000,  // '6'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x1FFC,0x1FFC,0x1008,0x3010,0x2010,0x2020,0x0020,0x0040,0x0040,0x0040,0x0080,0x0080,0x0100,0x0100,0x0100,0x0100,0x0300,0x0300,0x0300,0x0300,0x0300,0x0300,0x0000,0x0000,0x0000,0x0000,  // '7'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x07E0,0x0C30,0x1818,0x300C,0x300C,0x300C,0x380C,0x3808,0x1E18,0x0F20,0x07C0,0x18F0,0x3078,0x3038,0x601C,0x600C,0x600C,0x600C,0x600C,0x3018,0x1830,0x07C0,0x0000,0x0000,0x0000,0x0000,  // '8'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x07C0,0x1820,0x3010,0x3018,0x6008,0x600C,0x600C,0x600C,0x600C,0x600C,0x701C,0x302C,0x186C,0x0F8C,0x000C,0x0018,0x0018,0x0010,0x3030,0x3060,0x30C0,0x0F80,0x0000,0x0000,0x0000,0x0000,  // '9'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x7FFC,0x181C,0x1804,0x1802,0x1802,0x1800,0x1800,0x1810,0x1810,0x1830,0x1FF0,0x1830,0x1810,0x1810,0x1810,0x1800,0x1800,0x1800,0x1800,0x1800,0x1800,0x7E00,0x0000,0x0000,0x0000,0x0000,  // 'F'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x7FF0,0x1818,0x180C,0x1806,0x1806,0x1806,0x1806,0x1806,0x1806,0x180C,0x1818,0x1FE0,0x1800,0x1800,0x1800,0x1800,0x1800,0x1800,0x1800,0x1800,0x1800,0x7E00,0x0000,0x0000,0x0000,0x0000,  // 'P'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0FC8,0x1878,0x3018,0x6018,0x6008,0x6008,0x6000,0x7000,0x3C00,0x1F00,0x07C0,0x01F0,0x0078,0x0018,0x001C,0x400C,0x400C,0x600C,0x200C,0x3018,0x3830,0x27E0,0x0000,0x0000,0x0000,0x0000,  // 'S'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0180,0x03C0,0x03C0,0x0180,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0180,0x03C0,0x03C0,0x0180,0x0000,0x0000,0x0000,0x0000,  // ':'
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x1800,0x3C00,0x3C00,0x1800,0x0000,0x0000,0x0000,0x0000,  // '.'
+};
+void draw_char(char c, int x, int y) {
+    int idx = charmap(c);
+    if(idx < 0) return;
+    for (int row = 0; row < CHAR_HEIGHT; row++) {
+        uint16_t row_bits = CHAR_32_16[idx][row]; // 每行16位
+        for (int col = 0; col < CHAR_WIDTH; col++) {
+            // 左上角是高位
+            if (row_bits & (1 << (15 - col))) {
+                int px = x + col;
+                int py = y + row;
+                if (px >= 0 && px < SCREEN_W && py >= 0 && py < SCREEN_H)
+                    Framebuffer[py][px] = 0xffff;
+            }
+        }
+    }
+}
+
+// 浮点转字符串
+void float_to_str(float fps, char *buf) {
+    int int_part = (int)fps;           // 整数部分
+    int dec_part = (int)((fps - int_part) * 100 + 0.5f); // 小数部分四舍五入到两位
+
+    int idx = 0;
+    // 写 "FPS:"
+    buf[idx++] = 'F';
+    buf[idx++] = 'P';
+    buf[idx++] = 'S';
+    buf[idx++] = ':';
+
+    // 写整数部分
+    if(int_part >= 100) {
+        buf[idx++] = '0' + (int_part / 100);       // 百位
+        buf[idx++] = '0' + (int_part / 10 % 10);   // 十位
+        buf[idx++] = '0' + (int_part % 10);        // 个位
+    } else if(int_part >= 10) {
+        buf[idx++] = '0';                    // 百位
+        buf[idx++] = '0' + (int_part / 10);  // 十位
+        buf[idx++] = '0' + (int_part % 10);  // 个位
+    } else {
+        buf[idx++] = '0';             // 百位
+        buf[idx++] = '0';             // 百位
+        buf[idx++] = '0' + int_part;  // 个位
+    }
+
+    // 写小数点
+    buf[idx++] = '.';
+
+    // 写小数部分，两位
+    buf[idx++] = '0' + (dec_part / 10);
+    buf[idx++] = '0' + (dec_part % 10);
+
+    // 结束符
+    buf[idx] = '\0';
+}
+
+// 绘制FPS
+#define DRAW_FPS(x) draw_string(fps, 0, 0)
+void draw_string(float fps, int x, int y) {
+    // 将浮点数转成字符串，保留两位小数
+    float_to_str(fps, fps_str);
+    for(int i=0; i<STRLEN; i++) {
+        draw_char(fps_str[i], x + i * CHAR_WIDTH, y);
+    }
+}
+void fps_str_mask(int x, int y, unsigned int color) {
+    if ((x < STRLEN * CHAR_WIDTH) && (y < CHAR_HEIGHT) && 
+        (CHAR_32_16[charmap(fps_str[x / CHAR_WIDTH])][y] & (1 << (15 - (x % CHAR_WIDTH)))))
+            Framebuffer[y][x] = 0xffff;
+    else Framebuffer[y][x] = color;
+}
+
+void timer_test(void)
+{
+    uint64_t c1, c2, delta;
+    double time;
+
+    printf("===== timer_test start =====\n");
+
+    c1 = read_cycle();
+    uint32_t cnt = 100000;
+    while (cnt--) {
+        __asm__ volatile ("nop");
+    }
+    c2 = read_cycle();
+
+    delta = c2 - c1;
+    time = (double)delta * 1000.0 / (double)CPU_FREQ;
+    printf("mcycle start : %lu\n", (unsigned long int)c1);
+    printf("mcycle end   : %lu\n", (unsigned long int)c2);
+    printf("mcycle delta : %lu\n", (unsigned long int)delta);
+    printf("time approx : %f ms\n", time);
+    printf("===== timer_test end =====\n");
+}
+
+void fps_calculate(Camera *cam)
+{
+    while (1)
+    {
+        if (frame_cnt == 0)
+        {
+            cycle_start = read_cycle();
+            DRAW_FPS(fps);
+            printf("render start\n");
+        }
+
+        // ====== 这里是真正的一帧处理 ======
+        render_scene(cam);
+        // ===============================
+
+        frame_cnt++;
+
+        if (frame_cnt >= FRAME_NUM)
+        {
+            uint64_t cycle_end = read_cycle();
+            uint64_t delta = cycle_end - cycle_start;
+            fps = (double)FRAME_NUM * CPU_FREQ / (double)delta;
+            time = (double)delta / (double)CPU_FREQ;
+            
+            printf("mcycle start : %lu\n", (unsigned long int)cycle_start);
+            printf("mcycle end   : %lu\n", (unsigned long int)cycle_end);
+            printf("mcycle delta : %lu\n", (unsigned long int)delta);
+            printf("time approx  : %f ms\n", time);
+            printf("fps: %f\n", fps);
+            DRAW_FPS(fps);
+            frame_cnt = 0;
+        }
+    }
 }
 
 #endif

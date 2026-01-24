@@ -93,13 +93,14 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![Frame_render](Document/Frame_render.jpg)
+![Frame_render](Document/Frame_render2.jpg)
+![Terminal](Document/Terminal.png)
 
-> 50MHz Riscv SoC, render once about 5s.
+> 50MHz Riscv SoC, render once (480*272) about 51s -- 0.0193 fps.
 
 ![Frame_render-Hardware](Document/Frame_render-Hardware.jpg)
 
-> Hardware rendering pipeline, about 2fps.
+> Hardware rendering pipeline (45MHz), about 2fps.
 
 ![Nvboard](Document/Nvboard.png)
 
