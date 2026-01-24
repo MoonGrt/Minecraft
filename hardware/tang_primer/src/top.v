@@ -503,7 +503,7 @@ module top (
         .HDISP(`H_DISP),
         .VDISP(`V_DISP))
     char (
-        .clk      (clk),
+        .clk      (video_clk),
         .rst      (rst),
         .frame_vs(data_aligned_vs),
         .pre_hs   (Pout_hs_dn[4]),

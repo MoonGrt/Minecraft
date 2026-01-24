@@ -100,11 +100,11 @@
 
 ![Frame_render-Hardware](Document/Frame_render-Hardware.jpg)
 
-> Hardware rendering pipeline (45MHz), about 2fps.
+> Hardware rendering pipeline (45MHz), about 68.88 fps.
 
-![Nvboard](Document/Nvboard.png)
+![Nvboard](Document/NvBoard.png)
 
-> Virtual FPGA Board (NvBoard) rendering pipeline.
+> Virtual FPGA Board (NvBoard) rendering pipeline. Low frequency lead to low frame rate - 5.29 fps.
 
 This FPGA project involves the development of a Minecraft game entirely in hardware. The game enables players to place and break blocks, move, and fly. It utilizes a rendering pipeline to calculate the color of each pixel, ultimately displaying the generated frames on an HDMI screen. This hardware-based approach ensures efficient real-time rendering and interaction within the game environment.
 
