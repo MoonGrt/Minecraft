@@ -1,12 +1,10 @@
 `define H_DISP 640
 `define V_DISP 480
-// `define H_DISP 480
-// `define V_DISP 272
 // `define H_DISP 30
 // `define V_DISP 20
 
 `define MINECRAFT
-`define PPL
+// `define PPL
 
 module Minecraft (
     input clk,
@@ -27,8 +25,6 @@ module Minecraft (
     reg  [15:0] p_pos_x = 'd39 << 3 << 7;
     reg  [15:0] p_pos_y = 'd33 << 3 << 7;
     reg  [15:0] p_pos_z = 'd62 << 3 << 7;
-    reg  [15:0] p_angle_x = -1;
-    reg  [15:0] p_angle_y = 0;
     wire [14:0] write_addr;
     wire [ 3:0] write_data;
     wire        write_en;
@@ -39,11 +35,9 @@ module Minecraft (
     wire valid;
 
 `ifdef PPL
-    ppl 
-`else
-    dda
-`endif
-    #(
+    reg [15:0] p_angle_x = -1;
+    reg [15:0] p_angle_y = 0;
+    ppl #(
         .H_DISP(`H_DISP),
         .V_DISP(`V_DISP)
     ) ppl (
@@ -61,6 +55,34 @@ module Minecraft (
         .pixel_addr_out(pixel_addr_out),
         .texture_addr  (texture_addr)
     );
+`else
+    reg [15:0] p_cam_x = 16'h0000;
+    reg [15:0] p_cam_y = 16'hFFF0;
+    reg [15:0] p_cam_z = 16'hF1F0;
+    reg [15:0] p_vp_x  = 16'hFF1F;
+    reg [15:0] p_vp_y  = 16'h00E1;
+    dda dda (
+        .clk(clk),
+        .rst(rst | data_aligned_vs),
+
+        .hdisp  (`H_DISP),
+        .vdisp  (`V_DISP),
+        .p_pos_x(p_pos_x),
+        .p_pos_y(p_pos_y),
+        .p_pos_z(p_pos_z),
+        .p_cam_x(p_cam_x),
+        .p_cam_y(p_cam_y),
+        .p_cam_z(p_cam_z),
+        .p_vp_x (p_vp_x),
+        .p_vp_y (p_vp_y),
+
+        .block_id      (block_id),
+        .valid         (valid),
+        .block_addr    (block_addr),
+        .pixel_addr_out(pixel_addr_out),
+        .texture_addr  (texture_addr)
+    );
+`endif
 
     wire [19:0] data_addr;
     wire        data_valid;

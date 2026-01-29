@@ -76,11 +76,14 @@ module ppl_entry #(
         .vp_v_z     (vp_v_z)
     );
 
-    wire signed [12:0] fragment_offset_x = frame_x * 2 - H_DISP;
-    wire signed [12:0] fragment_offset_y = -(frame_y * 2 - V_DISP);
-    wire signed [17:0] ray_offset_x = (vp_v_x * fragment_offset_x + vp_u_x * fragment_offset_y) >>> (`SHIFT + 1);
-    wire signed [17:0] ray_offset_y = (vp_v_y * fragment_offset_x + vp_u_y * fragment_offset_y) >>> (`SHIFT + 1);
-    wire signed [17:0] ray_offset_z = (vp_v_z * fragment_offset_x + vp_u_z * fragment_offset_y) >>> (`SHIFT + 1);
+    wire signed [15:0] fragment_offset_x = frame_x * 2 - H_DISP;
+    wire signed [15:0] fragment_offset_y = -(frame_y * 2 - V_DISP);
+    // wire signed [17:0] ray_offset_x = (vp_v_x * fragment_offset_x + vp_u_x * fragment_offset_y) >>> (`SHIFT + 1);
+    // wire signed [17:0] ray_offset_y = (vp_v_y * fragment_offset_x + vp_u_y * fragment_offset_y) >>> (`SHIFT + 1);
+    // wire signed [17:0] ray_offset_z = (vp_v_z * fragment_offset_x + vp_u_z * fragment_offset_y) >>> (`SHIFT + 1);
+    wire signed [31:0] ray_offset_x = (vp_v_x * fragment_offset_x) >>> (`SHIFT + 1);
+    wire signed [31:0] ray_offset_y = (vp_u_y * fragment_offset_y) >>> (`SHIFT + 1);
+    wire signed [31:0] ray_offset_z = 'd0;
 
     // Output
     assign start_pos_x = next_en ? p_pos_x : end_pos_x;
@@ -107,12 +110,12 @@ module viewport_scanner #(
 );
 
     //  one-cycle
-    reg [11:0] h_cnt_reg = 'b0;
-    reg [11:0] v_cnt_reg = 'b0;
+    reg [11:0] h_cnt_reg = 'd0;
+    reg [11:0] v_cnt_reg = 'd0;
     always @(posedge clk) begin
         if (rst) begin
-            h_cnt_reg <= 'b0;
-            v_cnt_reg <= 'b0;
+            h_cnt_reg <= 'd0;
+            v_cnt_reg <= 'd0;
         end else if (enable) begin
             h_cnt_reg <= (h_cnt_reg == (H_DISP - 'd1)) ? 0 : (h_cnt_reg + 'd1);
             v_cnt_reg <= (h_cnt_reg != (H_DISP - 'd1)) ? v_cnt_reg : (v_cnt_reg == (V_DISP - 'd1)) ? 'd0 : (v_cnt_reg + 'd1);

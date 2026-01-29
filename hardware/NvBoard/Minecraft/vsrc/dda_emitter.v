@@ -1,95 +1,68 @@
 `timescale 1ns / 1ps
 
-`define SHIFT 4
-`define ANGLE_RADIUS 225
-`define ANGLE_EIGHTH 158
-`define ANGLE_QUARTER 317  // `define ANGLE_QUARTER ANGLE_EIGHTH * 2 + 1
-`define ANGLE_HALF 634     // `define ANGLE_HALF ANGLE_EIGHTH * 4 + 2
-`define ANGLE_MODULO 1268  // `define ANGLE_MODULO ANGLE_EIGHTH * 8 + 4
-
-/* verilator lint_off WIDTH */
-
-module dda_emitter #(
-    parameter H_DISP = 1280,
-    parameter V_DISP = 720
-) (
+module dda_emitter (
     input clk,
     input rst,
 
-    input        [15:0] p_pos_x,
-    input        [15:0] p_pos_y,
-    input        [15:0] p_pos_z,
-    input signed [15:0] p_angle_x,
-    input signed [15:0] p_angle_y,
+    input [11:0] hdisp,
+    input [11:0] vdisp,
 
-    input               next_en,
-    input        [19:0] pixel_addr_out,
-    input        [15:0] end_pos_x,
-    input        [15:0] end_pos_y,
-    input        [15:0] end_pos_z,
-    input signed [13:0] ray_slope_out_x,
-    input signed [13:0] ray_slope_out_y,
-    input signed [13:0] ray_slope_out_z,
-    input        [ 5:0] block_cnt_out,
+    input [15:0] p_pos_x,   // player position
+    input [15:0] p_pos_y,
+    input [15:0] p_pos_z,
+    input [15:0] p_cam_x,   // player camera
+    input [15:0] p_cam_y,
+    input [15:0] p_cam_z,
+    input [15:0] p_vp_x,    // player viewplane vector
+    input [15:0] p_vp_y,
 
-    output        [ 5:0] block_cnt,
-    output        [15:0] start_pos_x,
-    output        [15:0] start_pos_y,
-    output        [15:0] start_pos_z,
-    output signed [13:0] ray_slope_x,
-    output signed [13:0] ray_slope_y,
-    output signed [13:0] ray_slope_z,
-    output        [19:0] pixel_addr
+    input        next_en,
+    input [19:0] pixel_addr_out,
+    input [15:0] end_pos_x,
+    input [15:0] end_pos_y,
+    input [15:0] end_pos_z,
+    input [13:0] ray_slope_out_x,
+    input [13:0] ray_slope_out_y,
+    input [13:0] ray_slope_out_z,
+    input [ 5:0] block_cnt_out,
+
+    output [ 5:0] block_cnt,
+    output [15:0] start_pos_x,
+    output [15:0] start_pos_y,
+    output [15:0] start_pos_z,
+    output [13:0] ray_slope_x,
+    output [13:0] ray_slope_y,
+    output [13:0] ray_slope_z,
+    output [19:0] pixel_addr
 );
 
-    wire signed [15:0] frame_x, frame_y;
-    wire signed [15:0] vp_origin_x, vp_origin_y, vp_origin_z;
-    wire signed [15:0] vp_u_x, vp_u_y, vp_u_z;
-    wire signed [15:0] vp_v_x, vp_v_y, vp_v_z;
+    // pixel cnt
+    reg [11:0] pixel_x = 'd0;
+    reg [11:0] pixel_y = 'd0;
+    always @(posedge clk) begin
+        if (rst) begin
+            pixel_x <= 'd0;
+            pixel_y <= 'd0;
+        end else if (next_en) begin
+            pixel_x <= (pixel_x == (hdisp - 'd1)) ? 0 : (pixel_x + 'd1);
+            pixel_y <= (pixel_x != (hdisp - 'd1)) ? pixel_y : (pixel_y == (vdisp - 'd1)) ? 'd0 : (pixel_y + 'd1);
+        end
+    end
 
-    viewport_scanner #(
-        .H_DISP(H_DISP),
-        .V_DISP(V_DISP)
-    ) viewport_scanner (
-        .clk          (clk),
-        .rst          (rst),
-        .enable       (next_en),
-        .frame_x(frame_x),
-        .frame_y(frame_y)
-    );
-
-    viewport_params #(
-        .H_DISP(H_DISP),
-        .V_DISP(V_DISP)
-    ) viewport_params (
-        .rst        (rst),
-        .p_angle_x  (p_angle_x),
-        .p_angle_y  (p_angle_y),
-        .vp_origin_x(vp_origin_x),
-        .vp_origin_y(vp_origin_y),
-        .vp_origin_z(vp_origin_z),
-        .vp_u_x     (vp_u_x),
-        .vp_u_y     (vp_u_y),
-        .vp_u_z     (vp_u_z),
-        .vp_v_x     (vp_v_x),
-        .vp_v_y     (vp_v_y),
-        .vp_v_z     (vp_v_z)
-    );
-
-    wire signed [15:0] fragment_offset_x = frame_x * 2 - H_DISP;
-    wire signed [15:0] fragment_offset_y = -(frame_y * 2 - V_DISP);
-    wire signed [17:0] ray_offset_x = (vp_v_x * fragment_offset_x + vp_u_x * fragment_offset_y) >>> (`SHIFT + 1);
-    wire signed [17:0] ray_offset_y = (vp_v_y * fragment_offset_x + vp_u_y * fragment_offset_y) >>> (`SHIFT + 1);
-    wire signed [17:0] ray_offset_z = (vp_v_z * fragment_offset_x + vp_u_z * fragment_offset_y) >>> (`SHIFT + 1);
+    wire signed [12:0] frame_x = pixel_x * 2 - hdisp;
+    wire signed [12:0] frame_y = -(pixel_y * 2 - vdisp);
+    wire signed [31:0] ray_offset_x = ($signed(p_vp_x) * frame_x) >>> 5;
+    wire signed [31:0] ray_offset_y = ($signed(p_vp_y) * frame_y) >>> 5;
+    wire signed [31:0] ray_offset_z = 0;
 
     // Output
     assign start_pos_x = next_en ? p_pos_x : end_pos_x;
     assign start_pos_y = next_en ? p_pos_y : end_pos_y;
     assign start_pos_z = next_en ? p_pos_z : end_pos_z;
-    assign ray_slope_x = next_en ? vp_origin_x + ray_offset_x : ray_slope_out_x;
-    assign ray_slope_y = next_en ? vp_origin_y + ray_offset_y : ray_slope_out_y;
-    assign ray_slope_z = next_en ? vp_origin_z + ray_offset_z : ray_slope_out_z;
-    assign pixel_addr  = next_en ? frame_y * H_DISP + frame_x : pixel_addr_out;
+    assign ray_slope_x = next_en ? $signed(p_cam_x) + ray_offset_x : ray_slope_out_x;
+    assign ray_slope_y = next_en ? $signed(p_cam_y) + ray_offset_y : ray_slope_out_y;
+    assign ray_slope_z = next_en ? $signed(p_cam_z) + ray_offset_z : ray_slope_out_z;
+    assign pixel_addr  = next_en ? pixel_y * hdisp + pixel_x : pixel_addr_out;
     assign block_cnt   = next_en ? 'b0 : block_cnt_out;
 
 endmodule
