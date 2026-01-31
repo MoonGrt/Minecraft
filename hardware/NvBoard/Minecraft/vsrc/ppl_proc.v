@@ -333,7 +333,7 @@ module ppl_proc (
             end_pos_z_d4       <= 'b0;
         end else begin
             // block_next_x * 32 * 32 + block_next_y * 32 + block_next_z;
-            block_addr_d4 <= (block_next_x_d3 << 10) + (block_next_y_d3 << 5) + (block_next_z_d3);
+            block_addr_d4 <= {block_next_x_d3, block_next_y_d3, block_next_z_d3};
             map_border_flag_d4 <= ((start_pos_x_d3[15:11] == 0) && ray_slope_x_d3[13]) || ((start_pos_x_d3[15:11] == 32) && ~ray_slope_x_d3[13]) ||
                                   ((start_pos_y_d3[15:11] == 0) && ray_slope_y_d3[13]) || ((start_pos_y_d3[15:11] == 32) && ~ray_slope_y_d3[13]) ||
                                   ((start_pos_z_d3[15:11] == 0) && ray_slope_z_d3[13]) || ((start_pos_z_d3[15:11] == 32) && ~ray_slope_z_d3[13]);
@@ -451,7 +451,6 @@ module ppl_proc (
         end
     end
     // next
-    reg [4:0] texture_id;
     parameter BLOCK_NUM = 16;
     parameter FACE_NUM = 6;
     parameter TEXTURE_NUM = 20;
@@ -463,8 +462,8 @@ module ppl_proc (
     // initial $readmemh("G:/VM/share/Minecraft/scripts/res/output/txt_idx.hex", face_idx_mem);
     initial $readmemb("./vsrc/txtidx.bin", face_idx_mem);
     // 组合逻辑直接读取
-    always @(*) texture_id = face_idx_mem[face_idx];
-    wire [12:0] texture_addr_d6 = block_id ? texture_x_d6 + (texture_y_d6 << 4) + (texture_id << 8) : 0;
+    wire [4:0] texture_id = face_idx_mem[face_idx];
+    wire [12:0] texture_addr_d6 = block_id ? {texture_id, texture_y_d6, texture_x_d6} : 0;
 
 
     assign pixel_addr_out  = pixel_addr_d6;

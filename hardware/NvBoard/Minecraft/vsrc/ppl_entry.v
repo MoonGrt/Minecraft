@@ -54,6 +54,7 @@ module ppl_entry #(
         .clk    (clk),
         .rst    (rst),
         .enable (next_en),
+        // .enable (1'b0),
         .frame_x(frame_x),
         .frame_y(frame_y)
     );
@@ -77,7 +78,7 @@ module ppl_entry #(
     );
 
     wire signed [15:0] fragment_offset_x = frame_x * 2 - H_DISP;
-    wire signed [15:0] fragment_offset_y = -(frame_y * 2 - V_DISP);
+    wire signed [15:0] fragment_offset_y = frame_y * 2 - V_DISP;
     // wire signed [17:0] ray_offset_x = (vp_v_x * fragment_offset_x + vp_u_x * fragment_offset_y) >>> (`SHIFT + 1);
     // wire signed [17:0] ray_offset_y = (vp_v_y * fragment_offset_x + vp_u_y * fragment_offset_y) >>> (`SHIFT + 1);
     // wire signed [17:0] ray_offset_z = (vp_v_z * fragment_offset_x + vp_u_z * fragment_offset_y) >>> (`SHIFT + 1);
