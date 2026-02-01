@@ -1,5 +1,7 @@
 `timescale 1ns / 1ps
 
+`define PIPELINE
+
 module dda_emitter (
     input wire clk,
     input wire rst,
@@ -30,6 +32,9 @@ module dda_emitter (
     output wire [23:0] jump_x,
     output wire [23:0] jump_y,
     output wire [23:0] jump_z
+`ifdef PIPELINE
+   ,output wire [19:0] pixel_addr
+`endif
 );
 
     // ------------------------------------------------------------
@@ -55,6 +60,9 @@ module dda_emitter (
                        (pixel_y == vdisp - 1) ? 12'd0 : pixel_y + 1;
         end
     end
+`ifdef PIPELINE
+    assign pixel_addr = pixel_y * hdisp + pixel_x;
+`endif
 
     // ------------------------------------------------------------
     // valid generation
