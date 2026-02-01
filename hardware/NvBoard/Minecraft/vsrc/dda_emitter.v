@@ -64,8 +64,6 @@ module dda_emitter (
     // ------------------------------------------------------------
     // ray offset
     // ------------------------------------------------------------
-    // wire signed [12:0] frame_x = pixel_x * 2 - hdisp;
-    // wire signed [12:0] frame_y = pixel_y * 2 - vdisp;
     wire signed [12:0] frame_x = $signed({1'b0, pixel_x}) * 2 - $signed({1'b0, hdisp});
     wire signed [12:0] frame_y = $signed({1'b0, pixel_y}) * 2 - $signed({1'b0, vdisp});
     wire signed [31:0] ray_offset_x = ($signed(p_vp_x) * frame_x) >>> 5;
@@ -78,6 +76,9 @@ module dda_emitter (
     assign ray_x = $signed(p_cam_x) + ray_offset_x;
     assign ray_y = $signed(p_cam_y) + ray_offset_y;
     assign ray_z = $signed(p_cam_z) + ray_offset_z;
+    // assign ray_x = -2240;
+    // assign ray_y = 1530;
+    // assign ray_z = -3600;
     // abs
     wire [12:0] ray_x_abs = ray_x[13] ? (~ray_x[12:0] + 13'd1) : ray_x[12:0];
     wire [12:0] ray_y_abs = ray_y[13] ? (~ray_y[12:0] + 13'd1) : ray_y[12:0];
@@ -102,11 +103,11 @@ module dda_emitter (
     // ------------------------------------------------------------
     // next side distance init
     // ------------------------------------------------------------
-    wire [11:0] edge_x = ray_x[13] ? (pos_x[10:0] ? pos_x[10:0] : ('d16 << 7))
+    wire [10:0] edge_x = ray_x[13] ? (pos_x[10:0] ? pos_x[10:0] : ('d16 << 7))
                                    : (('d16 << 7) - pos_x[10:0]);
-    wire [11:0] edge_y = ray_y[13] ? (pos_y[10:0] ? pos_y[10:0] : ('d16 << 7))
+    wire [10:0] edge_y = ray_y[13] ? (pos_y[10:0] ? pos_y[10:0] : ('d16 << 7))
                                    : (('d16 << 7) - pos_y[10:0]);
-    wire [11:0] edge_z = ray_z[13] ? (pos_z[10:0] ? pos_z[10:0] : ('d16 << 7))
+    wire [10:0] edge_z = ray_z[13] ? (pos_z[10:0] ? pos_z[10:0] : ('d16 << 7))
                                    : (('d16 << 7) - pos_z[10:0]);
     assign next_x = edge_x * div_lut_x;
     assign next_y = edge_y * div_lut_y;

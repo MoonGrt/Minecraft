@@ -2,6 +2,8 @@
 // 移植自嵌入式示例：在 PC 上渲染一次并输出 frame.ppm (RGB24)
 // Compile: gcc -std=c11 -O2 -lm -o minecraft_raycast_pc minecraft_raycast_pc.c
 
+#define DEBUG
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -37,14 +39,13 @@ static inline void set_block(int x, int y, int z, uint8_t id) {
 // ----------------- Ray DDA -----------------
 #define PI 3.14156f
 #define MAX_STEPS 63  // 最多步数（防止无限）
-#define RAYCAST_INCREMENTAL_UV
+// #define RAYCAST_INCREMENTAL_UV  // 是否使用增量法计算 UV
 #ifndef RAYCAST_INCREMENTAL_UV
 static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float dz) {
     // 起始方块坐标（floor）
     int bx = (int)floorf(ox);
     int by = (int)floorf(oy);
     int bz = (int)floorf(oz);
-    // printf("Init -> (%d, %d, %d)\n", bx, by, bz);
     // 步进方向
     int stepX = (dx > 0.0f) ? 1 : -1;
     int stepY = (dy > 0.0f) ? 1 : -1;
@@ -57,7 +58,10 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
     float tMaxX = (stepX > 0) ? ((float)(bx + 1) - ox) * invDx : (ox - (float)bx) * invDx;
     float tMaxY = (stepY > 0) ? ((float)(by + 1) - oy) * invDy : (oy - (float)by) * invDy;
     float tMaxZ = (stepZ > 0) ? ((float)(bz + 1) - oz) * invDz : (oz - (float)bz) * invDz;
-    // printf("tMaxX=%f, tMaxY=%f, tMaxZ=%f\n", tMaxX, tMaxY, tMaxZ);
+#ifdef DEBUG
+    printf("Init -> (%d, %d, %d)\n", bx, by, bz);
+    printf("tMaxX=%f, tMaxY=%f, tMaxZ=%f\n", tMaxX, tMaxY, tMaxZ);
+#endif
     // DDA 主循环
     for (int i = 0; i < MAX_STEPS; ++i) { // 最大步数保护
         // 在 DDA 中更常用的做法是：先跨格（根据最小 tMax），然后检查进入的方块（bx,by,bz 更新后）
@@ -83,8 +87,9 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
             tMaxZ += invDz;
             steppedAxis = 3;
         }
-        // printf("Step %d -> (%d, %d, %d) - Axis: %d\n", i, bx, by, bz, steppedAxis);
-
+#ifdef DEBUG
+        printf("Step %d -> (%d, %d, %d) - Axis: %d\n", i, bx, by, bz, steppedAxis);
+#endif
         // 检查越界或命中
         uint8_t id = 0;
         if ((unsigned)bx < MAPSIZE && (unsigned)by < MAPSIZE && (unsigned)bz < MAPSIZE)
@@ -103,6 +108,9 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
             uint8_t texidx = 0;
             // 哪一面被命中：注意 stepX>0 时说明我们向 +X 走，进入的是新方块的 -X 面（即 negative X face）
             if (steppedAxis == 1) {
+#ifdef DEBUG
+                printf("start at (%f, %f, %f), hit at (%f, %f, %f)\n", ox, oy, oz, (float)bz, hy, hz);
+#endif
                 // X 面（面所在为 YZ）
                 float fy = hy - floorf(hy);
                 float fz = hz - floorf(hz);
@@ -115,6 +123,9 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
                 else
                     texidx = block_face_texture[id][2];
             } else if (steppedAxis == 2) {
+#ifdef DEBUG
+                printf("start at (%f, %f, %f), hit at (%f, %f, %f)\n", ox, oy, oz, hx, (float)by, hz);
+#endif
                 // Y 面（面所在为 XZ）；如果 stepY>0（向上）则是新方块的 -Y 面 => 映射为 top/bottom
                 float fx = hx - floorf(hx);
                 float fz = hz - floorf(hz);
@@ -127,6 +138,9 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
                 else
                     texidx = block_face_texture[id][1];
             } else {
+#ifdef DEBUG
+                printf("start at (%f, %f, %f), hit at (%f, %f, %f), \n", ox, oy, oz, hx, hy, (float)bz);
+#endif
                 // Z 面（面所在为 XY）
                 float fx = hx - floorf(hx);
                 float fy = hy - floorf(hy);
@@ -143,7 +157,9 @@ static uint16_t raycast(float ox, float oy, float oz, float dx, float dy, float 
                     texidx = block_face_texture[id][0]; // top
             }
             // 取颜色并返回
-            // printf("id: %d, texidx: %d, u: %d, v: %d\n", id, texidx, u, v);
+#ifdef DEBUG
+            printf("id: %d, texidx: %d, u: %d, v: %d\n", id, texidx, u, v);
+#endif
             return get_texture(texidx, u, v);
         }
         // 否则继续下一步
@@ -312,9 +328,11 @@ void render_scene(Camera *cam)
             uint16_t color = raycast(cam->px, cam->py, cam->pz, dirx, diry, dirz);
             // 注意 Framebuffer 的索引顺序
             Framebuffer[py][px] = color;
-            // printf("x=%d, y=%d, addr=%x, color=%x\n", px, py, &Framebuffer[py][px], color);
-            // if (px == 5)
-            //     return;
+#ifdef DEBUG
+            printf("x=%d, y=%d, addr=%x, color=%x\n", px, py, &Framebuffer[py][px], color);
+            if (px == (1 - 1))
+                return;
+#endif
         }
     }
 }
@@ -414,7 +432,7 @@ int main(void) {
 
     // camera
     Camera cam = {
-        .px = 16.5f, .py = 16.5f, .pz = 31.0f,
+        .px = 19.5f, .py = 16.5f, .pz = 31.0f,
         .dx = 0.0f, .dy = 0.0f, .dz = -1.0f,
         .ux = -1.0f, .uy = 0.0f, .uz = 0.0f,
         .vx = 0.0f, .vy = 1.0f, .vz = 0.0f,
@@ -422,12 +440,12 @@ int main(void) {
     };
     set_camera_direction(&cam, 0.0f, 0.0f);
 
-    printf("Rendering %dx%d, map %dx%dx%d\n", DISPX, DISPY, MAPX, MAPY, MAPZ);
-    render_scene(&cam);
-    topng(); // 保存 framebuffer 到 PNG 文件
+    // printf("Rendering %dx%d, map %dx%dx%d\n", DISPX, DISPY, MAPX, MAPY, MAPZ);
+    // render_scene(&cam);
+    // topng(); // 保存 framebuffer 到 PNG 文件
 
-    // printf("\nRaycasting...\n");
-    // printf("color=%x\n", raycast(cam.px, cam.py, cam.pz, -0.0224, 0.0153, -0.3600));
+    printf("\nRaycasting...\n");
+    printf("color=%x\n", raycast(cam.px, cam.py, cam.pz, -0.224, 0.153, -0.3600));
 
     return 0;
 }
