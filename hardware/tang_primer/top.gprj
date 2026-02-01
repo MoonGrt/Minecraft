@@ -5,6 +5,9 @@
     <Version>5</Version>
     <Device name="GW2A-18C" pn="GW2A-LV18PG256C8/I7">gw2a18c-011</Device>
     <FileList>
+        <File path="src/DDA/dda.v" type="file.verilog" enable="1"/>
+        <File path="src/DDA/dda_emitter.v" type="file.verilog" enable="1"/>
+        <File path="src/DDA/dda_tracer.v" type="file.verilog" enable="1"/>
         <File path="src/align.v" type="file.verilog" enable="1"/>
         <File path="src/char.v" type="file.verilog" enable="1"/>
         <File path="src/ddr3_memory_interface/DDR3MI.v" type="file.verilog" enable="1"/>
@@ -12,6 +15,7 @@
         <File path="src/gowin_prom/div_lut.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_prom/texture_rom.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/TMDS_rPLL.v" type="file.verilog" enable="1"/>
+        <File path="src/gowin_rpll/dda_clk.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/lcd_pll.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/mem_pll.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/ppl_clk.v" type="file.verilog" enable="1"/>

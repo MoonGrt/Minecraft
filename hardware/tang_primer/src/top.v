@@ -2,6 +2,7 @@
 `define LCD // 480x272@60Hz
 
 `define FPSSTR // 显示 FPS 字符串
+// `define PPL
 
 `ifdef HDMI
     `define H_DISP 1280
@@ -17,8 +18,8 @@ module top (
 
     output [3:0] state_led,
 
-    output [14-1:0] ddr_addr,     // ROW_WIDTH=14
-    output [ 3-1:0] ddr_bank,     // BANK_WIDTH=3
+    output [14-1:0] ddr_addr,  // ROW_WIDTH=14
+    output [ 3-1:0] ddr_bank,  // BANK_WIDTH=3
     output          ddr_cs,
     output          ddr_ras,
     output          ddr_cas,
@@ -28,10 +29,10 @@ module top (
     output          ddr_cke,
     output          ddr_odt,
     output          ddr_reset_n,
-    output [ 2-1:0] ddr_dm,       // DM_WIDTH=2
-    inout  [16-1:0] ddr_dq,       // DQ_WIDTH=16
-    inout  [ 2-1:0] ddr_dqs,      // DQS_WIDTH=2
-    inout  [ 2-1:0] ddr_dqs_n,    // DQS_WIDTH=2
+    output [ 2-1:0] ddr_dm,     // DM_WIDTH=2
+    inout  [16-1:0] ddr_dq,     // DQ_WIDTH=16
+    inout  [ 2-1:0] ddr_dqs,    // DQS_WIDTH=2
+    inout  [ 2-1:0] ddr_dqs_n,  // DQS_WIDTH=2
 `ifdef HDMI
     output       O_tmds_clk_p,
     output       O_tmds_clk_n,
@@ -109,15 +110,23 @@ module top (
         .lock  (lcd_pll_lock)
     );
 `endif
+
     // Pipeline pll
     wire PPL_clk;
     wire PLL_lock;
+`ifdef PPL
     ppl_clk ppl_clk(
         .clkout(PPL_clk), // output clkout
         .lock(PLL_lock),  // output lock
         .clkin(clk)       // input clkin
     );
-
+`else
+    dda_clk dda_clk(
+        .clkout(PPL_clk), // output clkout
+        .lock(PLL_lock),  // output lock
+        .clkin(clk)       // input clkin
+    );
+`endif
 
     //--------------------------
     // 输入测试图
@@ -179,16 +188,18 @@ module top (
     reg  [15:0] p_pos_x = 'd33 << 3 << 7;
     reg  [15:0] p_pos_y = 'd33 << 3 << 7;
     reg  [15:0] p_pos_z = 'd62 << 3 << 7;
-    reg  [15:0] p_angle_x = -1;
-    reg  [15:0] p_angle_y = 0;
     wire [14:0] write_addr;
     wire [ 3:0] write_data;
     wire        write_en;
     wire [ 3:0] block_id;
-    wire [19:0] pixel_addr_out;
+    
     wire [14:0] block_addr;
     wire [12:0] texture_addr;
     wire valid;
+`ifdef PPL
+    wire [19:0] pixel_addr_out;
+    reg  [15:0] p_angle_x = -1;
+    reg  [15:0] p_angle_y = 0;
     ppl #(
         .H_DISP(`H_DISP),
         .V_DISP(`V_DISP)
@@ -207,6 +218,51 @@ module top (
         .pixel_addr_out(pixel_addr_out),
         .texture_addr  (texture_addr)
     );
+`else
+    reg [15:0] p_cam_x = 16'h0000;
+    reg [15:0] p_cam_y = 16'hFFF0;
+    reg [15:0] p_cam_z = 16'hF1F0;
+    reg [15:0] p_vp_x  = 16'hFF1F;
+    reg [15:0] p_vp_y  = 16'h00E1;
+`define PIPELINE
+`ifndef PIPELINE
+    reg [19:0] pixel_addr_out;
+    always @(posedge clk) begin
+        if (rst)
+            pixel_addr_out <= 'b0;
+        else if (data_aligned_vs)
+            pixel_addr_out <= 'b0;
+        else if (valid)
+            pixel_addr_out <= pixel_addr_out + 'b1;
+    end
+`else
+    wire [19:0] pixel_addr_out;
+`endif
+    dda dda (
+        .clk(PPL_clk),
+        .rst(~TMDS_DDR_pll_lock && ~PLL_lock),
+
+        .hdisp  (`H_DISP),
+        .vdisp  (`V_DISP),
+        .p_pos_x(p_pos_x),
+        .p_pos_y(p_pos_y),
+        .p_pos_z(p_pos_z),
+        .p_cam_x(p_cam_x),
+        .p_cam_y(p_cam_y),
+        .p_cam_z(p_cam_z),
+        .p_vp_x (p_vp_x),
+        .p_vp_y (p_vp_y),
+
+        .block_id  (block_id),
+        .block_addr(block_addr),
+
+        .hit_valid  (valid),
+        .hit_texture(texture_addr)
+`ifdef PIPELINE
+       ,.out_pixel_addr(pixel_addr_out)
+`endif
+    );
+`endif
 
     wire [19:0] data_addr;
     wire        data_valid;
@@ -500,6 +556,11 @@ module top (
     wire [ 7:0] minecraft_g = {minecraft_data[10:5], 2'b0}; // 绿色分量
     wire [ 7:0] minecraft_b = {minecraft_data[4:0], 3'b0}; // 蓝色分量
     char #(
+`ifdef PPL
+        .CLK_FREQ(45_000_000),
+`else
+        .CLK_FREQ(54_000_000),
+`endif
         .HDISP(`H_DISP),
         .VDISP(`V_DISP))
     char (

@@ -1,4 +1,5 @@
 module char #(
+    parameter CLK_FREQ = 45_000_000,  // Hz
     parameter HDISP = 640,
     parameter VDISP = 480
 )(
@@ -53,7 +54,6 @@ module char #(
 
 
 
-    localparam CLK_FREQ = 45_000_000;  // Hz
     localparam W = 48;
     reg [W-1:0] clk_cnt, clk_cnt_d;
     reg [W-1:0] fps_x100;

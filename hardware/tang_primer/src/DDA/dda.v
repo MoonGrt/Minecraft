@@ -1,113 +1,129 @@
 `timescale 1ns / 1ps
 
-module dda #(
-    parameter H_DISP = 1280,
-    parameter V_DISP = 720
-) (
-    input clk,
-    input rst,
+`define PIPELINE
 
-    input        [15:0] p_pos_x,
-    input        [15:0] p_pos_y,
-    input        [15:0] p_pos_z,
-    input signed [15:0] p_angle_x,
-    input signed [15:0] p_angle_y,
-    input        [ 3:0] block_id,
+module dda (
+    input  wire clk,
+    input  wire rst,
 
-    output        valid,
-    output [19:0] pixel_addr_out,
-    output [14:0] block_addr,
-    output [12:0] texture_addr
+    // ===== pixel / camera input =====
+    input  wire [11:0] hdisp,
+    input  wire [11:0] vdisp,
+
+    input  wire [15:0] p_pos_x,
+    input  wire [15:0] p_pos_y,
+    input  wire [15:0] p_pos_z,
+    input  wire [15:0] p_cam_x,
+    input  wire [15:0] p_cam_y,
+    input  wire [15:0] p_cam_z,
+    input  wire [15:0] p_vp_x,
+    input  wire [15:0] p_vp_y,
+
+    // ===== block query =====
+    input  wire [ 3:0] block_id,
+    output wire [14:0] block_addr,
+
+    // ===== final hit result =====
+`ifdef PIPELINE
+    output wire [19:0] out_pixel_addr,
+`endif
+    output wire        hit_valid,
+    output wire [12:0] hit_texture
 );
 
-    wire        [15:0] end_pos_x;
-    wire        [15:0] end_pos_y;
-    wire        [15:0] end_pos_z;
-    wire        [15:0] start_pos_x;
-    wire        [15:0] start_pos_y;
-    wire        [15:0] start_pos_z;
-    wire signed [15:0] ray_slope_x;
-    wire signed [15:0] ray_slope_y;
-    wire signed [15:0] ray_slope_z;
-    wire signed [15:0] ray_slope_out_x;
-    wire signed [15:0] ray_slope_out_y;
-    wire signed [15:0] ray_slope_out_z;
+    // ============================================================
+    // wires between emitter and tracer
+    // ============================================================
+    wire        e_valid;
+    wire        e_ready;
+    wire [15:0] e_pos_x;
+    wire [15:0] e_pos_y;
+    wire [15:0] e_pos_z;
+    wire [13:0] e_ray_x;
+    wire [13:0] e_ray_y;
+    wire [13:0] e_ray_z;
+    wire [23:0] e_next_x;
+    wire [23:0] e_next_y;
+    wire [23:0] e_next_z;
+    wire [23:0] e_jump_x;
+    wire [23:0] e_jump_y;
+    wire [23:0] e_jump_z;
 
-    wire        [19:0] pixel_addr;
-    wire        [ 5:0] block_cnt_out, block_cnt;
-    wire               next_en;
+`ifdef PIPELINE
+    wire [19:0] e_pixel_addr;
+`endif
 
-    // discard the first 10 cycles to avoid the first few pixels being black
-    localparam PPL_CYCLES = 5;
-    reg [3:0] ppl_cnt = 'b0;
-    wire discard = ppl_cnt < PPL_CYCLES;
-    assign valid = next_en & ~discard;
-    always @(posedge clk or posedge rst) begin
-        if (rst) ppl_cnt <= 'b0;
-        else if (next_en & discard)
-            ppl_cnt <= ppl_cnt + 1;
-    end
+    // ============================================================
+    // dda_emitter
+    // ============================================================
+    dda_emitter dda_emitter (
+        .clk(clk),
+        .rst(rst),
 
-    emitter #(
-        .H_DISP(H_DISP),
-        .V_DISP(V_DISP)
-    ) emitter (
-        .clk      (clk),
-        .rst      (rst),
-        .p_pos_x  (p_pos_x),
-        .p_pos_y  (p_pos_y),
-        .p_pos_z  (p_pos_z),
-        .p_angle_x(p_angle_x),
-        .p_angle_y(p_angle_y),
+        .hdisp(hdisp),
+        .vdisp(vdisp),
 
-        .next_en        (next_en),
-        .pixel_addr_out (pixel_addr_out),
-        .end_pos_x      (end_pos_x),
-        .end_pos_y      (end_pos_y),
-        .end_pos_z      (end_pos_z),
-        .ray_slope_out_x(ray_slope_out_x),
-        .ray_slope_out_y(ray_slope_out_y),
-        .ray_slope_out_z(ray_slope_out_z),
-        .block_cnt      (block_cnt),
+        .p_pos_x(p_pos_x),
+        .p_pos_y(p_pos_y),
+        .p_pos_z(p_pos_z),
+        .p_cam_x(p_cam_x),
+        .p_cam_y(p_cam_y),
+        .p_cam_z(p_cam_z),
+        .p_vp_x (p_vp_x),
+        .p_vp_y (p_vp_y),
 
-        .block_cnt_out(block_cnt_out),
-        .start_pos_x  (start_pos_x),
-        .start_pos_y  (start_pos_y),
-        .start_pos_z  (start_pos_z),
-        .ray_slope_x  (ray_slope_x),
-        .ray_slope_y  (ray_slope_y),
-        .ray_slope_z  (ray_slope_z),
-        .pixel_addr   (pixel_addr)
+        .ready(e_ready),
+        .valid(e_valid),
+
+        .pos_x (e_pos_x),
+        .pos_y (e_pos_y),
+        .pos_z (e_pos_z),
+        .ray_x (e_ray_x),
+        .ray_y (e_ray_y),
+        .ray_z (e_ray_z),
+        .next_x(e_next_x),
+        .next_y(e_next_y),
+        .next_z(e_next_z),
+        .jump_x(e_jump_x),
+        .jump_y(e_jump_y),
+        .jump_z(e_jump_z)
+`ifdef PIPELINE
+       ,.pixel_addr(e_pixel_addr)
+`endif
     );
 
-    ray ray (
-        .clk         (clk),
-        .rst         (rst),
+    // ============================================================
+    // dda_tracer
+    // ============================================================
+    dda_tracer dda_tracer (
+        .clk(clk),
+        .rst(rst),
 
-        .start_pos_x(start_pos_x),
-        .start_pos_y(start_pos_y),
-        .start_pos_z(start_pos_z),
-        .ray_slope_x(ray_slope_x),
-        .ray_slope_y(ray_slope_y),
-        .ray_slope_z(ray_slope_z),
-        // .ray_slope_x(6626),
-        // .ray_slope_y(3748),
-        // .ray_slope_z(-6506),
-        .pixel_addr (pixel_addr),
-        .block_id   (block_id),
-        .block_cnt  (block_cnt),
+        .valid(e_valid),
+        .ready(e_ready),
 
-        .block_cnt_out  (block_cnt_out),
-        .next_en        (next_en),
-        .ray_slope_out_x(ray_slope_out_x),
-        .ray_slope_out_y(ray_slope_out_y),
-        .ray_slope_out_z(ray_slope_out_z),
-        .end_pos_x      (end_pos_x),
-        .end_pos_y      (end_pos_y),
-        .end_pos_z      (end_pos_z),
-        .pixel_addr_out (pixel_addr_out),
-        .texture_addr   (texture_addr),
-        .block_addr     (block_addr)
+        .in_pos_x (e_pos_x),
+        .in_pos_y (e_pos_y),
+        .in_pos_z (e_pos_z),
+        .in_ray_x (e_ray_x),
+        .in_ray_y (e_ray_y),
+        .in_ray_z (e_ray_z),
+        .in_next_x(e_next_x),
+        .in_next_y(e_next_y),
+        .in_next_z(e_next_z),
+        .in_jump_x(e_jump_x),
+        .in_jump_y(e_jump_y),
+        .in_jump_z(e_jump_z),
+
+        .block_id  (block_id),
+        .block_addr(block_addr),
+
+        .hit_valid  (hit_valid),
+        .hit_texture(hit_texture)
+`ifdef PIPELINE
+       ,.in_pixel_addr (e_pixel_addr),
+        .out_pixel_addr(out_pixel_addr)
+`endif
     );
 
 endmodule

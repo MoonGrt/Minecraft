@@ -93,7 +93,23 @@
 <!-- 关于本项目 -->
 ## 关于本项目
 
-<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">[![产品截图][product-screenshot]](https://example.com) 这是一个用于快速开始的空白模板：为了避免重复输入太多信息，请使用你的文本编辑器查找替换下面的内容：`github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `项目标题`, `项目简介`</p></body></html>
+![Frame_render](Document/Frame_render2.jpg)
+![Terminal](Document/Terminal.png)
+
+> 50MHz RISC-V SoC，渲染一次（480×272）耗时约51秒——0.0193帧/秒。
+
+![Frame_render-Hardware](Document/Frame_render-Hardware.jpg)
+
+> 硬件渲染管道（54MHz），约95.13帧/秒。
+
+![Nvboard](Document/NvBoard.png)
+
+> 虚拟FPGA板（NvBoard）渲染管道。低频率导致帧率低下——5.29帧/秒。
+
+该FPGA项目旨在完全通过硬件实现《我的世界》游戏。玩家可在游戏中放置与破坏方块、移动及飞行。系统通过渲染管道计算每个像素的颜色，最终将生成的帧显示在HDMI屏幕上。
+
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">
+
 <p align="right">(<a href="#top">top</a>)</p>
 
 
