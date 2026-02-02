@@ -21,12 +21,12 @@ module char #(
     reg [12:0] hcnt, vcnt;
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            hcnt <= '0;
-            vcnt <= '0;
+            hcnt <= 'b0;
+            vcnt <= 'b0;
         end else begin
-            if (pre_hs) hcnt <= '0;
+            if (pre_hs) hcnt <= 'b0;
             else if (pre_de) hcnt <= hcnt + 1;
-            if (pre_vs) vcnt <= '0;
+            if (pre_vs) vcnt <= 'b0;
             else if (hcnt == HDISP - 1) vcnt <= vcnt + 1;
         end
     end
@@ -73,15 +73,15 @@ module char #(
     //--------------------------------------
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            clk_cnt   <= '0;
-            clk_cnt_d <= '0;
-            fps_x100  <= '0;
+            clk_cnt   <= 'b0;
+            clk_cnt_d <= 'b0;
+            fps_x100  <= 'b0;
         end else begin
             clk_cnt <= clk_cnt + 1'b1;
             if (vs_rise) begin
                 clk_cnt_d <= clk_cnt;
-                clk_cnt   <= '0;
-                if (clk_cnt != 0) fps_x100 <= (CLK_FREQ * 100) / clk_cnt;
+                clk_cnt   <= 'b0;
+                if (clk_cnt != 'b0) fps_x100 <= (CLK_FREQ * 100) / clk_cnt;
             end
         end
     end
@@ -89,10 +89,8 @@ module char #(
     //--------------------------------------
     // FPS 分解
     //--------------------------------------
-    reg [W-1:0] fps_int;
-    reg [6:0]   fps_dec;
-    assign fps_int = fps_x100 / 100;
-    assign fps_dec = fps_x100 % 100;
+    wire [W-1:0] fps_int = fps_x100 / 100;
+    wire   [6:0] fps_dec = fps_x100 % 100;
 
     //--------------------------------------
     // 十进制 → ASCII

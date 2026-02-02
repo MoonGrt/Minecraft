@@ -50,7 +50,7 @@
     defparam UX_XXXXXXXXXXXXX.FIFO_DEPTH = 512
 
     ///////////////////////////
-    DC_FIFO UX_XXXXXXXXXXXXX(
+    FIFO UX_XXXXXXXXXXXXX(
         // System Signal
         .Reset    ( Reset   ),  // System Reset
         // Write Signal

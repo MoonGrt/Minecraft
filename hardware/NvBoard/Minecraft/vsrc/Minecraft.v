@@ -61,20 +61,7 @@ module Minecraft (
     reg [15:0] p_cam_z = 16'hF1F0;
     reg [15:0] p_vp_x  = 16'hFF1F;
     reg [15:0] p_vp_y  = 16'h00E1;
-`define PIPELINE
-`ifndef PIPELINE
-    reg [19:0] pixel_addr_out;
-    always @(posedge clk) begin
-        if (rst)
-            pixel_addr_out <= 'b0;
-        else if (data_aligned_vs)
-            pixel_addr_out <= 'b0;
-        else if (valid)
-            pixel_addr_out <= pixel_addr_out + 'b1;
-    end
-`else
     wire [19:0] pixel_addr_out;
-`endif
     dda dda (
         .clk(clk),
         .rst(rst | data_aligned_vs),
@@ -90,14 +77,9 @@ module Minecraft (
         .p_vp_x (p_vp_x),
         .p_vp_y (p_vp_y),
 
-        .block_id  (block_id),
-        .block_addr(block_addr),
-
         .hit_valid  (valid),
-        .hit_texture(texture_addr)
-`ifdef PIPELINE
-       ,.out_pixel_addr(pixel_addr_out)
-`endif
+        .hit_texture(texture_addr),
+        .out_pixel_addr(pixel_addr_out)
     );
 `endif
 
@@ -129,7 +111,7 @@ module Minecraft (
     align #(
         .H_DISP(`H_DISP),
         .V_DISP(`V_DISP),
-        .N     (16)
+        .N     (64)
     ) align (
         .clk       (clk),
         .rst       (rst | data_aligned_vs),

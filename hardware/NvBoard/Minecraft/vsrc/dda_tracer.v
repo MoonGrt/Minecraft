@@ -29,11 +29,11 @@ module dda_tracer (
 
     // ===== hit output =====
     output wire        hit_valid,
-    output wire [12:0] hit_texture
-`ifdef PIPELINE
-    ,input wire [19:0] in_pixel_addr,
+    output wire [12:0] hit_texture,
+
+    // ===== pixel addr =====
+    input  wire [19:0] in_pixel_addr,
     output wire [19:0] out_pixel_addr
-`endif
 );
 
 `ifndef PIPELINE
@@ -176,6 +176,7 @@ module dda_tracer (
     // ============================================================
     // final texture address
     // ============================================================
+    assign out_pixel_addr = in_pixel_addr;
     assign ready = (state == S_IDLE);
     assign block_addr = {bx, by, bz};
     assign hit_texture = {texture_id, hit_v, hit_u};
@@ -197,7 +198,6 @@ module dda_tracer (
 
     // ---------- Stage 0 ----------
     reg        vld_s0;
-    reg [19:0] pixel_addr_s0;
     reg  [4:0] bx_s0, by_s0, bz_s0;
     reg [23:0] pos_x_s0, pos_y_s0, pos_z_s0;
     reg [13:0] ray_x_s0, ray_y_s0, ray_z_s0;
@@ -207,7 +207,6 @@ module dda_tracer (
 
     // ---------- Stage 1 ----------
     reg        vld_s1;
-    reg [19:0] pixel_addr_s1;
     reg  [2:0] sel_axis_s1;
     reg  [4:0] bx_s1, by_s1, bz_s1;
     reg [23:0] pos_x_s1, pos_y_s1, pos_z_s1;
@@ -218,7 +217,6 @@ module dda_tracer (
 
     // ---------- Stage 2 ----------
     reg        vld_s2;
-    reg [19:0] pixel_addr_s2;
     reg  [4:0] bx_s2, by_s2, bz_s2;
     reg [23:0] pos_x_s2, pos_y_s2, pos_z_s2;
     reg [13:0] ray_x_s2, ray_y_s2, ray_z_s2;
@@ -230,7 +228,6 @@ module dda_tracer (
 
     // ---------- Stage 3 ----------
     reg        vld_s3;
-    reg [19:0] pixel_addr_s3;
     reg  [4:0] bx_s3, by_s3, bz_s3;
     reg [23:0] pos_x_s3, pos_y_s3, pos_z_s3;
     reg [13:0] ray_x_s3, ray_y_s3, ray_z_s3;
@@ -239,6 +236,14 @@ module dda_tracer (
     reg  [4:0] axis_s3;
     reg [31:0] hit_s3;
     reg  [7:0] step_cnt_s3;
+
+`ifdef PIPELINE
+    // ---------- pixel addr----------
+    reg [19:0] pixel_addr_s0;
+    reg [19:0] pixel_addr_s1;
+    reg [19:0] pixel_addr_s2;
+    reg [19:0] pixel_addr_s3;
+`endif
 
     // ============================================================
     // FEEDBACK wires
@@ -258,7 +263,6 @@ module dda_tracer (
         end else begin
             vld_s0 <= feed_en;
             if (feed_from_fb) begin
-                pixel_addr_s0 <= pixel_addr_s3;
                 bx_s0 <= bx_s3;
                 by_s0 <= by_s3;
                 bz_s0 <= bz_s3;
@@ -276,7 +280,6 @@ module dda_tracer (
                 jump_z_s0 <= jump_z_s3;
                 step_cnt_s0 <= step_cnt_s3;
             end else if (feed_from_input) begin
-                pixel_addr_s0 <= in_pixel_addr;
                 bx_s0 <= in_pos_x[15:11];
                 by_s0 <= in_pos_y[15:11];
                 bz_s0 <= in_pos_z[15:11];
@@ -302,7 +305,6 @@ module dda_tracer (
     // ============================================================
     always @(posedge clk) begin
         vld_s1 <= vld_s0;
-        pixel_addr_s1 <= pixel_addr_s0;
         bx_s1 <= bx_s0;
         by_s1 <= by_s0;
         bz_s1 <= bz_s0;
@@ -336,7 +338,6 @@ module dda_tracer (
     assign block_addr = {bx_s2, by_s2, bz_s2};
     always @(posedge clk) begin
         vld_s2 <= vld_s1;
-        pixel_addr_s2 <= pixel_addr_s1;
         bx_s2 <= bx_s1;
         by_s2 <= by_s1;
         bz_s2 <= bz_s1;
@@ -393,7 +394,6 @@ module dda_tracer (
 
     always @(posedge clk) begin
         vld_s3 <= vld_s2;
-        pixel_addr_s3 <= pixel_addr_s2;
         bx_s3 <= bx_s2;
         by_s3 <= by_s2;
         bz_s3 <= bz_s2;
@@ -456,7 +456,19 @@ module dda_tracer (
 
     assign hit_texture = {texture_id, hit_v, hit_u};
     assign hit_valid = hit_fire || out_of_bounds || (step_cnt_s3 >= MAX_STEP);
+
+
+`ifdef PIPELINE
+    // ---------- pixel addr----------
     assign out_pixel_addr = pixel_addr_s3;
+    always @(posedge clk) begin
+        if (feed_from_fb) pixel_addr_s0 <= pixel_addr_s3;
+        else if (feed_from_input) pixel_addr_s0 <= in_pixel_addr;
+        pixel_addr_s1 <= pixel_addr_s0;
+        pixel_addr_s2 <= pixel_addr_s1;
+        pixel_addr_s3 <= pixel_addr_s2;
+    end
+`endif
 
 `endif
 
