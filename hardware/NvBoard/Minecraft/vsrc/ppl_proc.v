@@ -7,23 +7,15 @@ module ppl_proc (
     input clk,
     input rst,
 
-    input [15:0] start_pos_x,
-    input [15:0] start_pos_y,
-    input [15:0] start_pos_z,
-    input [13:0] ray_slope_x,
-    input [13:0] ray_slope_y,
-    input [13:0] ray_slope_z,
+    input [15:0] start_pos_x, start_pos_y, start_pos_z,
+    input [13:0] ray_slope_x, ray_slope_y, ray_slope_z,
     input [19:0] pixel_addr,
     input [ 3:0] block_id,
     input [ 5:0] block_cnt,
 
     output [ 5:0] block_cnt_out,
-    output [13:0] ray_slope_out_x,
-    output [13:0] ray_slope_out_y,
-    output [13:0] ray_slope_out_z,
-    output [15:0] end_pos_x,
-    output [15:0] end_pos_y,
-    output [15:0] end_pos_z,
+    output [13:0] ray_slope_out_x, ray_slope_out_y, ray_slope_out_z,
+    output [15:0] end_pos_x, end_pos_y, end_pos_z,
 
     output [14:0] block_addr,
 

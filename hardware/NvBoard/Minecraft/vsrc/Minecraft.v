@@ -66,20 +66,15 @@ module Minecraft (
         .clk(clk),
         .rst(rst | data_aligned_vs),
 
-        .hdisp  (`H_DISP),
-        .vdisp  (`V_DISP),
-        .p_pos_x(p_pos_x),
-        .p_pos_y(p_pos_y),
-        .p_pos_z(p_pos_z),
-        .p_cam_x(p_cam_x),
-        .p_cam_y(p_cam_y),
-        .p_cam_z(p_cam_z),
-        .p_vp_x (p_vp_x),
-        .p_vp_y (p_vp_y),
+        .hdisp(`H_DISP),
+        .vdisp(`V_DISP),
+        .p_pos_x(p_pos_x), .p_pos_y(p_pos_y), .p_pos_z(p_pos_z),
+        .p_cam_x(p_cam_x), .p_cam_y(p_cam_y), .p_cam_z(p_cam_z),
+        .p_vp_x (p_vp_x),  .p_vp_y (p_vp_y),
 
-        .hit_valid  (valid),
+        .hit_valid(valid),
         .hit_texture(texture_addr),
-        .out_pixel_addr(pixel_addr_out)
+        .hit_paddr(pixel_addr_out)
     );
 `endif
 
@@ -111,7 +106,7 @@ module Minecraft (
     align #(
         .H_DISP(`H_DISP),
         .V_DISP(`V_DISP),
-        .N     (64)
+        .N     (16)
     ) align (
         .clk       (clk),
         .rst       (rst | data_aligned_vs),

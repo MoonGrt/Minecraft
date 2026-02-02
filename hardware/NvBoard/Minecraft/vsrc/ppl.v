@@ -7,11 +7,8 @@ module ppl #(
     input clk,
     input rst,
 
-    input [15:0] p_pos_x,
-    input [15:0] p_pos_y,
-    input [15:0] p_pos_z,
-    input [15:0] p_angle_x,
-    input [15:0] p_angle_y,
+    input [15:0] p_pos_x, p_pos_y, p_pos_z,
+    input [15:0] p_angle_x, p_angle_y,
     input [ 3:0] block_id,
 
     output        valid,
@@ -20,18 +17,10 @@ module ppl #(
     output [12:0] texture_addr
 );
 
-    wire [15:0] end_pos_x;
-    wire [15:0] end_pos_y;
-    wire [15:0] end_pos_z;
-    wire [15:0] start_pos_x;
-    wire [15:0] start_pos_y;
-    wire [15:0] start_pos_z;
-    wire [13:0] ray_slope_x;
-    wire [13:0] ray_slope_y;
-    wire [13:0] ray_slope_z;
-    wire [13:0] ray_slope_out_x;
-    wire [13:0] ray_slope_out_y;
-    wire [13:0] ray_slope_out_z;
+    wire [15:0] end_pos_x, end_pos_y, end_pos_z;
+    wire [15:0] start_pos_x, start_pos_y, start_pos_z;
+    wire [13:0] ray_slope_x, ray_slope_y, ray_slope_z;
+    wire [13:0] ray_slope_out_x, ray_slope_out_y, ray_slope_out_z;
 
     wire [19:0] pixel_addr;
     wire [ 5:0] block_cnt_out, block_cnt;
@@ -52,62 +41,41 @@ module ppl #(
         .H_DISP(H_DISP),
         .V_DISP(V_DISP)
     ) ppl_entry (
-        .clk      (clk),
-        .rst      (rst),
-        .p_pos_x  (p_pos_x),
-        .p_pos_y  (p_pos_y),
-        .p_pos_z  (p_pos_z),
-        .p_angle_x(p_angle_x),
-        .p_angle_y(p_angle_y),
+        .clk(clk),
+        .rst(rst),
+        .p_pos_x(p_pos_x), .p_pos_y(p_pos_y), .p_pos_z(p_pos_z),
+        .p_angle_x(p_angle_x), .p_angle_y(p_angle_y),
 
-        .next_en        (next_en),
-        .pixel_addr_out (pixel_addr_out),
-        .end_pos_x      (end_pos_x),
-        .end_pos_y      (end_pos_y),
-        .end_pos_z      (end_pos_z),
-        .ray_slope_out_x(ray_slope_out_x),
-        .ray_slope_out_y(ray_slope_out_y),
-        .ray_slope_out_z(ray_slope_out_z),
-        .block_cnt      (block_cnt),
+        .next_en(next_en),
+        .pixel_addr_out(pixel_addr_out),
+        .end_pos_x(end_pos_x), .end_pos_y(end_pos_y), .end_pos_z(end_pos_z),
+        .ray_slope_out_x(ray_slope_out_x), .ray_slope_out_y(ray_slope_out_y), .ray_slope_out_z(ray_slope_out_z),
+        .block_cnt(block_cnt),
 
         .block_cnt_out(block_cnt_out),
-        .start_pos_x  (start_pos_x),
-        .start_pos_y  (start_pos_y),
-        .start_pos_z  (start_pos_z),
-        .ray_slope_x  (ray_slope_x),
-        .ray_slope_y  (ray_slope_y),
-        .ray_slope_z  (ray_slope_z),
-        .pixel_addr   (pixel_addr)
+        .start_pos_x(start_pos_x), .start_pos_y(start_pos_y), .start_pos_z(start_pos_z),
+        .ray_slope_x(ray_slope_x), .ray_slope_y(ray_slope_y), .ray_slope_z(ray_slope_z),
+        .pixel_addr(pixel_addr)
     );
 
     ppl_proc ppl_proc (
-        .clk         (clk),
-        .rst         (rst),
+        .clk(clk),
+        .rst(rst),
 
-        .start_pos_x(start_pos_x),
-        .start_pos_y(start_pos_y),
-        .start_pos_z(start_pos_z),
-        .ray_slope_x(ray_slope_x),
-        .ray_slope_y(ray_slope_y),
-        .ray_slope_z(ray_slope_z),
-        // .ray_slope_x(6626),
-        // .ray_slope_y(3748),
-        // .ray_slope_z(-6506),
-        .pixel_addr (pixel_addr),
-        .block_id   (block_id),
-        .block_cnt  (block_cnt),
+        .start_pos_x(start_pos_x), .start_pos_y(start_pos_y), .start_pos_z(start_pos_z),
+        .ray_slope_x(ray_slope_x), .ray_slope_y(ray_slope_y), .ray_slope_z(ray_slope_z),
+        // .ray_slope_x(6626), .ray_slope_y(3748), .ray_slope_z(-6506),
+        .pixel_addr(pixel_addr),
+        .block_id(block_id),
+        .block_cnt(block_cnt),
 
-        .block_cnt_out  (block_cnt_out),
-        .next_en        (next_en),
-        .ray_slope_out_x(ray_slope_out_x),
-        .ray_slope_out_y(ray_slope_out_y),
-        .ray_slope_out_z(ray_slope_out_z),
-        .end_pos_x      (end_pos_x),
-        .end_pos_y      (end_pos_y),
-        .end_pos_z      (end_pos_z),
-        .pixel_addr_out (pixel_addr_out),
-        .texture_addr   (texture_addr),
-        .block_addr     (block_addr)
+        .block_cnt_out(block_cnt_out),
+        .next_en(next_en),
+        .ray_slope_out_x(ray_slope_out_x), .ray_slope_out_y(ray_slope_out_y), .ray_slope_out_z(ray_slope_out_z),
+        .end_pos_x(end_pos_x), .end_pos_y(end_pos_y), .end_pos_z(end_pos_z),
+        .pixel_addr_out(pixel_addr_out),
+        .texture_addr(texture_addr),
+        .block_addr(block_addr)
     );
 
 endmodule

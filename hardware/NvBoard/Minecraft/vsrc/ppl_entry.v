@@ -16,29 +16,18 @@ module ppl_entry #(
     input clk,
     input rst,
 
-    input [15:0] p_pos_x,
-    input [15:0] p_pos_y,
-    input [15:0] p_pos_z,
-    input [15:0] p_angle_x,
-    input [15:0] p_angle_y,
+    input [15:0] p_pos_x, p_pos_y, p_pos_z,
+    input [15:0] p_angle_x, p_angle_y,
 
     input        next_en,
     input [19:0] pixel_addr_out,
-    input [15:0] end_pos_x,
-    input [15:0] end_pos_y,
-    input [15:0] end_pos_z,
-    input [13:0] ray_slope_out_x,
-    input [13:0] ray_slope_out_y,
-    input [13:0] ray_slope_out_z,
+    input [15:0] end_pos_x, end_pos_y, end_pos_z,
+    input [13:0] ray_slope_out_x, ray_slope_out_y, ray_slope_out_z,
     input [ 5:0] block_cnt_out,
 
     output [ 5:0] block_cnt,
-    output [15:0] start_pos_x,
-    output [15:0] start_pos_y,
-    output [15:0] start_pos_z,
-    output [13:0] ray_slope_x,
-    output [13:0] ray_slope_y,
-    output [13:0] ray_slope_z,
+    output [15:0] start_pos_x, start_pos_y, start_pos_z,
+    output [13:0] ray_slope_x, ray_slope_y, ray_slope_z,
     output [19:0] pixel_addr
 );
 
@@ -63,25 +52,15 @@ module ppl_entry #(
         .H_DISP(H_DISP),
         .V_DISP(V_DISP)
     ) viewport_params (
-        .rst        (rst),
-        .p_angle_x  (p_angle_x),
-        .p_angle_y  (p_angle_y),
-        .vp_origin_x(vp_origin_x),
-        .vp_origin_y(vp_origin_y),
-        .vp_origin_z(vp_origin_z),
-        .vp_u_x     (vp_u_x),
-        .vp_u_y     (vp_u_y),
-        .vp_u_z     (vp_u_z),
-        .vp_v_x     (vp_v_x),
-        .vp_v_y     (vp_v_y),
-        .vp_v_z     (vp_v_z)
+        .rst(rst),
+        .p_angle_x(p_angle_x), .p_angle_y(p_angle_y),
+        .vp_origin_x(vp_origin_x), .vp_origin_y(vp_origin_y), .vp_origin_z(vp_origin_z),
+        .vp_u_x(vp_u_x), .vp_u_y(vp_u_y), .vp_u_z(vp_u_z),
+        .vp_v_x(vp_v_x), .vp_v_y(vp_v_y), .vp_v_z(vp_v_z)
     );
 
     wire signed [15:0] fragment_offset_x = frame_x * 2 - H_DISP;
     wire signed [15:0] fragment_offset_y = frame_y * 2 - V_DISP;
-    // wire signed [17:0] ray_offset_x = (vp_v_x * fragment_offset_x + vp_u_x * fragment_offset_y) >>> (`SHIFT + 1);
-    // wire signed [17:0] ray_offset_y = (vp_v_y * fragment_offset_x + vp_u_y * fragment_offset_y) >>> (`SHIFT + 1);
-    // wire signed [17:0] ray_offset_z = (vp_v_z * fragment_offset_x + vp_u_z * fragment_offset_y) >>> (`SHIFT + 1);
     wire signed [31:0] ray_offset_x = (vp_v_x * fragment_offset_x) >>> (`SHIFT + 1);
     wire signed [31:0] ray_offset_y = (vp_u_y * fragment_offset_y) >>> (`SHIFT + 1);
     wire signed [31:0] ray_offset_z = 'd0;
@@ -137,15 +116,9 @@ module viewport_params #(
     input [15:0] p_angle_x,
     input [15:0] p_angle_y,
 
-    output reg [15:0] vp_origin_x,
-    output reg [15:0] vp_origin_y,
-    output reg [15:0] vp_origin_z,
-    output reg [15:0] vp_u_x,
-    output reg [15:0] vp_u_y,
-    output reg [15:0] vp_u_z,
-    output reg [15:0] vp_v_x,
-    output reg [15:0] vp_v_y,
-    output reg [15:0] vp_v_z
+    output reg [15:0] vp_origin_x, vp_origin_y, vp_origin_z,
+    output reg [15:0] vp_u_x, vp_u_y, vp_u_z,
+    output reg [15:0] vp_v_x, vp_v_y, vp_v_z
 );
 
     // Internal signals
